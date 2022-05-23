@@ -5,7 +5,6 @@ const socketio = require('socket.io');
 const MongoStore = require('connect-mongo');
 const mongoose = require("mongoose");
 let crypto = require('node:crypto');
-const cryptos = require("crypto");
 const http = require("http");
 const session = require('express-session');
 const fetch = require('node-fetch');
@@ -104,6 +103,16 @@ app.route("/logout")
         });
     });
 
+
+app.route("/dashboard")
+    .get((req,res) => {
+        res.render("dashboard");
+    })
+
+app.route("/pipelines")
+.get((req,res) => {
+    res.render("pipelines");
+})
 
 server.listen(PORT, function () {
     console.log('Started on port 5400');
