@@ -22,7 +22,7 @@
     
 </head>
 
-<body>
+<body style="background-color: #010a0f;">
 
     <section class="vh-100" style="background-image: url('img/bg.jpg');background-repeat: no-repeat;background-size: cover;">
       
@@ -84,27 +84,7 @@
 
       </div>
 
-    </section>  
-
-    <script>
-        const body = document.querySelector("body");
-        const sidebarToggle = body.querySelector(".sidebar-toggle");
-        const sidebar = body.querySelector("nav");
-
-        let getStatus = localStorage.getItem("status");
-        if (getStatus && getStatus==="close") {
-            sidebar.classList.toggle("close");
-        }
-
-        sidebarToggle.addEventListener("click", () => {
-            sidebar.classList.toggle("close");
-            if (sidebar.classList.contains("close")) {
-                localStorage.setItem("status", "close");
-            } else {
-                localStorage.setItem("status", "open");
-            }
-        });
-    </script>
+    </section>
 
     <!-- Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
