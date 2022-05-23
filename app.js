@@ -103,7 +103,6 @@ app.route("/logout")
         });
     });
 
-
 app.route("/dashboard")
     .get((req,res) => {
         res.render("dashboard");
