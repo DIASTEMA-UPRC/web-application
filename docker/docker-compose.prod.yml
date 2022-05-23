@@ -1,0 +1,18 @@
+version: "3"
+services: 
+  web:
+    container_name: diastema-web-app
+    image: web-application-diastema
+    build:
+      context: .
+      args:
+        - NODE_ENV=production
+    ports:
+      - "50000:54000"
+    environment:
+      - PORT=6000
+      - MONGO_URL=mongodb://10.20.20.98/
+      - ORCHESTRATOR_URL=http://83.212.238.166:50001/analysis
+      - ORCHESTRATOR_INGESTION_URL=http://83.212.238.166:50001/ingestion
+      - NODE_ENV=production
+    command: node app.js

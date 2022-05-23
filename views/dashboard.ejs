@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link style="width: 16px;" rel="shortcut icon" type="image/png" href="img/favicon.png">
+    <title>Diastema | Home</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- BoxIcons CSS -->
+    <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.css" rel="stylesheet"/>
+    
+</head>
+
+<body>
+    <nav>
+        <!-- Logo / Back to home -->
+        <a id="logo" href="/">
+            <div class="logo-name">
+                
+                <div class="logo-image">
+                    <img src="img/ICON.png" alt="">
+                </div>
+                
+                <span class="logo_name">Diastema</span>    
+                
+            </div>
+        </a>
+
+        <!-- Menu navigation items -->
+        <div class="menu-items">
+            <ul class="nav-links">
+                <li>
+                    <a href="/" class="active">
+                        <i class='bx bx-layer'></i>
+                        <span class="link-name">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/ingestion">
+                        <i class='bx bx-cloud-upload'></i>
+                        <span class="link-name">Ingestion</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/datasets">
+                        <i class='bx bx-file'></i>
+                        <span class="link-name">Datasets</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/pipelines">
+                        <i class='bx bx-share-alt' ></i>
+                        <span class="link-name">Pipelines</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/functions">
+                        <i class='bx bx-code-block'></i>
+                        <span class="link-name">Functions</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/monitoring">
+                        <i class='bx bx-pulse' ></i>
+                        <span class="link-name">Monitoring</span>
+                        <span class="tag" style="margin-left: 10px; border: 3px solid var(--panel-color);">Soon</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/visualization">
+                        <i class='bx bx-bar-chart-square' ></i>
+                        <span class="link-name">Visualization</span>
+                    </a>
+                </li>
+            </ul>
+
+
+            <div style="background-color: #eef2f7;">
+
+                <div class="logout-border-top"></div>
+    
+                <!-- Logout -->
+                <div class="logout-border">
+                    <ul class="logout-mode">
+                        <li>
+                            <a href="/logout">
+                                <i class='bx bx-log-out'></i>
+                                <span class="link-name">Exit application</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+        </div>
+    </nav>
+
+    <!-- Main section -->
+    <section class="dashboard">
+        
+        <!-- Top bar -->
+        <div class="top">
+
+            <div class="page-title">
+                <i class='bx bx-menu sidebar-toggle'></i>
+
+                <div class="title">
+                    <span class="text">Dashboard</span>
+                </div>
+            </div>
+
+            <div class="user-group">
+                <div class="user-title">
+                    <span>adreaskar</span>
+                    <p>Unipi - Data Scientinst</p>
+                </div>
+                
+                <img src="img/profile.jpg">
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="inner-padding">
+    
+                <!-- Pipelines and Functions -->
+                <div class="row row-cols-md-2 g-3">
+
+                    <!-- General Iformation -->
+                    <div class="col-md-5">
+                        <div class="card" style="height: 40vh;">
+
+                            <div class="card-head">
+                                <i class='bx bx-info-circle'></i>
+                                <h5 class="card-title">Information</h5>
+                            </div>
+                            
+
+                            <div class="inner-card-padding">
+                                <div class="card-body">
+                                
+                                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                    <!-- Pipelines -->
+                    <div class="col-md-7">
+                        
+                        <div class="card" style="height: 40vh;">
+
+                            <div class="card-head">
+                                <i class='bx bx-git-repo-forked' ></i>
+                                <h5 class="card-title">Pipelines Created</h5>
+                            </div>
+                            
+                            <div class="inner-card-padding">
+
+                                <div class="card-body">
+                                    
+                                    <div class="card inner-card">
+                                        <div class="card-body">
+                                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                        </div>
+                                    </div>
+    
+                                    <div class="card inner-card">
+                                        <div class="card-body">
+                                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                        </div>
+                                    </div>
+    
+                                    <div class="card inner-card">
+                                        <div class="card-body">
+                                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="card inner-card">
+                                        <div class="card-body">
+                                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="card inner-card">
+                                        <div class="card-body">
+                                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="card inner-card">
+                                        <div class="card-body">
+                                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Datasets and Functions -->
+                <div class="row row-cols-md-2 g-3">
+
+                    <!-- Datasets -->
+                    <div class="col-md-5">
+                        <div class="card" style="height: 40vh;">
+
+                            <div class="card-head">
+                                <i class='bx bx-data'></i>
+                                <h5 class="card-title">Datasets</h5>
+                            </div>
+
+                            <div class="card-body">
+                                <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                            </div>
+
+                        </div>
+                    </div>
+                    
+                    <!-- Functions -->
+                    <div class="col-md-7">
+                        
+                        <div class="card" style="height: 40vh;">
+
+                            <div class="card-head">
+                                <i class='bx bx-code' ></i>
+                                <h5 class="card-title">Functions</h5>
+                            </div>
+                            
+                            <div class="inner-card-padding">
+
+                                <div class="card-body">
+                                    
+                                    <div class="card inner-card">
+                                        <div class="card-body">
+                                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                        </div>
+                                    </div>
+    
+                                    <div class="card inner-card">
+                                        <div class="card-body">
+                                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                        </div>
+                                    </div>
+    
+                                    <div class="card inner-card">
+                                        <div class="card-body">
+                                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="card inner-card">
+                                        <div class="card-body">
+                                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="card inner-card">
+                                        <div class="card-body">
+                                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="card inner-card">
+                                        <div class="card-body">
+                                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                
+            </div>
+        </div>
+
+    </section>
+
+    <script>
+        const body = document.querySelector("body");
+        const sidebarToggle = body.querySelector(".sidebar-toggle");
+        const sidebar = body.querySelector("nav");
+
+        let getStatus = localStorage.getItem("status");
+        if (getStatus && getStatus==="close") {
+            sidebar.classList.toggle("close");
+        }
+
+        sidebarToggle.addEventListener("click", () => {
+            sidebar.classList.toggle("close");
+            if (sidebar.classList.contains("close")) {
+                localStorage.setItem("status", "close");
+            } else {
+                localStorage.setItem("status", "open");
+            }
+        });
+    </script>
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+     <!-- MDB -->
+     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.js"></script>
+
+</body>
+</html>
