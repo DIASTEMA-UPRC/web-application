@@ -41,46 +41,49 @@
         <div class="menu-items">
             <ul class="nav-links">
                 <li>
-                    <a href="index.html">
+                    <a href="/dashboard">
                         <i class='bx bx-layer'></i>
                         <span class="link-name">Dashboard</span>
                     </a>
                 </li>
                 <li>
-                    <a href="ingestion.html" class="active">
+                    <a href="/ingestion" class="active">
                         <i class='bx bx-cloud-upload'></i>
                         <span class="link-name">Ingestion</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="/datasets">
                         <i class='bx bx-file'></i>
                         <span class="link-name">Datasets</span>
+                        <span class="tag" style="margin-left: 10px; border: 3px solid var(--panel-color);">Soon</span>
                     </a>
                 </li>
                 <li>
-                    <a href="pipelines.html">
+                    <a href="/pipelines">
                         <i class='bx bx-share-alt' ></i>
                         <span class="link-name">Pipelines</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="/functions">
                         <i class='bx bx-code-block'></i>
                         <span class="link-name">Functions</span>
+                        <span class="tag" style="margin-left: 10px; border: 3px solid var(--panel-color);">Soon</span>
                     </a>
                 </li>
                 <li>
-                  <a href="#">
-                      <i class='bx bx-pulse' ></i>
-                      <span class="link-name">Monitoring</span>
-                      <span class="tag" style="margin-left: 10px; border: 3px solid var(--panel-color);">Soon</span>
-                  </a>
+                    <a href="/monitoring">
+                        <i class='bx bx-pulse' ></i>
+                        <span class="link-name">Monitoring</span>
+                        <span class="tag" style="margin-left: 10px; border: 3px solid var(--panel-color);">Soon</span>
+                    </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="/visualization">
                         <i class='bx bx-bar-chart-square' ></i>
                         <span class="link-name">Visualization</span>
+                        <span class="tag" style="margin-left: 2px; border: 3px solid var(--panel-color);">Soon</span>
                     </a>
                 </li>
             </ul>
@@ -123,8 +126,8 @@
 
             <div class="user-group">
                 <div class="user-title">
-                    <span>adreaskar</span>
-                    <p>Unipi</p>
+                    <span><%= user %></span>
+                    <p><%= org %> - <%= prop %></p>
                 </div>
                 
                 <img src="img/profile.jpg">
