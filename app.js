@@ -201,6 +201,12 @@ app.route("/modelling")
     res.render("modelling", {user:username, id:id});
 });
 
+// 404 route -----------------------------------------------------------------------------------------------------------------
+app.route("/404")
+    .get((req,res) => {
+        res.render("404");
+    })
+
 server.listen(PORT, function () {
     console.log('Started on port 5400');
 });
