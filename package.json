@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon -L app.js",
-    "dockerup": "docker-compose --project-directory ./  -f ./docker/docker-compose.dev.yml up -d"
+    "dockerup": "docker-compose --project-directory ./  -f ./docker/docker-compose.dev.yml up -d",
+    "dockerdown": "docker-compose --project-directory ./  -f ./docker/docker-compose.dev.yml down"
   },
   "keywords": [],
   "author": "Andreas Karabetian",
