@@ -318,6 +318,8 @@ nav.close ~ .dashboard .top{
 } */
 .main-content .row {
     margin-bottom: 16px;
+    margin-left: 0px;
+    margin-right: 0px;
 }
 .main-content .card {
     border-color: transparent;
@@ -439,7 +441,7 @@ nav.close ~ .dashboard .top{
     border-radius: 7px;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1116px) {
     nav {
         width: 73px;
     }
