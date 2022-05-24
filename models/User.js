@@ -16,7 +16,8 @@ const userSchema = new mongoose.Schema ({
         required:true
     },
     organization:String,
-    property: String
+    property: String,
+    image: String
 });
 
 module.exports = userSchema;
