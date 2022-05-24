@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link style="width: 16px;" rel="shortcut icon" type="image/png" href="img/favicon.png">
+    <title>Diastema | 404</title>
+
+    <!-- CSS -->
+    <style>
+        .error-text {
+            display: flex;
+        }
+
+        .error-image {
+            display: flex;
+            background-image: url('img/404.png');
+            background-repeat: no-repeat;
+            background-size: 400px 162px;
+            background-position: center;
+            height: 50%;
+        }
+
+        .cont {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            height: 100%;
+            width: 75%;
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+
+        .card {
+            
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction: row !important;
+            padding: 30px 100px 30px 100px;
+            width: 70%;
+            height: 600px !important;
+            border-radius: 20px !important;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #questionmark {
+            color: var(--primary-color);
+        }
+
+        #underline {
+            border-bottom: 4px solid var(--primary-color);
+            padding: 0;
+        }
+
+        h1 {
+            font-weight: 600 !important;
+            font-size: 45px !important;
+        }
+
+        span {
+            padding: 0;
+        }
+
+        button {
+            transition: var(--tran-05);
+            border:2px solid var(--primary-color) !important;
+            background-color: var(--primary-color) !important;
+            box-shadow: none !important;
+        }
+        button:hover {
+            border:2px solid var(--primary-dark) !important;
+            transition: var(--tran-05);
+            border-color: transparent;
+            background-color: var(--primary-dark) !important;
+        }
+        #back {
+            margin-left: 20px;
+            border:2px solid var(--primary-color) !important;
+            background-color: white !important;
+            color: var(--primary-color);
+        }
+
+    </style>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- BoxIcons CSS -->
+    <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.css" rel="stylesheet"/>
+    
+</head>
+
+<body style="background-color: #010a0f;">
+
+    <section class="vh-100" style="background-image: url('img/bg.jpg');background-repeat: no-repeat;background-size: cover;">
+      
+        <div class="cont">
+
+            <div class="card">
+
+                <div class="col-md-6 error-text">
+                    <div class="card-body" style="padding: 0;">
+                        <h1 class="card-title"><span id="underline">Lost</span> in Diastema<span id="questionmark">?</span></h1>
+                        <p style="margin: 50px auto 50px auto;">
+                            Houston we have a problem. <br>
+                            The page you requested could not be found.
+                        </p>
+                        
+                        <button id="home" class="btn btn-primary btn-lg">Go home</button>
+                        <button id="back" class="btn btn-primary btn-lg">Go back</button>
+                    </div>
+                </div>
+
+                <div class="col-md-6 error-image">
+                    
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <script>
+        const home = document.getElementById("home");
+
+        home.addEventListener("click", ()=> {
+            window.location.replace("/");
+        });
+    </script>
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    <!-- MDB -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.js"></script>
+
+</body>
+</html>
