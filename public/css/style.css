@@ -143,6 +143,10 @@ nav .menu-items {
 .logout-mode a {
     width: max-content;
 }
+.logout-mode a:hover i, .logout-mode a:hover span {
+    color: var(--primary-color) !important;
+}
+
 .nav-links {
     padding-left: 12px;
     padding-right: 20px;
