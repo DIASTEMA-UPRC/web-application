@@ -6,7 +6,9 @@ const MongoStore = require('connect-mongo');
 const mongoose = require("mongoose");
 let crypto = require('node:crypto');
 const http = require("http");
+const fs = require('fs');
 const session = require('express-session');
+const upload = require('express-fileupload');
 const fetch = require('node-fetch');
 const { MONGO_URL, PORT, ORCHESTRATOR_URL, ORCHESTRATOR_INGESTION_URL } = require("./config/config");
 
@@ -32,6 +34,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json()); 
 app.use(express.static("public"));
+app.use(upload());
 app.use(session({
     secret:'diastema',
     resave:false,
@@ -81,6 +84,21 @@ app.route("/register")
         res.render("register");
     })
     .post((req,res) => {
+
+        console.log(req.files);
+
+        const uploadpath = 'public/img/user-profiles/';
+
+        // Save file to local storage
+        req.files.inpFile.mv(uploadpath + req.files.inpFile.name, function(error){
+            if (error) {
+                console.log("[ERROR] Could not copy image to local storage.");
+                console.log(error);
+            } else {
+                console.log("[INFO] Image uploaded successfully.");
+            }
+        });
+
         req.body.password = crypto.createHash('sha256').update(req.body.password).digest('hex');
 
         const user = new User ({
