@@ -161,6 +161,7 @@ app.route("/ingestion")
         const username = req.session.user;
         const organization = req.session.organization;
         const property = req.session.property;
+        const image = req.session.image;
 
         res.render("ingestion", {user:username, org:organization, prop:property, img:image});
 
@@ -229,6 +230,7 @@ app.route("/pipelines")
     const username = req.session.user;
     const organization = req.session.organization;
     const property = req.session.property;
+    const image = req.session.image;
 
     res.render("pipelines", {user:username, org:organization, prop:property, img:image});
 })
