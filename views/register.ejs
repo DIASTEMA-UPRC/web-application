@@ -50,6 +50,14 @@
                         <span class="h1 fw-bold mb-0" style="margin-left: 10px;color: var(--primary-color);">Diastema</span>
                     </div>
 
+                    <!-- Check if user exists or not -->
+                    <% if (flag) { %>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-bottom: -30px;">
+                            <strong>Notification:</strong> User already exist.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <% } %>
+
                     <form style="margin-top: 60px;" method="post" enctype="multipart/form-data" action="/register">
     
                         <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Register an account</h5>
