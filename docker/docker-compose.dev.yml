@@ -10,7 +10,7 @@ services:
     ports:
       - "5400:5400"    
     volumes:
-      - ./:/app:ro
+      - ./:/app
       - /app/node_modules
       - /app/docker/
     environment:
