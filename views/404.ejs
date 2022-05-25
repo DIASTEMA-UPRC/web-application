@@ -17,7 +17,7 @@
             display: flex;
             background-image: url('img/404.png');
             background-repeat: no-repeat;
-            background-size: 400px 162px;
+            background-size: 400px;
             background-position: center;
             height: 50%;
         }
@@ -33,7 +33,6 @@
         }
 
         .card {
-            
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -84,6 +83,30 @@
             border:2px solid var(--primary-color) !important;
             background-color: white !important;
             color: var(--primary-color);
+        }
+
+        @media (max-width: 1915px) {
+            .error-image {
+                background-size: 370px;
+            }
+
+            .card {
+                width: 80% !important;
+            }
+        }
+        @media (max-width: 1675px) {
+            h1 {
+                font-size: 40px !important;
+            }
+        }
+        @media (max-width: 1545px) {
+            .error-image {
+                background-size: 330px;
+            }
+            .card {
+                width: 90% !important;
+                padding: 10px 50px 10px 50px;
+            }
         }
 
     </style>
