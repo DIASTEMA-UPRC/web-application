@@ -55,9 +55,8 @@
     display: none !important;
 }
 
-html, body {
-    height: 100vh;
-    overflow-y: hidden;
+body {
+    min-height: 100vh;
 }
 
 input:focus {
