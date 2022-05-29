@@ -9,5 +9,5 @@ RUN if [ "$NODE_ENV" = "development" ]; \
         fi
 
 COPY . /app/
-EXPOSE 6000
+EXPOSE 5400
 CMD ["node", "app.js"]
