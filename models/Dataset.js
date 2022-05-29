@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
 
 const datasetSchema = new mongoose.Schema ({
     label: String,
@@ -12,4 +11,4 @@ const datasetSchema = new mongoose.Schema ({
     token: String,
 });
 
-module.exports = datasetSchema;
+module.exports = mongoose.model("Dataset", datasetSchema, "datasets");

@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
 
 const graphSchema = new mongoose.Schema ({
     user: String,
@@ -11,4 +10,4 @@ const graphSchema = new mongoose.Schema ({
     connections: Object
 });
 
-module.exports = graphSchema;
+module.exports = mongoose.model("Graph", graphSchema, "pipelines");
