@@ -31,7 +31,9 @@ router.route("/")
                     req.session.organization = data[0].organization;
                     req.session.property = data[0].property;
                     req.session.email = data[0].email;
-                    req.session.image = data[0].image;
+                    // req.session.image = data[0].image;
+                    req.session.image = "/uploads/default.png";
+                    
 
                     res.redirect("/dashboard");
                 }
