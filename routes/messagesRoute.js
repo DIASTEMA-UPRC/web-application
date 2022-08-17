@@ -3,6 +3,7 @@ const router = express.Router();
 const fetch = require('node-fetch');
 
 const Graph = require("../models/Graph");
+const {ORCHESTRATOR_URL} = require("../config/config");
 
 router.route("/messages")
     .post((req,res) => {
