@@ -118,11 +118,20 @@
 
             <div class="user-group">
                 <div class="user-title">
+                    <!-- Username -->
                     <span><%= user %></span>
-                    <p><%= org %> - <%= prop %></p>
+
+                    <!-- Check if org exists, and then if prop exists -->
+                    <% if(org){ %>
+                        <% if(prop){ %>
+                            <p><%= org %> - <%= prop %></p>
+                        <% } else { %>
+                            <p><%= org %></p>
+                        <% } %>
+                    <% } %>
                 </div>
                 
-                <img src="uploads/<%= img %>">
+                <img src="<%= img %>">
             </div>
         </div>
 

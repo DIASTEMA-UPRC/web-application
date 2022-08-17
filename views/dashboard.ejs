@@ -120,11 +120,20 @@
 
             <div class="user-group">
                 <div class="user-title">
+                    <!-- Username -->
                     <span><%= user %></span>
-                    <p><%= org %> - <%= prop %></p>
+
+                    <!-- Check if org exists, and then if prop exists -->
+                    <% if(org){ %>
+                        <% if(prop){ %>
+                            <p><%= org %> - <%= prop %></p>
+                        <% } else { %>
+                            <p><%= org %></p>
+                        <% } %>
+                    <% } %>
                 </div>
                 
-                <img src="uploads/<%= img %>">
+                <img src="<%= img %>">
             </div>
         </div>
 
@@ -142,7 +151,6 @@
                                 <i class='bx bx-info-circle'></i>
                                 <h5 class="card-title">Information</h5>
                             </div>
-                            
 
                             <div class="inner-card-padding">
                                 <div class="card-body">
