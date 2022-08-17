@@ -33,7 +33,6 @@ router.route("/")
                     req.session.email = data[0].email;
                     // req.session.image = data[0].image;
                     req.session.image = "/uploads/default.png";
-                    
 
                     res.redirect("/dashboard");
                 }
