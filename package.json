@@ -8,6 +8,8 @@
     "dev": "nodemon -L app.js",
     "dockerup": "docker-compose --project-directory ./  -f ./docker/docker-compose.dev.yml up -d",
     "dockerdown": "docker-compose --project-directory ./  -f ./docker/docker-compose.dev.yml down",
+    "dockerprod": "docker-compose --project-directory ./  -f ./docker/docker-compose.prod.yml up -d",
+    "dockerdownprod": "docker-compose --project-directory ./  -f ./docker/docker-compose.prod.yml down",
     "dockerbuild": "docker-compose --project-directory ./  -f ./docker/docker-compose.dev.yml up -d --build"
   },
   "keywords": [],
