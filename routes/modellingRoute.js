@@ -7,9 +7,10 @@ router.route("/modelling")
         //req.session.analysisid = Math.random().toString(16).slice(2);
 
         const username = req.session.user;
+        const image = req.session.image;
         const id = Math.random().toString(16).slice(2);
 
-        res.render("modelling", {user:username, id:id});
+        res.render("modelling", {user:username,img:image, id:id});
     });
 
 module.exports = router;
