@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({storage:storage});
 
-// Database models --------------------
+// Database model ---------------------
 const User = require('../models/User');
 
 router.route("/register")
