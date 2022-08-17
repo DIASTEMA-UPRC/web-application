@@ -13,12 +13,8 @@ services:
       - ./:/app
       - /app/node_modules
       - /app/docker/
-    environment:
-      - PORT=5400
-      - MONGO_URL=mongodb://mongo/
-      - ORCHESTRATOR_URL=http://83.212.238.166:50001/analysis
-      - ORCHESTRATOR_INGESTION_URL=http://83.212.238.166:50001/ingestion
-      - NODE_ENV=development
+    env_file:
+      - ./.env
     command: npm run dev
     restart: always
     depends_on:
