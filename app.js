@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 const http = require("http");
 const session = require('express-session');
 
-const { MONGO_URL, PORT, ORCHESTRATOR_URL, ORCHESTRATOR_INGESTION_URL } = require("./config/config");
+const { MONGO_URL, PORT} = require("./config/config");
 
 // Database connection -----------------------------------------------------------------------------
 mongoose.connect(MONGO_URL + "UIDB");
@@ -25,6 +25,7 @@ const monitoringRoute = require('./routes/monitoringRoute');
 const visualizationRoute = require('./routes/visualizationRoute');
 const messagesRoute = require('./routes/messagesRoute');
 const route404 = require('./routes/404Route');
+const githubAuth = require('./routes/githubAuth');
 // -------------------------------------------------------------------------------------------------
 
 const app = express();
@@ -87,6 +88,9 @@ app.use(messagesRoute);
 
 // 404 route ------------
 app.use(route404);
+
+// Github OAuth route ---
+app.use(githubAuth);
 
 server.listen(PORT, function () {
     console.log('Started on port 5400');
