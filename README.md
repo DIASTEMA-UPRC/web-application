@@ -35,7 +35,7 @@ The easiest way of running the application locally is by the use of Docker. Some
 - `npm run docker:downprod` will stop and delete running containers in production mode
 - `npm run docker:build` will build the image again and then start the development containers
 
-After executing either the `docker:dev` or `docker:prod` command, you can visit [http://localhost:5400](http://localhost:5400) where the application is now running.
+After executing either the `docker:dev` or `docker:prod` script, you can visit [http://localhost:5400](http://localhost:5400) where the application is now running.
 
 <ins>**Hint:**</ins> You **do not** need to run the `npm install` command, since the *npm_modules* directory is blocked from transfering to the docker container. The container will run this command during the setup phase and so all npm modules will be installed.
 
