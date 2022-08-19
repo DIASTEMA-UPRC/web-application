@@ -6,13 +6,13 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon -L app.js",
-    "dockerup": "docker-compose --project-directory ./  -f ./docker/docker-compose.dev.yml up -d",
-    "dockerdown": "docker-compose --project-directory ./  -f ./docker/docker-compose.dev.yml down",
-    "dockerprod": "docker-compose --project-directory ./  -f ./docker/docker-compose.prod.yml up -d",
-    "dockerdownprod": "docker-compose --project-directory ./  -f ./docker/docker-compose.prod.yml down",
-    "dockerbuild": "docker-compose --project-directory ./  -f ./docker/docker-compose.dev.yml up -d --build",
-    "pushall": "git add . && git commit -m \"general updates\" && git push dev master",
-    "pushreadme": "git add README.md && git commit -m \"Update README.md\" && git push dev master"
+    "docker:dev": "docker-compose --project-directory ./  -f ./docker/docker-compose.dev.yml up -d",
+    "docker:downdev": "docker-compose --project-directory ./  -f ./docker/docker-compose.dev.yml down",
+    "docker:prod": "docker-compose --project-directory ./  -f ./docker/docker-compose.prod.yml up -d",
+    "docker:downprod": "docker-compose --project-directory ./  -f ./docker/docker-compose.prod.yml down",
+    "docker:build": "docker-compose --project-directory ./  -f ./docker/docker-compose.dev.yml up -d --build",
+    "push:all": "git add . && git commit -m \"general updates\" && git push dev master",
+    "push:readme": "git add README.md && git commit -m \"Update README.md\" && git push dev master"
   },
   "keywords": [],
   "author": "Andreas Karabetian",
