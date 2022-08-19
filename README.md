@@ -1,4 +1,4 @@
-# diastema-web-app
+# Diastema web app
 
 ## Description
 The web application of the project, utilizing a basic nodejs [[1]](#1) express [[2]](#2) API for all the different routes and functionalities. These include:
