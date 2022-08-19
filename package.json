@@ -10,7 +10,9 @@
     "dockerdown": "docker-compose --project-directory ./  -f ./docker/docker-compose.dev.yml down",
     "dockerprod": "docker-compose --project-directory ./  -f ./docker/docker-compose.prod.yml up -d",
     "dockerdownprod": "docker-compose --project-directory ./  -f ./docker/docker-compose.prod.yml down",
-    "dockerbuild": "docker-compose --project-directory ./  -f ./docker/docker-compose.dev.yml up -d --build"
+    "dockerbuild": "docker-compose --project-directory ./  -f ./docker/docker-compose.dev.yml up -d --build",
+    "pushall": "git add . && git commit -m \"general updates\" && git push dev master",
+    "pushreadme": "git add README.md && git commit -m \"Update README.md\" && git push dev master"
   },
   "keywords": [],
   "author": "Andreas Karabetian",
