@@ -36,4 +36,4 @@ After executing either the `docker:dev` or `docker:prod` script, you can visit [
 5. <a id="5">https://ejs.co/</a>
 
 ## License
-Licensed under the [Apache License Version 2.0](README) by [Andreas Karabetian](https://github.com/adreaskar) for the research project Diastema
+Licensed under the [Apache License Version 2.0](LICENCE) by [Andreas Karabetian](https://github.com/adreaskar) for the research project Diastema
