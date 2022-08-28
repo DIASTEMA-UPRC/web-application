@@ -14,7 +14,7 @@ router.route("/datasets")
         const image = req.session.image;
 
         res.render("datasets", {user:username, org:organization, prop:property, img:image});
-
+        
     })
     .post((req,res) => {
 
@@ -65,6 +65,59 @@ router.route("/datasets")
         });
 
         res.redirect("/datasets");
+    });
+
+// Get response to display in UI
+router.route("/datasets/json")
+    .post((req,res) => {
+
+        const data = req.body.data
+
+        const method = data.method
+        const url = data.url
+        const label = data.label
+        const params = data.params
+        const headers = data.headers
+
+        console.log(data);
+
+        // Switch between HTTP methods
+        switch(method) {
+
+            case "GET":
+                fetch(url)
+                .then(res => res.json())
+                .then(json => {
+
+                    console.log("[INFO] - Got data from url:", url);
+                    jsonview = JSON.stringify(json);
+
+                    req.io.sockets.emit("JsonViewer", jsonview);
+                })
+                .catch(err => {
+                    console.log(err)
+                    req.io.sockets.emit("BadURL", "There was an error with your request! Please try again later");
+                });
+
+                break;
+
+            case "POST":
+                fetch(url, {
+                    method: method,
+                    headers: headers,
+                    body: body
+                })
+                .then(res => res.json())
+                .then(json => {
+                    console.log("hi");
+                });
+
+                break;
+
+            default:
+                console.log("[ERROR] Method not supported!");
+                break;
+        }
     });
 
 module.exports = router;
