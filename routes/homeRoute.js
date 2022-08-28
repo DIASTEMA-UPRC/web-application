@@ -32,7 +32,7 @@ router.route("/")
                     req.session.property = data[0].property;
                     req.session.email = data[0].email;
                     // req.session.image = data[0].image;
-                    req.session.image = "/uploads/default.png";
+                    req.session.image = "/img/default.png";
 
                     res.redirect("/dashboard");
                 }
