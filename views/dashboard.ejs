@@ -50,7 +50,7 @@
                 <li>
                     <a href="/datasets">
                         <i class='bx bx-file'></i>
-                        <span class="link-name">Datasets</span>
+                        <span class="link-name">Data Ingestion</span>
                     </a>
                 </li>
                 <li>
@@ -111,7 +111,7 @@
         <div class="top">
 
             <div class="page-title">
-                <i class='bx bx-menu sidebar-toggle'></i>
+                <i class='bx bxs-chevrons-left sidebar-toggle'></i>
 
                 <div class="title">
                     <span class="text">Dashboard</span>
@@ -149,33 +149,13 @@
 
                             <div class="card-head">
                                 <i class='bx bx-info-circle'></i>
-                                <h5 class="card-title">Information</h5>
-                            </div>
-
-                            <div class="inner-card-padding">
-                                <div class="card-body">
-                                
-                                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                </div>
-                            </div>
-                            
-                        </div>
-                    </div>
-
-                    <!-- General Iformation -->
-                    <div class="col">
-                        <div class="card">
-
-                            <div class="card-head">
-                                <i class='bx bx-info-circle'></i>
                                 <h5 class="card-title">Datasets</h5>
                             </div>
-                            
 
                             <div class="inner-card-padding">
                                 <div class="card-body">
                                 
-                                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                    <p class="card-text" style="font-size: 60px;">0</p>
                                 </div>
                             </div>
                             
@@ -188,14 +168,14 @@
 
                             <div class="card-head">
                                 <i class='bx bx-info-circle'></i>
-                                <h5 class="card-title">Information</h5>
+                                <h5 class="card-title">Pipelines</h5>
                             </div>
                             
 
                             <div class="inner-card-padding">
                                 <div class="card-body">
                                 
-                                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                    <p class="card-text" style="font-size: 60px;">0</p>
                                 </div>
                             </div>
                             
@@ -208,14 +188,34 @@
 
                             <div class="card-head">
                                 <i class='bx bx-info-circle'></i>
-                                <h5 class="card-title">Information</h5>
+                                <h5 class="card-title">Functions</h5>
                             </div>
                             
 
                             <div class="inner-card-padding">
                                 <div class="card-body">
                                 
-                                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                    <p class="card-text" style="font-size: 60px;">0</p>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                    <!-- General Iformation -->
+                    <div class="col">
+                        <div class="card">
+
+                            <div class="card-head">
+                                <i class='bx bx-info-circle'></i>
+                                <h5 class="card-title">Results</h5>
+                            </div>
+                            
+
+                            <div class="inner-card-padding">
+                                <div class="card-body">
+                                
+                                    <p class="card-text" style="font-size: 60px;">0</p>
                                 </div>
                             </div>
                             
@@ -348,6 +348,13 @@
 
     </section>
 
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <!-- MDB -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.js"></script>
+
     <script>
         const body = document.querySelector("body");
         const sidebarToggle = body.querySelector(".sidebar-toggle");
@@ -359,7 +366,11 @@
         }
 
         sidebarToggle.addEventListener("click", () => {
+            
+            $(".sidebar-toggle").toggleClass("rotate");
+
             sidebar.classList.toggle("close");
+            
             if (sidebar.classList.contains("close")) {
                 localStorage.setItem("status", "close");
             } else {
@@ -367,10 +378,6 @@
             }
         });
     </script>
-    <!-- Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
-     <!-- MDB -->
-     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.js"></script>
 
 </body>
 </html>

@@ -49,7 +49,7 @@
                 <li>
                     <a href="/datasets">
                         <i class='bx bx-file'></i>
-                        <span class="link-name">Datasets</span>
+                        <span class="link-name">Data Ingestion</span>
                     </a>
                 </li>
                 <li>
@@ -109,7 +109,7 @@
         <div class="top">
 
             <div class="page-title">
-                <i class='bx bx-menu sidebar-toggle'></i>
+                <i class='bx bxs-chevrons-left sidebar-toggle'></i>
 
                 <div class="title">
                     <span class="text">Pipelines</span>
@@ -554,7 +554,11 @@
         }
 
         sidebarToggle.addEventListener("click", () => {
+        
+            $(".sidebar-toggle").toggleClass("rotate");
+        
             sidebar.classList.toggle("close");
+
             if (sidebar.classList.contains("close")) {
                 localStorage.setItem("status", "close");
             } else {
