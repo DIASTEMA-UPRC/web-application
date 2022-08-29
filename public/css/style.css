@@ -439,6 +439,19 @@ nav.close ~ .dashboard .top{
     color: var(--primary-color);
 }
 
+.delete-slot {
+    position: absolute;
+    right: 65px;
+    top: 9px;
+    padding: 2px;
+}
+
+.delete-slot:hover {
+    cursor: pointer;
+    border-radius: 25% !important;
+    background: var(--highlight-color);
+}
+
 .pipeline-line {
     display: flex;
     align-items: center;
