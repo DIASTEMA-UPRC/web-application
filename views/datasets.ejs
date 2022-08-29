@@ -157,7 +157,7 @@
                             <div class="inner-card-padding">
                                 <div class="card-body" style="padding-top: 10px;">
 
-                                    <form id="ingestion_form" id="form" method="POST" action="/ingestion">
+                                    <form id="ingestion_form" id="form" method="POST">
 
                                         <div style="display: flex; flex-direction: row; justify-content: space-between;margin-bottom: 8px;">
 
@@ -172,7 +172,7 @@
                                             </div>
 
                                             <!-- Test button -->
-                                            <button type="submit" class="btn btn-primary mb-4" style="font-size:15px;display: inline-block;margin-right: 15px;" id="submit">Test</button>
+                                            <button type="submit" class="btn btn-primary mb-4" style="font-size:15px;display: inline-block;margin-right: 15px;" id="test_submit">Test</button>
 
                                             <!-- Submit button -->
                                             <button type="submit" class="btn btn-primary mb-4" style="font-size:15px;display: inline-block;" id="submit">Send</button>
@@ -199,7 +199,6 @@
                                                 <input type="text" class="form-control" name="ingestion-id" id="ingestion-id" style="font-size: 14px" placeholder="Generated ID" disabled/>
                                             </dv>
                                         </div>
-                                        
 
                                         <!-- Parameters and Headers -->
                                         <div class="row">
@@ -333,6 +332,10 @@
     <script>
 
         const socket = io.connect();
+        
+        let id = Math.random().toString(16).slice(2);
+        let body_type = "none";
+        $('#ingestion-id').val(id);
 
         // ===============
         // Side bar toggle
@@ -385,8 +388,6 @@
                 jsonview.render(tree, document.querySelector('.tree'));
                 jsonview.expand(tree);   
             }
-
-            
         });
 
         socket.on('BadURL', (data) => {
@@ -418,6 +419,8 @@
         function select_body_type(option) {
 
             const val = option.innerHTML;
+            body_type = val;
+
             const text_ids = ["#body_raw", "#body_encoded", "#body_none"];
             const content_ids = ["#raw_body", "#x-www-form-urlencoded_body"];
 
@@ -524,17 +527,41 @@
             }
         });
 
+        // ====================
+        // DELETE SLOT FUNCTION
+        // ====================
+
+        function deleteSlot(button) {
+            let parent = button.offsetParent;
+            console.log(parent);
+            $(parent).remove();
+        }
+
         // ==============
         // FORM SUBMISSION 
         // ==============
 
-        $('#ingestion_form').submit(function(e){
+        $("#ingestion_form").submit(function(e){
             e.preventDefault();
+        });
+
+        // Test button
+        $('#test_submit').click(function(e){
+
+            const data = gatherData();
+
+            $.post('/datasets/test', { data });
+        })
+
+        $('#submit').click(function(e){
+
+            $.post('/datasets', gatherData());
+        })
+
+        // Gather data function to be called when the form is submitted
+        function gatherData() {
 
             const url = $("#url").val();
-            const method = $("#method").val();
-            const label = $("#label").val();
-            const body = $("#body").val();
             
             let params = gatherPairs("#params_container");
             let headers = gatherPairs("#headers_container");
@@ -551,21 +578,27 @@
                 urlWithParams += `${key}=${value}`
             }
 
-            //jquery loop through element class
-
             let data = {
-                method:method,
+                method:$("#method").val(),
                 url:urlWithParams,
-                label:label,
+                label:$("#label").val(),
+                generated_id:id,
                 params:params,
                 headers:headers,
-                body:body
+                body:body_type
             }
 
-            // Send url to server to make the test request
-            $.post('/datasets/json', { data });
-        })
+            if (body_type === "raw") {
+                data.raw_type = $("#raw_type").val();
+                data.body_val = $("#raw_body").val();
+            }
 
+            console.log(data);
+
+            return data;
+        }
+
+        // Gather pairs function used in the params and headers inputs
         function gatherPairs(container) {
             jsonObj = [];
             let obj = {};
@@ -594,19 +627,19 @@
         };
 
         $("#first_param").click(() => {
-            $("#params_container").append('<div class="input-group mb-3 slot_subclass"><input type="text" class="form-control" placeholder="Key" name="slot_name" style="height: auto; background-color: transparent; font-size:14px"/><span class="input-group-text">:</span><input type="text" class="form-control" placeholder="Value" name="slot_value" style="height:auto; background-color:transparent; font-size:14px"/><button type="button" class="btn add_param" style="color: white;font-size:15px;margin-bottom: 0px !important;">+</button></div>')
+            $("#params_container").append('<div class="input-group mb-3 slot_subclass"><input type="text" class="form-control" placeholder="Key" name="slot_name" style="height: auto; background-color: transparent; font-size:14px"/><span class="input-group-text">:</span><input type="text" class="form-control" placeholder="Value" name="slot_value" style="height:auto; background-color:transparent; font-size:14px"/><i class="bx bx-x delete-slot" onclick="deleteSlot(this)"></i><button type="button" class="btn add_param" style="color: white;margin-bottom: 0px !important;"><i class="bx bx-plus-medical"></i></button></div>')
         });
 
         $(document).on("click", "button.add_param", () => {
-            $("#params_container").append('<div class="input-group mb-3 slot_subclass"><input type="text" class="form-control" placeholder="Key" name="slot_name" style="height: auto; background-color: transparent; font-size:14px"/><span class="input-group-text">:</span><input type="text" class="form-control" placeholder="Value" name="slot_value" style="height:auto; background-color:transparent; font-size:14px"/><button type="button" class="btn add_param" style="color: white;font-size:15px;margin-bottom: 0px !important;">+</button></div>')
+            $("#params_container").append('<div class="input-group mb-3 slot_subclass"><input type="text" class="form-control" placeholder="Key" name="slot_name" style="height: auto; background-color: transparent; font-size:14px"/><span class="input-group-text">:</span><input type="text" class="form-control" placeholder="Value" name="slot_value" style="height:auto; background-color:transparent; font-size:14px"/><i class="bx bx-x delete-slot" onclick="deleteSlot(this)"></i><button type="button" class="btn add_param" style="color: white;margin-bottom: 0px !important;"><i class="bx bx-plus-medical"></i></button></div>')
         });
 
         $("#first_header").click(() => {
-            $("#headers_container").append('<div class="input-group mb-3 slot_subclass"><input type="text" class="form-control" placeholder="Key" name="slot_name" style="height: auto; background-color: transparent; font-size:14px"/><span class="input-group-text">:</span><input type="text" class="form-control" placeholder="Value" name="slot_value" style="height:auto; background-color:transparent; font-size:14px"/><button type="button" class="btn add_header" style="color: white;font-size:15px;margin-bottom: 0px !important;">+</button></div>')
+            $("#headers_container").append('<div class="input-group mb-3 slot_subclass"><input type="text" class="form-control" placeholder="Key" name="slot_name" style="height: auto; background-color: transparent; font-size:14px"/><span class="input-group-text">:</span><input type="text" class="form-control" placeholder="Value" name="slot_value" style="height:auto; background-color:transparent; font-size:14px"/><i class="bx bx-x delete-slot" onclick="deleteSlot(this)"></i><button type="button" class="btn add_header" style="color: white;margin-bottom: 0px !important;"><i class="bx bx-plus-medical"></i></button></div>')
         });
 
         $(document).on("click", "button.add_header", () => {
-            $("#headers_container").append('<div class="input-group mb-3 slot_subclass"><input type="text" class="form-control" placeholder="Key" name="slot_name" style="height: auto; background-color: transparent; font-size:14px"/><span class="input-group-text">:</span><input type="text" class="form-control" placeholder="Value" name="slot_value" style="height:auto; background-color:transparent; font-size:14px"/><button type="button" class="btn add_header" style="color: white;font-size:15px;margin-bottom: 0px !important;">+</button></div>')
+            $("#headers_container").append('<div class="input-group mb-3 slot_subclass"><input type="text" class="form-control" placeholder="Key" name="slot_name" style="height: auto; background-color: transparent; font-size:14px"/><span class="input-group-text">:</span><input type="text" class="form-control" placeholder="Value" name="slot_value" style="height:auto; background-color:transparent; font-size:14px"/><i class="bx bx-x delete-slot" onclick="deleteSlot(this)"></i><button type="button" class="btn add_header" style="color: white;margin-bottom: 0px !important;"><i class="bx bx-plus-medical"></i></button></div>')
         });
 
     </script>
