@@ -6,9 +6,7 @@ const datasetSchema = new mongoose.Schema ({
     ingestionDateTime: String,
     organization: String,
     user: String,
-    method: String,
-    link: String,
-    token: String,
+    requestData: Object
 });
 
 module.exports = mongoose.model("Dataset", datasetSchema, "datasets");
