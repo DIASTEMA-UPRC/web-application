@@ -63,7 +63,6 @@
                     <a href="/functions">
                         <i class='bx bx-code-block'></i>
                         <span class="link-name">Functions</span>
-                        <span class="tag" style="margin-left: 10px; border: 3px solid var(--panel-color);">Soon</span>
                     </a>
                 </li>
                 <li>
@@ -138,7 +137,7 @@
         </div>
 
         <div class="main-content">
-            <div class="inner-padding">
+            <div class="inner-padding" style="height: 100%;">
     
                 <!-- Pipelines and Functions -->
                 <div class="row row-cols-md-4 g-3">
@@ -162,7 +161,7 @@
                         </div>
                     </div>
 
-                    <!-- General Iformation -->
+                    <!-- Pipelines -->
                     <div class="col">
                         <div class="card">
 
@@ -182,7 +181,7 @@
                         </div>
                     </div>
 
-                    <!-- General Iformation -->
+                    <!-- Functions -->
                     <div class="col">
                         <div class="card">
 
@@ -195,7 +194,7 @@
                             <div class="inner-card-padding">
                                 <div class="card-body">
                                 
-                                    <p class="card-text" style="font-size: 60px;">0</p>
+                                    <p class="card-text" style="font-size: 60px;"><%= functions_length %></p>
                                 </div>
                             </div>
                             
@@ -224,13 +223,13 @@
 
                 </div>
 
-                <!-- Datasets and Functions -->
-                <div class="row row-cols-md-2 g-3">
+                <!-- Pipelines and Functions -->
+                <div class="row row-cols-md-2 g-3" style="height: calc(100% - 221px);margin-bottom:0;">
 
                     <!-- Pipelines -->
-                    <div class="col">
+                    <div class="col" style="height: 100%;">
                         
-                        <div class="card" style="height: 40vh;">
+                        <div class="card" style="height: inherit;">
 
                             <div class="card-head">
                                 <i class='bx bx-git-repo-forked' ></i>
@@ -239,41 +238,17 @@
                             
                             <div class="inner-card-padding">
 
-                                <div class="card-body">
-                                    
-                                    <div class="card inner-card">
-                                        <div class="card-body">
-                                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                        </div>
-                                    </div>
-    
-                                    <div class="card inner-card">
-                                        <div class="card-body">
-                                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                        </div>
-                                    </div>
-    
-                                    <div class="card inner-card">
-                                        <div class="card-body">
-                                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                        </div>
-                                    </div>
+                                <div class="card-body" style="height: inherit;">
 
-                                    <div class="card inner-card">
-                                        <div class="card-body">
-                                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                        </div>
-                                    </div>
-
-                                    <div class="card inner-card">
-                                        <div class="card-body">
-                                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                        </div>
-                                    </div>
-
-                                    <div class="card inner-card">
-                                        <div class="card-body">
-                                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                    <div class="card-inner">
+                                        <div class="card inner-card">
+                                            <div class="card-head" style="padding:0 24px 10px 24px">
+                                                <i class='bx bx-code' ></i>
+                                                <h5 class="card-title">Name</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                            </div>
                                         </div>
                                     </div>
                                     
@@ -285,54 +260,35 @@
                     </div>
                     
                     <!-- Functions -->
-                    <div class="col">
+                    <div class="col" style="height: 100%;">
                         
-                        <div class="card" style="height: 40vh;">
+                        <div class="card" style="height: inherit;">
 
                             <div class="card-head">
                                 <i class='bx bx-code' ></i>
-                                <h5 class="card-title">Functions</h5>
+                                <h5 class="card-title">Functions Created</h5>
                             </div>
                             
                             <div class="inner-card-padding">
 
-                                <div class="card-body">
+                                <div class="card-body" style="height: inherit;">
+
+                                <div class="card-inner">
+                                    <% for (var func of functions) {%>
+                                        
+                                        <div class="card inner-card">
+                                            <div class="card-head" style="padding:0 24px 10px 24px">
+                                                <i class='bx bx-code' ></i>
+                                                <h5 class="card-title"><%= func.name %></h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                            </div>
+                                        </div>
+                                    <%}%>
+                                </div>
+
                                     
-                                    <div class="card inner-card">
-                                        <div class="card-body">
-                                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                        </div>
-                                    </div>
-    
-                                    <div class="card inner-card">
-                                        <div class="card-body">
-                                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                        </div>
-                                    </div>
-    
-                                    <div class="card inner-card">
-                                        <div class="card-body">
-                                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                        </div>
-                                    </div>
-
-                                    <div class="card inner-card">
-                                        <div class="card-body">
-                                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                        </div>
-                                    </div>
-
-                                    <div class="card inner-card">
-                                        <div class="card-body">
-                                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                        </div>
-                                    </div>
-
-                                    <div class="card inner-card">
-                                        <div class="card-body">
-                                            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                        </div>
-                                    </div>
                                     
                                 </div>
 
