@@ -150,6 +150,43 @@
     width: 50%;
 }
 
+/* FUNCTION MODELLING OPERATOR */
+
+.flowchart-operator-function, .flowchart-operator-variable {
+    position: absolute;
+    width: 10rem;
+    border-radius: 8px;
+    background: white;
+    pointer-events: auto;
+    color: black;
+}
+
+.flowchart-operator-function .flowchart-operator-title, .flowchart-operator-variable .flowchart-operator-title{
+    width: 100%;
+    padding: 5px;
+    font-weight: bold;
+    box-sizing: border-box;
+    height: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: move;
+    color: white;
+    text-align: center;
+}
+
+.flowchart-operator-function .flowchart-operator-inputs-outputs,.flowchart-operator-variable .flowchart-operator-inputs-outputs {
+    display: table;
+    width: 100%;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.flowchart-operator-function .flowchart-operator-inputs, .flowchart-operator-variable .flowchart-operator-inputs {
+    display: table-cell;
+    width: 50%;
+}
+
 /* Custom operator 1 */
 
 .flowchart-operator-data-load {

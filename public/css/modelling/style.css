@@ -432,16 +432,57 @@ h3, .material-icons {
   opacity: 1; /* Firefox */
 }
 
-button {
+button:not(.accordion-button, #little_x, .toast-close-button) {
   background-color: var(--main)!important;
   margin-bottom: 15px!important;
   box-shadow: none!important;
   font-size: 13px!important;
 }
 
-button:hover {
+button:hover:not(.accordion-button, #little_x, .toast-close-button) {
   background-color: #33809e!important;
 }
+
+.accordion-button {
+  border: none !important;
+  padding: 1rem 1rem;
+  font-size: large;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+  .accordion-button:hover {
+    background-color: #dddddd;
+  }
+
+  .accordion-button span{
+    margin-left: 10px;
+    color: #343434;
+    font-weight: 700;
+  }
+
+  .accordion-button:not(.collapsed) {
+    background-color: #dddddd;
+    color: #343434 ;
+  }
+
+  .accordion-button::after {
+    rotate: 180deg;
+  }
+
+  .accordion-body {
+    padding: 0;
+    max-height: 300px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+
+  .accordion-collapse {
+    border-left: none;
+    border-right: none;
+    border-bottom-right-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+  }
 
 .btn-close, .toast-close-button {
   background-color: transparent !important;
