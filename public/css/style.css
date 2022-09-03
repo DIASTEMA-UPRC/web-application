@@ -389,13 +389,20 @@ nav.close ~ .dashboard .top{
 }
 .main-content .card .inner-card-padding {
     height: inherit;
-    overflow-y: auto;
+    overflow-y: hidden;
     margin-bottom: 28px;
-    /* margin-right: 10px; */
 }
 .main-content .card .inner-card {
     padding: 24px 0;
     box-shadow: 0 5px 10px 3px var(--highlight-color);
+}
+.main-content .card .card-inner {
+    padding: 20px;
+    background-color: #eef2f7;
+    border-radius: 15px;
+    height: 100%;
+    overflow: auto;
+    scrollbar-width: none;
 }
 .main-content .card .inner-card:not(:last-child) {
     margin-bottom: 20px;
