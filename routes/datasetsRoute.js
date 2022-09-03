@@ -18,8 +18,7 @@ router.route("/datasets")
     })
     .post((req,res) => {
 
-        // Generate ingestion id
-        const id = Math.random().toString(16).slice(2);
+        let ingestion = req.body;
 
         // Create datetime
         const d = new Date();
@@ -29,17 +28,17 @@ router.route("/datasets")
         const datetime = date + " " + time;
 
         // Data structure 
-        const data = {
+        let data = {
             "ingestion-datetime": datetime,
             "diastema-token": "diastema-key",
-            "ingestion-id": id.toLowerCase(),
+            "ingestion-id": ingestion.generated_id,
             "database-id": req.session.organization.toLowerCase(),
-            "method": req.body.method,
-            "link": req.body.link,
-            "token": req.body.token,
-            "dataset-label": req.body.label.toLowerCase(),
-            "user": req.session.user
+            "user": req.session.user,
+            "dataset-label": ingestion.label
         }
+        delete ingestion.generated_id;
+        delete ingestion.label;
+        data["ingestion_json"] = ingestion;
 
         // Save data to MongoDB
         const dataset = new Dataset ({
@@ -48,14 +47,12 @@ router.route("/datasets")
             ingestionDateTime: data["ingestion-datetime"],
             organization: data["database-id"],
             user: data.user,
-            method: data.method,
-            link: data.link,
-            token: data.token
+            requestData: data["ingestion_json"]
         });
         dataset.save()
-        console.log("[INFO] Dataset information saved to MongoDB!");
+        console.log("[INFO] Dataset metadata saved to MongoDB!");
 
-        // Send data to Orchestrator
+        //Send data to Orchestrator
         fetch(ORCHESTRATOR_INGESTION_URL, {
             method: "POST",
             headers: {'Content-Type': 'application/json'},
@@ -68,15 +65,14 @@ router.route("/datasets")
     });
 
 // Get response to display in UI
-router.route("/datasets/json")
+router.route("/datasets/test")
     .post((req,res) => {
 
         const data = req.body.data
 
         const method = data.method
         const url = data.url
-        const label = data.label
-        const params = data.params
+        const body = data.body_val
         const headers = data.headers
 
         console.log(data);
@@ -85,7 +81,10 @@ router.route("/datasets/json")
         switch(method) {
 
             case "GET":
-                fetch(url)
+                fetch(url, {
+                    method: method,
+                    headers: headers
+                })
                 .then(res => res.json())
                 .then(json => {
 
@@ -109,12 +108,20 @@ router.route("/datasets/json")
                 })
                 .then(res => res.json())
                 .then(json => {
-                    console.log("hi");
+                    console.log("[INFO] - Got data from url:", url);
+                    jsonview = JSON.stringify(json);
+
+                    req.io.sockets.emit("JsonViewer", jsonview);
+                })
+                .catch(err => {
+                    console.log(err)
+                    req.io.sockets.emit("BadURL", "There was an error with your request! Please try again later");
                 });
 
                 break;
 
             default:
+                req.io.sockets.emit("BadURL", "Method not supported yet!");
                 console.log("[ERROR] Method not supported!");
                 break;
         }
