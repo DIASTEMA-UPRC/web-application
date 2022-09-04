@@ -26,7 +26,7 @@ The easiest way of running the application locally is by the use of Docker. Some
 
 After executing either the `docker:dev` or `docker:prod` script, you can visit [http://localhost:5400](http://localhost:5400) where the application is now running.
 
-<ins>**Hint:**</ins> You **do not** need to run the `npm install` command, since the *npm_modules* directory is blocked from transfering to the docker container. The container will run this command during the setup phase and thus all npm modules will be installed.
+<ins>**Hint:**</ins> You **do not** need to run the `npm install` command, since the *npm_modules* directory is blocked from transfering to the docker container. The container will run this command during the setup phase and install all necessary npm modules.
 
 ## References
 1. <a id="1">https://nodejs.org/en/</a>
