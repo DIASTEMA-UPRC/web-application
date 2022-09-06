@@ -32,8 +32,6 @@ After executing either the `docker:dev` or `docker:prod` script, you can visit [
 1. <a id="1">https://nodejs.org/en/</a>
 2. <a id="2">https://expressjs.com/</a>
 3. <a id="3">https://www.docker.com/</a>
-4. <a id="4">https://mongoosejs.com/</a>
-5. <a id="5">https://ejs.co/</a>
 
 ## License
 Licensed under the [Apache License Version 2.0](LICENSE) by [Andreas Karabetian](https://github.com/adreaskar) for the research project Diastema
