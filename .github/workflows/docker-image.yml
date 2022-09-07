@@ -29,6 +29,3 @@ jobs:
           context: .
           push: true
           tags: adreaskar/diastema-web-app:latest
-          
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
