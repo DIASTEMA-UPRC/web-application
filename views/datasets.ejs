@@ -174,7 +174,7 @@
                                             <button type="submit" class="btn btn-primary mb-4" style="font-size:15px;display: inline-block;margin-right: 15px;" id="test_submit">Test</button>
 
                                             <!-- Submit button -->
-                                            <button type="submit" class="btn btn-primary mb-4" style="font-size:15px;display: inline-block;" id="submit">Send</button>
+                                            <button type="submit" class="btn btn-primary mb-4" style="font-size:14px;display: inline-block;" id="submit">Send</button>
                                         </div>
 
                                         <hr style="margin-top: 12px !important;">
@@ -277,7 +277,30 @@
 
                             <div class="inner-card-padding">
                                 <div class="card-body">
-                                    <p class="card-text">This is where your collected data will appear</p>
+
+                                    <div class="card-inner">
+                                        <% for (var set of datasets) {%>
+                                            
+                                            <div class="card inner-card">
+                                                <div class="card-head" style="padding:4px 24px 24px 24px">
+                                                    <i class='bx bx-code' ></i>
+                                                    <h5 class="card-title"><%= set.label %></h5>
+                                                </div>
+                                                <div class="card-body">
+
+                                                    <div class="card-text">
+                                                        <b>ID:</b> <%= set.ingestationId %> |
+
+                                                        <b>Method:</b> <span class="tag"><%= set.requestData.method %></span> |
+
+                                                        <b>URL:</b> <span class="tag"><%= set.requestData.url %></span>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        <%}%>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -295,7 +318,7 @@
                             
                             <div class="inner-card-padding" style="height: calc(100% - 81px);">
                                 <div class="card-body" style="height: 100%;">
-                                    <p class="card-text">This is where the response of your request will appear, by pressing the <span class="tag">TEST</span> button.</p>
+                                    <p class="card-text">Your request response will appear here, after pressing the <span class="tag">TEST</span> button.</p>
                                     <div class="tree" style="background-color: #eef2f778;border-radius: 15px;padding: 10px 0 10px 20px;height: calc(100% - 68px);overflow: auto;"></div>
                                 </div>
                             </div>
@@ -336,6 +359,29 @@
         let body_type = "none";
         $('#ingestion-id').val(id);
 
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": true,
+            "positionClass": "toast-bottom-right",
+            "preventDuplicates": false,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "3000",
+            "extendedTimeOut": "1500",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+
+        // Display toast after save and redirect
+        if (sessionStorage.getItem("showmsg")=='1'){
+            toastr.info("Request was saved successfully.", "Notification:");
+            sessionStorage.removeItem("showmsg");
+        }
+
         // ===============
         // Side bar toggle
         // ===============
@@ -366,48 +412,46 @@
         // JSON VIEW CODE
         // ==============
 
-        socket.on('JsonViewer', (data) => {
+        socket.on('JsonViewer', (response) => {
 
-            console.log("Received data from server: ", data);
+            console.log("Received data from server: ", response.data);
 
-            // create json tree object
-            let tree = jsonview.create(data);
-
-            
-            if ( $('.tree').children().length > 0 ) {
+            if (response.type === "json") {
+                // create json tree object
+                let tree = jsonview.create(response.data);
                 
-                $('.tree').empty();
-            
-                // render tree into dom element
-                jsonview.render(tree, document.querySelector('.tree'));
-                jsonview.expand(tree);   
+                if ( $('.tree').children().length > 0 ) {
+                    
+                    $('.tree').empty();
+                
+                    // render tree into dom element
+                    jsonview.render(tree, document.querySelector('.tree'));
+                    jsonview.expand(tree);   
 
+                } else {
+                    // render tree into dom element
+                    jsonview.render(tree, document.querySelector('.tree'));
+                    jsonview.expand(tree);
+                }
             } else {
-                // render tree into dom element
-                jsonview.render(tree, document.querySelector('.tree'));
-                jsonview.expand(tree);   
+                let parser = new DOMParser();
+
+                //let tree = jsonview.create(xml);
+
+                if ( $('.tree').children().length > 0 ) {
+                    
+                    $('.tree').empty();
+                    $('.tree').append('<p><b>Response was not in JSON format</b></p>');
+                    $('.tree').append(response.data);   
+
+                } else {
+                    $('.tree').append('<p><b>Response was not in JSON format</b></p>');
+                    $('.tree').append(response.data);
+                }
             }
         });
 
         socket.on('BadURL', (data) => {
-
-            toastr.options = {
-                "closeButton": true,
-                "debug": false,
-                "newestOnTop": true,
-                "progressBar": true,
-                "positionClass": "toast-bottom-right",
-                "preventDuplicates": false,
-                "showDuration": "300",
-                "hideDuration": "1000",
-                "timeOut": "3000",
-                "extendedTimeOut": "1500",
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut"
-            }
-
             toastr.error(data, "Notification");
         });
 
@@ -552,9 +596,20 @@
             $.post('/datasets/test', { data });
         })
 
-        $('#submit').click(function(e){
+        $('#submit').click( async () => {
 
-            $.post('/datasets', gatherData());
+            try {
+				await fetch("/datasets", {
+					method: 'POST',
+					headers: {'Content-Type': 'application/json'},
+					body: JSON.stringify(gatherData())
+				});
+			} catch (error) {
+				console.log(error);
+			}
+
+            sessionStorage.setItem("showmsg", "1");
+		    window.location.replace("/datasets");
         })
 
         // Gather data function to be called when the form is submitted
@@ -591,8 +646,6 @@
                 data.raw_type = $("#raw_type").val();
                 data.body_val = $("#raw_body").val();
             }
-
-            console.log(data);
 
             return data;
         }
