@@ -6,14 +6,21 @@ const Dataset = require('../models/Dataset');
 const {ORCHESTRATOR_INGESTION_URL} = require("../config/config");
 
 router.route("/datasets")
-    .get((req,res) => {
+    .get(async(req,res) => {
+
+        // Get all datasets from database
+        try {
+            var datasets = await Dataset.find();
+        } catch (err) {
+            console.log(err);
+        }
 
         const username = req.session.user;
         const organization = req.session.organization;
         const property = req.session.property;
         const image = req.session.image;
 
-        res.render("datasets", {user:username, org:organization, prop:property, img:image});
+        res.render("datasets", {user:username, org:organization, prop:property, img:image, datasets:datasets});
         
     })
     .post((req,res) => {
@@ -52,7 +59,7 @@ router.route("/datasets")
         dataset.save()
         console.log("[INFO] Dataset metadata saved to MongoDB!");
 
-        //Send data to Orchestrator
+        // Send data to Orchestrator
         fetch(ORCHESTRATOR_INGESTION_URL, {
             method: "POST",
             headers: {'Content-Type': 'application/json'},
@@ -61,7 +68,7 @@ router.route("/datasets")
             console.log("[INFO] Ingestion data sent to orchestrator!", res);
         });
 
-        res.redirect("/datasets");
+        res.sendStatus(200);
     });
 
 // Get response to display in UI
@@ -75,8 +82,6 @@ router.route("/datasets/test")
         const body = data.body_val
         const headers = data.headers
 
-        console.log(data);
-
         // Switch between HTTP methods
         switch(method) {
 
@@ -85,13 +90,35 @@ router.route("/datasets/test")
                     method: method,
                     headers: headers
                 })
-                .then(res => res.json())
-                .then(json => {
+                // Figure out the response content type
+                .then((res) => {
+                    
+                    let respType = res.headers.get("content-type");
 
-                    console.log("[INFO] - Got data from url:", url);
-                    jsonview = JSON.stringify(json);
+                    if (respType.includes("application/json")) {
+                        return {type:"json", data:res.json()};
+                    } else {
+                        return {type:"text", data:res.text()}
+                    }
+                })
 
-                    req.io.sockets.emit("JsonViewer", jsonview);
+                // Return response according to content type
+                .then(async response => {
+
+                    let data = await response.data;
+
+                    switch (response.type) {
+                        case "json":
+                            let jsonview = JSON.stringify(data);
+                            req.io.sockets.emit("JsonViewer", {type:response.type, data:jsonview});
+                            break;
+                    
+                        case "text":
+                            req.io.sockets.emit("JsonViewer", {type:response.type, data:data});
+                        default:
+                            break;
+                    }
+                    
                 })
                 .catch(err => {
                     console.log(err)
@@ -106,7 +133,9 @@ router.route("/datasets/test")
                     headers: headers,
                     body: body
                 })
+                // Figure out the response content type
                 .then(res => res.json())
+                // Return response according to content type
                 .then(json => {
                     console.log("[INFO] - Got data from url:", url);
                     jsonview = JSON.stringify(json);
@@ -126,5 +155,45 @@ router.route("/datasets/test")
                 break;
         }
     });
+
+
+router.route("/datasets/ready")
+    .get(async (req,res) => {
+            
+            let readySets = [];
+
+            try {
+                // Get all datasets from database
+                var datasets = await Dataset.find()
+
+                // Check if dataset has features
+                datasets.forEach(set => {
+                    if (set['_doc'].features) {
+                        readySets.push(set);
+                    }
+                })
+            } catch (err) {
+                console.log(err);
+            }
+    
+            res.send(readySets);
+    })
+
+router.route("/datasets/features")
+    .post(async (req,res) => {
+            
+            let dataset = req.body.dataset;
+
+            try {
+                var resp = await Dataset.find({label: dataset}, {features: 1})
+                var features = resp[0]['_doc'].features;
+            } catch (err) {
+                console.log(err);
+            }
+
+            console.log(features);
+    
+            res.send(features);
+    })
 
 module.exports = router;
