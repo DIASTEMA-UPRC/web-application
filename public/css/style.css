@@ -398,7 +398,7 @@ nav.close ~ .dashboard .top{
 }
 .main-content .card .card-inner {
     padding: 20px;
-    background-color: #eef2f7;
+    background-color: #f7f9fb;
     border-radius: 15px;
     height: 100%;
     overflow: auto;
@@ -497,6 +497,7 @@ nav.close ~ .dashboard .top{
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 31vh;
 }
 .first-pipeline button {
     width: 40px;
