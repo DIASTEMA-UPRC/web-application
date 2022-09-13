@@ -74,70 +74,103 @@ $(document).ready(function() {
 	// actions when dropped
 	canvas.droppable({
 		drop:function (event,ui) {
+			
 			if (ui.helper[0].children[1] === undefined) {
 				return;
 			}
+
+			let dom = ui.helper[0];
+
 			var node = {
 				_id: (new Date).getTime(),
 				position: ui.helper.position(),
-				property:ui.helper[0].children[1].innerHTML
+				property:dom.children[1].innerHTML,
+				type: dom.dataset.type,
+				inputs:parseInt(dom.dataset.inputs),
+				outputs:parseInt(dom.dataset.outputs),
+				color:dom.dataset.color
 			};
-			if(node.property == "Classification" || node.property == "Regression" || node.property == "Cleaning" || node.property == "Data Ingestion" || node.property == "Join Datasets") {
-				node.field = ''
-				if (node.property == "Data Ingestion") {
+
+			switch (node.type) {
+				case "Classification":
+					node.field = ''
+					node.property = "Select Algorithm"
+					break;
+				case "Regression":
+					node.field = ''
+					node.property = "Select Algorithm"
+					break;
+				case "Cleaning":
+					node.field = ''
+					break;
+				case "Data Ingestion":
+					node.field = ''
 					node.link = ''
 					node.token = ''
-				}
-				if(node.property == "Classification" || node.property == "Regression") {
-					node.property = "Select Algorithm"
-				}
-				if(node.property == "Join Datasets") {
+					break;
+				case "Join Datasets":
+					node.field = ''
 					node.property = "Select Join"
-				}
+					break;
+				case "Dataset":
+					node.field = ''
+					node.property = "Select Dataset"
+					node.selectedFeature = "Select Feature"
+					node.features = []
+					break;
+				case "Saved Function":
+					node.name = dom.dataset.name;
+					node.inptypes = [];
+					let types = dom.dataset.inptypes.split(",");
+					types.forEach((type,index)=>{
+						type.split(" ").forEach((t,i)=>{
+							if (t !== "") {
+								if (t!=="\n") {
+									node.inptypes.push(t);
+								}
+							}
+						})
+					})
+	
+					node.outputtype = dom.dataset.outputtype;
+					node.field = [];
+					for(var i=0; i<node.inputs ;i++){
+						node.field.push('');
+					}
+					break;
+				default:
+					break;
 			}
-			
-			// node.position.top +=220;
-			node.position.top +=125;
 
-			// get tool name
-			node.type = ui.helper[0].children[1].innerHTML;
+			node.position.top +=25;			
 
 			diagram.push(node);
 			renderDiagram(diagram);
 		}
 	});
 
-	window.renderDiagram = function (diagram) {
+	window.renderDiagram = async function (diagram) {
 		canvas.empty();
 		for (var d in diagram) {
 			var node = diagram[d];
-			var html = "";
 
-			switch (node.type) {
-				case "Data Load":
-					html = dataload;
-					break;
-				case "Data Sink":
-					html = sink;
-					break;
-				case "Data Ingestion":
-					html = ingestion1 + '<input type="text" name="field" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="'+node.field+'"></input>' + ingestion2 + '<input type="text" name="link" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="'+node.link+'"></input>' + ingestion3 + '<input type="text" name="token" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="'+node.token+'"></input>' + ingestion4;
-					break;
-				case "Join Datasets":
-					html = datajoin1 + '<option selected="true" disabled="disabled" value="default">'+node.property+'</option>' + datajoin2 + '<input type="text" name="field" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="'+node.field+'"></input>' + datajoin3;
-					break;
-				case "Classification":
-					html = classification1 + '<option selected="true" disabled="disabled" value="default">'+node.property+'</option>' + classification2 + '<input type="text" name="field" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="'+node.field+'"></input>' + classification3;
-					break;
-				case "Regression":
-					html = regression1 + '<option selected="true" disabled="disabled" value="default">'+node.property+'</option>' + regression2 + '<input type="text" name="field" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="'+node.field+'"></input>' + regression3;
-					break;
-				case "Cleaning":
-					html = cleaning1 + '<input type="text" inputmode="numeric" name="field" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="'+node.field+'"></input>' + cleaning2;
-					break;
-				default:
-					break;
+			// If node is a dataset then get the ready datasets
+			if (node.type === "Dataset") {
+				try {
+					var resp = await fetch("/datasets/ready", {
+						method: "GET",
+						headers: {
+							'Accept': 'application/json',
+							'Content-Type': 'application/json',
+						}
+					});
+					var response = await resp.json();
+				} catch (error) {
+					console.log(error);	
+				}
 			}
+
+			let html = generatePipelineHTML(node,response);
 
 			var dom = $(html).css({
 				"position":"absolute",
@@ -172,7 +205,7 @@ $(document).ready(function() {
 
 	// Generate data
 	var data;
-	function generateData() {
+	async function generateData() {
 
 		const d = new Date();
 
@@ -195,19 +228,21 @@ $(document).ready(function() {
 		// Get nodes -------------------
 		for (l in diagram) {
 			data.nodes.push(diagram[l]);
+			data.nodes[l].index = parseInt(l) + 1;
 		}
 		// Get connections ----------------------
 		for (k in linesArray) {
 			data.connections.push(linesArray[k]);
 		}
-		// Create jobs array --
+
+		// Loop through nodes array
 		for (m in data.nodes) {
 
 			// Job template
 			let job = {
 				"title":data.nodes[m].type.replace(/\s+/g, '-').toLowerCase(),
 				"id":data.nodes[m]._id,
-				"step":parseInt(m)+1,
+				"step":data.nodes[m].index,
 				"from":'',
 				"next":[],
 				"save":false
@@ -216,40 +251,50 @@ $(document).ready(function() {
 			// Calculate the next / from properties of every node
 			// by looping through all existing connections and 
 			// comparing node id's.
-			if (job.step === 1 || data.nodes[m].type === "Data Ingestion") job.from = 0;
-			if (data.nodes[m].type === "Join Datasets") job.from = [];
-			let countNotLast = 0
-			for (n in data.connections) {
-				if (data.connections[n].to === job.id) {
-					for (l in data.jobs) {
-						if (data.jobs[l].id === data.connections[n].from) {
-							data.jobs[l].next.push(job.step);
-							if (data.nodes[m].type === "Join Datasets") {
-								job.from.push(data.jobs[l].step);
-							} else job.from = data.jobs[l].step;
-							countNotLast +=1 ;
+			if (job.step === 1 || data.nodes[m].type === "Dataset") job.from = 0;
+			if (data.nodes[m].type === "Join Datasets" || data.nodes[m].type === "Saved Function") job.from = [];
+
+			data["connections"].forEach((line) => {
+				if (line.to === job.id) {
+					for (l in data.nodes) {
+						if (data.nodes[l]._id === line.from) {
+
+							if (data.nodes[m].type === "Saved Function") {
+								let pos = parseInt(line.to_type.split(" ")[0]);
+								job.from[pos-1] = data.nodes[l].index;
+							} else if (data.nodes[m].type === "Join Datasets") {
+								job.from.push(data.nodes[l].index);
+							}
+							else job.from = data.nodes[l].index;
+						}
+					}
+				} else if (line.from === job.id) {
+					for (l in data.nodes) {
+						if (data.nodes[l]._id === line.to) {
+							job.next.push(data.nodes[l].index); 
 						}
 					}
 				}
+			});
+
+			// Properties specific to the Saved Function job
+			if (data.nodes[m].type === "Saved Function") {
+				job.from = job.from.filter((a) => a);
+				job.title = "function"
+
+				// Get function JSON
+				try {
+					const resp = await fetch(`/functions/get/${data.nodes[m].name}`)
+					var response = await resp.json();
+				} catch (error) {
+					console.log(error);
+				}
+				job.function = response
 			}
 
-			// Properties specific to the Data Ingestion job
-			if (data.nodes[m].type === "Data Ingestion") {
-				job.method = "GET";
-				job.link = data.nodes[m].link;
-				job.token = data.nodes[m].token;
-				job["dataset-name"] = data.nodes[m].field;
-				if (job["dataset-name"] === "") {
-
-					let found = 1;
-					for (l in data.jobs) {
-						if (data.jobs[l].title === "data-ingestion") {
-							found +=1;
-						}
-					}
-
-					job["dataset-name"] = "dataset-" + found + "-" + data["analysis-id"];
-				}
+			// Properties specific to the Dataset job
+			if (data.nodes[m].type === "Dataset") {
+				job.label = data.nodes[m].property;
 			}
 
 			// Properties specific to the Data Join job
@@ -284,16 +329,71 @@ $(document).ready(function() {
 			if (data.jobs[m].next.length === 0) data.jobs[m].next.push(0);
 		}
 
+		// Calculate the args for each Saved Function by
+		// backgracking the graph to find the nearest Dataset node
+		for (a in data.nodes) {
+			if (data.nodes[a].type === "Saved Function") {
+				
+				let temp = data.nodes[a]._id;
+				console.log("Temp is: ",  data.nodes[a].type);
+				let exploredLines = []
+				
+				for (let ind = 0; ind < linesArray.length; ind++) {
+					if (linesArray[ind].to === temp) {
+
+						if (exploredLines.findIndex((obj) => obj._id === linesArray[ind]._id) !== -1) {
+							console.log("Found explored line: ", linesArray[ind]._id);
+							continue;
+						}
+
+						// If the line ends in a Saved Function then save the end number
+						if (!isNaN(parseInt(linesArray[ind].to_type.split(" ")[0]))) {
+							var pos = parseInt(linesArray[ind].to_type.split(" ")[0]) - 1
+							var explored = ind
+						}
+
+						console.log("Exploring line: ", linesArray[ind]._id);
+
+						for (b in data.nodes) {
+							if (data.nodes[b]._id === linesArray[ind].from) {
+
+								if (data.nodes[b].type === "Dataset") {
+
+									let feature = data.nodes[b].selectedFeature;
+
+									data.jobs.forEach((job) => {
+										if (job.id === data.nodes[a]._id) {
+
+											job.function.args[pos].feature = feature;
+											console.log("Added to ", pos, "arg feature: ", feature);
+											exploredLines.push(linesArray[explored])
+											console.log("Added explored line: ", linesArray[explored]._id);
+											temp = data.nodes[a]._id;
+											console.log("New temp is: ",  data.nodes[a].type);
+										}
+									})
+
+									break;
+								}
+								else {
+									temp = data.nodes[b]._id
+									console.log("New temp is: ", data.nodes[b].type);
+									ind=-1;
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
 		// Determine if auto modelling is enabled or not
 		if ($("#checkbox").is(':checked')) {
 			data.automodel = true;
 		} else {
 			data.automodel = false;
 		}
-
-		// Testing if nodes / connections work again
-		// delete data.nodes;
-		// delete data.connections;
 	}
 
 	// Save graph to application
@@ -315,7 +415,7 @@ $(document).ready(function() {
 			$("#save_graph_input").val("")
 			$('#saveGraphModal').modal('hide');
 
-			toastr.success("Graph was saved successfully.", "Notification:");
+			toastr.info("Graph was saved successfully.", "Notification:");
 		}
 	});
 
@@ -401,12 +501,25 @@ $(document).ready(function() {
 	});
 
 	// Download graph
-	$('#download_graph').click(()=>{
-		if (validateFields()) {
-			generateData();
-			download(JSON.stringify(data, null, 2), "data.json", "text/plain");
+	$('#download_graph').click(() => {
+
+		if ($("#download_graph_input").val() === "") {
+			toastr.error("Please give a name to your analysis graph.", "Notification:");
 		} else {
-			toastr.error("Please fill all the requied fields.", "Notification:");
+			if (validateFields()) {
+
+				generateData();
+				console.log(data);
+				download(JSON.stringify(data, null, 2), "data.json", "text/plain");
+
+				$("#download_graph_input").val("")
+				$('#downloadGraphModal').modal('hide');
+
+				toastr.info("Graph was downloaded successfully.", "Notification:");
+
+			} else {
+				toastr.error("Please fill all the requied fields.", "Notification:");
+			}
 		}
 	});
 
@@ -505,29 +618,30 @@ function drawLine(item) {
 
 	let id = parents[6].id
 	let dot = parents[0];
-	console.log(id);
 
 	// Set start node
 	if (count == 1) {
 		dots.push(dot);
 		for (o in diagram) {
 			if (diagram[o]._id == id) {
-				// start = document.getElementById(diagram[o]._id);
 				start_id = diagram[o]._id;
 			}
 		}
 	// Set end node
 	} else if (count == 2) {
+		
 		dots.push(dot);
+
 		for (o in diagram) {
 			if (diagram[o]._id == id) {
-				// end = document.getElementById(diagram[o]._id);
 				end_id = diagram[o]._id;
 			}
 		}
 
-		if (dots[1] === dots[0]) {
-			count = 1;
+		// Check if the same node was clicked twice
+		if (start_id === end_id) {
+			count = 0;
+			dots= [];
 			return;
 		}
 
@@ -550,6 +664,7 @@ function drawLine(item) {
 
 		line["from"] = start_id;
 		line["to"] = end_id;
+		line["to_type"] = dot.previousElementSibling.innerHTML;
 
 		linesArray.push(line);
 		dots = [];
@@ -566,7 +681,6 @@ function editNode(element) {
 		parents.push(element);
 	}
 	let elemid = parents[0].id;
-	let title = parents[0];
 	for (s in diagram) {
 		if (diagram[s]._id == elemid) {
 			var pos = s;
@@ -577,7 +691,6 @@ function editNode(element) {
 	try {
 		$("#"+elemid).click(function(event){
 			event.stopPropagation();
-			// $operatorProperties.show();
 			$("#delete_node").show();
 		});
 	} catch(err) {
@@ -585,20 +698,35 @@ function editNode(element) {
 	}
 	
 	// Change property of node object
-	window.changeProperty = function (node) {
-		if (node.value == "Cleaning") {
-			// Set up a parent array
-			let parents = [];
-			let element = node;
-			// Push each parent element to the array
-			for ( ; element && element !== document; element = element.parentNode ) {
-				parents.push(element);
+	window.changeProperty = async function (node) {
+
+		if (node.id === "datasetProperty") {
+			try {
+				var resp = await fetch("/datasets/features", {
+					method: "POST",
+					headers: {
+						'Accept': 'application/json',
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({dataset:node.value})
+				});
+				var features = await resp.json();
+
+				diagram[pos].property = node.value;
+				diagram[pos].features = features;
+
+				renderDiagram(diagram)
+			} catch (error) {
+				console.log(error);
 			}
-			$("#"+parents[3].id+" label").hide();
-			$("#"+parents[3].id+" input").hide();
+
+		} else if (node.id === "datasetFeatures") {
+			diagram[pos].selectedFeature = node.value;
+		} else {
+			diagram[pos].property = node.value;
 		}
-		diagram[pos].property = node.value;
 	}
+
 	// Click button to delete node and re-render diagram
 	window.deleteNode = function () {
 		for (j in linesArray) {
@@ -631,13 +759,15 @@ function editColumn(element) {
 	for ( ; element && element !== document; element = element.parentNode ) {
 		parents.push(element);
 	}
-	let elemid = parents[2].id;
+	let elemid = $(parents).filter('.ui-draggable').attr('id');
 
 	// Click field to add field property (column) to node object
 	$('#'+elemid+'  input[name="field"]').keyup(function(){
 		for (s in diagram) {
 			if (diagram[s]._id == elemid) {
+				
 				diagram[s].field = $(this).val();
+				
 				// Cleaning service max shrink validation check ---------------------------- //
 				if (diagram[s].property === "Cleaning") {
 					if (isNaN($(this).val())) {
@@ -654,20 +784,11 @@ function editColumn(element) {
 		}
 	});
 
-	// Click field to add link property to node object
-	$('#'+elemid+'  input[name="link"]').keyup(function(){
+	// Click field to add func_input property to node object
+	$('#'+elemid+'  input[name="func_input"]').keyup(function(){
 		for (s in diagram) {
 			if (diagram[s]._id == elemid) {
-				diagram[s].link = $(this).val();
-			}
-		}
-	});
-
-	// Click field to add token property to node object
-	$('#'+elemid+'  input[name="token"]').keyup(function(){
-		for (s in diagram) {
-			if (diagram[s]._id == elemid) {
-				diagram[s].token = $(this).val();
+				diagram[s].field[$(this)[0].id] = $(this).val();
 			}
 		}
 	});
@@ -675,6 +796,7 @@ function editColumn(element) {
 
 function reDraw() {
 	for (var d in diagram) {
+		
 			
 		// Redraw each connected line
 		let templines = [];
@@ -682,6 +804,7 @@ function reDraw() {
 			
 			let fromid = linesArray[k].from;
 			let toid = linesArray[k].to;
+			let to_type = linesArray[k].to_type;
 
 			let elemfrom = document.getElementById(fromid);
 			let elemto = document.getElementById(toid);
@@ -689,26 +812,12 @@ function reDraw() {
 			let fromchildren = $(elemfrom).find('*');
 			let tochildren = $(elemto).find('*');
 
-			if (fromchildren[0].classList.contains("flowchart-operator-data-ingestion")) {
-				console.log(fromchildren);
-				var nodefrom = fromchildren[8];
-			}
-			if (fromchildren[0].classList.contains("flowchart-operator-data-load")) {
-				var nodefrom = fromchildren[13];
-			}
-			if (tochildren[0].classList.contains("flowchart-operator-data-load")) {
-				var nodeto = tochildren[7];
-			}
-			if (fromchildren[0].classList.contains("flowchart-operator-tool")) {
-				var nodefrom = fromchildren[13];
-			}
+			// Calculate from dot and to dot
+			let obj = $(fromchildren).find('div.flowchart-operator-outputs')
+			var nodefrom = obj[0].firstElementChild.firstElementChild.children[1]
 
-			if (tochildren[0].classList.contains("flowchart-operator-tool")) {
-				var nodeto = tochildren[7];
-			}
-			if (tochildren[0].classList.contains("flowchart-operator-vis")) {
-				var nodeto = tochildren[7];
-			}
+			let type = $(tochildren).find('div:contains("'+to_type+'")');
+			var nodeto = type[4].nextElementSibling;
 
 			linesArray[k].remove();
 			linesArray.splice(k,1);
@@ -732,6 +841,7 @@ function reDraw() {
 
 			line["from"] = fromid;
 			line["to"] = toid;
+			line["to_type"] = to_type;
 
 			templines.push(line);
 		}
@@ -749,14 +859,15 @@ function minimize() {
 function validateFields() {
 	let outcome = true;
 	for (m in diagram) {
+
 		if (diagram[m].type === "Classification" || diagram[m].type === "Regression" || diagram[m].type === "Join Datasets") {
 			if (diagram[m].field === "") {
 				outcome = false;
 			};
 		}
 
-		if (diagram[m].type === "Data Ingestion") { 
-			if (diagram[m].link === "" || diagram[m].token === "") {
+		if (diagram[m].type === "Cleaning") { 
+			if (diagram[m].field === "") {
 				outcome = false;
 			}
 		}
