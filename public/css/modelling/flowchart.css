@@ -107,35 +107,37 @@
 }
 
 
-/* Default Operator */
+/* PIPELINE MODELLING OPERATOR */
 
 .flowchart-operator {
-    position: absolute;
+    /* position: absolute;
     width: 140px;
     border: 1px solid #CCCCCC;
     background: #FAFAFA;
+    pointer-events: auto; */
+
+    min-width: 10rem;
+    max-width: 12.3rem;
+    border-radius: 8px;
+    background: white;
     pointer-events: auto;
+    color: black;
 }
-
-.flowchart-operator.selected {
-    border-color: #555;
-}
-
-
 
 .flowchart-operator .flowchart-operator-title {
     width: 100%;
     padding: 5px;
     font-weight: bold;
     box-sizing: border-box;
-    border-bottom: 1px solid #DDDDDD;
-    background: #F0F0F0;
+    /* border-bottom: 1px solid #DDDDDD; */
+    /* background: #F0F0F0; */
     height: auto;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     cursor: move;
     text-align: center;
+    color: white;
 }
 
 .flowchart-operator .flowchart-operator-inputs-outputs {
@@ -154,7 +156,7 @@
 
 .flowchart-operator-function, .flowchart-operator-variable {
     position: absolute;
-    width: 10rem;
+    min-width: 10rem;
     border-radius: 8px;
     background: white;
     pointer-events: auto;
