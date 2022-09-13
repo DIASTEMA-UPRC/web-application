@@ -17,19 +17,23 @@ function reDraw() {
 
             let fromchildren = $(elemfrom).find('*');
             let tochildren = $(elemto).find('*');
-
+            
             // Find out if the line starts from a function or a variable
             if (fromchildren[0].classList.contains("flowchart-operator-function")) {
-                var nodefrom = fromchildren[17];
+                let obj = $(fromchildren).find('div.flowchart-operator-outputs')
+                var nodefrom = obj[0].firstElementChild.firstElementChild.children[1]
             } else {
                 var nodefrom = fromchildren[9];
             }
             
-            // Find out if the line ends in a Left or Right dot
+            // Find out if the line ends in a Left / Right or other dot
             if (to_type === "Left") {
                 var nodeto = tochildren[7];
             } else if (to_type === "Right"){
                 var nodeto = tochildren[11];
+            } else {
+                let type = $(tochildren).find('div:contains("'+to_type+'")');
+                nodeto = type[4].nextElementSibling;
             }
 
             line.remove();
