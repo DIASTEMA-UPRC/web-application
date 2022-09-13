@@ -19,7 +19,6 @@ const logoutRoute = require('./routes/logoutRoute');
 const dashboardRoute = require('./routes/dashboardRoute');
 const datasetsRoute = require('./routes/datasetsRoute');
 const pipelinesRoute = require('./routes/pipelinesRoute');
-const modellingRoute = require('./routes/modellingRoute');
 const functionsRoute = require('./routes/functionsRoute');
 const monitoringRoute = require('./routes/monitoringRoute');
 const visualizationRoute = require('./routes/visualizationRoute');
@@ -70,9 +69,6 @@ app.use(datasetsRoute);
 
 // Pipelines route ------
 app.use(pipelinesRoute);
-
-// Modelling route ------
-app.use(modellingRoute);
 
 // Functions route ------
 app.use(functionsRoute);
