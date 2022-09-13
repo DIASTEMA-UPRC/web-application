@@ -19,6 +19,8 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>
     <!-- MDB -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.css" rel="stylesheet"/>
+    <!-- Toastr -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
 </head>
 
@@ -141,7 +143,7 @@
                 <!-- Pipelines Created -->
                 <div id="row" class="row row-cols-md-4 g-5">
 
-                    <!-- Add Pipeline -->
+                    <!-- Add Function -->
                     <div class="col first-pipeline">
                         <button class="btn btn-primary" id="addFunction" type="button">
                             <i class='bx bx-plus-medical'></i>
@@ -192,7 +194,7 @@
                                             <i class='bx bx-edit' ></i>
                                             <span>Edit</span>
                                         </div>
-                                        <div class="card-footer-button">
+                                        <div class="card-footer-button" onclick="deleteFunction(this)">
                                             <i class='bx bx-trash' ></i>
                                             <span>Delete</span>
                                         </div>
@@ -217,8 +219,34 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.js"></script>
     <!-- JQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <!-- Toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script>
+
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": true,
+            "positionClass": "toast-bottom-right",
+            "preventDuplicates": false,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "3000",
+            "extendedTimeOut": "1500",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+
+        // Display toast after save and redirect
+        if(sessionStorage.getItem("dltfunc")=='1'){
+            toastr.info("Function was deleted successfully.", "Notification:");
+            sessionStorage.removeItem("dltfunc");
+        }
+
         const body = document.querySelector("body");
         const sidebarToggle = body.querySelector(".sidebar-toggle");
         const sidebar = body.querySelector("nav");
@@ -254,6 +282,26 @@
         if(true == $('#row').hasClass('row-cols-md-4') && $(window).width() <= 1000) {
             $('#row').removeClass('row-cols-md-4');
             $('#row').addClass('row-cols-md-2');
+        }
+
+        async function deleteFunction (element) {
+            let id = element.parentNode.parentNode.parentNode.children[1].children[0].children[3].children[1].lastChild.data;
+
+            try {
+
+                await fetch("/functions/delete", {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({id:id})
+		        });
+                
+            } catch (error) {
+                console.log(error);
+            }
+
+            sessionStorage.setItem("dltfunc", "1");
+
+            window.location.replace("/functions");
         }
     </script>
 
