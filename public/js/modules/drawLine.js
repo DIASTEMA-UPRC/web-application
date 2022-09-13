@@ -5,7 +5,7 @@ let dots = [];
 
 function drawLine (item) {
     count++;
-	console.log("Dots", dots);
+
 	// Set up a parent array
 	var parents = [];
 
@@ -22,7 +22,6 @@ function drawLine (item) {
 		dots.push(dot);
 		for (o in diagram) {
 			if (diagram[o]._id == id) {
-				// start = document.getElementById(diagram[o]._id);
 				start_id = diagram[o]._id;
 			}
 		}
@@ -45,11 +44,21 @@ function drawLine (item) {
 			return;
 		}
 
+		// Check for graph splitting
+		for (i in linesArray) {
+			if (linesArray[i].from == start_id) {
+				toastr.error("Nodes can only have one output.", "Notification:");
+				count = 0;
+				dots= [];
+				return;
+			}
+		}
+
 		// Check for math logic
 		for (const i in diagram) {
 			if (diagram[i]._id == end_id) {
 
-				if (checkTheMath(diagram[i],dots,count) === false) {
+				if (checkTheMath(diagram[i],dots) === false) {
 					dots = [];
                     count = 0;
 					return;
@@ -57,6 +66,7 @@ function drawLine (item) {
 			}
 		}
 
+		// Finally, draw the line
 		var line = new LeaderLine(
 			LeaderLine.pointAnchor(dots[0]),
 			LeaderLine.pointAnchor(dots[1]),
@@ -91,6 +101,8 @@ function drawLine (item) {
 					node["line_left_input"] = line.id;
 				} else if (line["to_type"] === "Right") {
 					node["line_right_input"] = line.id;
+				} else {
+					node.lines[parseInt(line["to_type"].split(" ")[0]) - 1] = line.id;
 				}
 			}
 		});
