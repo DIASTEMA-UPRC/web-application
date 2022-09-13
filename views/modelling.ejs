@@ -13,6 +13,7 @@
     integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- MDB -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.0.0/mdb.min.css" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
@@ -25,6 +26,7 @@
     <!-- Material Iconic -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Toastr -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
 </head>
@@ -68,8 +70,8 @@
                     </a> -->
                     <div class="d-flex align-items-center h-100">
                         <!-- <i class="fas fa-user-circle" alt="Notifications" style="color: #737373;font-size: 22px;"></i> -->
-                        <img src="<%= img %>" style="width: 30px;border-radius: 50%;">
                         <span class="pl-2 pr-2" style="text-transform: lowercase;font-size: 15px;"><%= user %></span>
+                        <img src="<%= img %>" style="width: 30px;border-radius: 25%;">
                     </div>
                     
                     <!-- <div id="profileDropdown" class="dropdown-menu dropdown-menu-right" aria-labelledby="profileDropdownMenu">
@@ -95,7 +97,7 @@
                             <span class="d-flex flex-row flex-shrink-0 align-items-center justify-content-center sidebar-icon">
                                 <span class="material-icons" style="font-size: 30px;margin-top: 10px;"> architecture </span>
                             </span>
-                            <span class="flex-grow-1 expanded-only font-weight-bold" style="margin: 12px 0 -5px 0;"><h3>Modeller</h3></span>
+                            <span class="flex-grow-1 expanded-only font-weight-bold" style="margin: 12px 0 -5px 0;"><h3>Tools</h3></span>
                         </div>
                     </div>
 
@@ -104,80 +106,173 @@
                     <!-- Sidebar middle section -->
                     <div class="d-flex flex-column flex-grow-1 sidebar-middle py-2">
 
-                        <!-- Tools -->
-                        <div class="d-flex flex-column flex-shrink-0 position-relative">
-                            <a href="#toolsmenu" data-toggle="collapse" aria-expanded="false" class="d-flex active flex-row flex-grow-1 align-items-center position-relative txt-dark sidebar-item dropdown-toggle" onclick="addClass(this)">
-                                <span class="d-flex flex-row flex-shrink-0 align-items-center justify-content-center sidebar-icon text-danger">
-                                    <span class="material-icons" style="color: var(--main);"> build </span>
-                                </span>
-                                <span class="flex-grow-1 expanded-only" style="font-size: large;">Tools</span>
-                            </a>
-                            <ul class="collapse show list-unstyled sidebar-sub-items m-0" id="toolsmenu">
-                                <!-- Data Ingestion -->
-                                <li>
-                                    <div id="tool" class="draggable_operator d-flex flex-row flex-grow-1 align-items-center txt-dark sidebar-item" style="width: 100%;">
-                                        <span class="d-flex flex-row flex-shrink-0 align-items-center justify-content-center sidebar-icon">
-                                            <span class="material-icons" style="color: #a53434;"> move_down </span>
-                                        </span>
-                                        <span class="flex-grow-1 expanded-only">Data Ingestion</span>
+                        <!-- Accordion -->
+                        <div class="accordion" id="accordionPanelsStayOpenExample">
+                            
+                            <!-- Operations -->
+                            <div class="accordion-item">
+
+                                <!-- Title -->
+                                <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                                    <i class="fa-solid fa-window-restore" style="color: var(--main);font-size: 20px;"></i>
+                                    <span>Operations</span>
+                                    </button>
+                                </h2>
+
+                                <!-- Content -->
+                                <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+                                    <div class="accordion-body">
+
+                                        <!-- Data Ingestion -->
+                                        <!-- <div id="tool" class="draggable_operator d-flex flex-row flex-grow-1 align-items-center txt-dark sidebar-item" style="width: 100%;"
+                                            data-color="#a53434"
+                                            data-inputs="0"
+                                            data-outputs="1"
+                                        >
+                                            <span class="d-flex flex-row flex-shrink-0 align-items-center justify-content-center sidebar-icon">
+                                                <span class="material-icons" style="color: #a53434;"> move_down </span>
+                                            </span>
+                                            <span class="flex-grow-1 expanded-only">Data Ingestion</span>
+                                        </div> -->
+
+                                        <!-- Data Load -->
+                                        <!-- <div id="tool" class="draggable_operator d-flex flex-row flex-grow-1 align-items-center txt-dark sidebar-item" style="width: 100%;"
+                                            data-color="#a53434"
+                                            data-inputs="1"
+                                            data-outputs="1"
+                                        >
+                                            <span class="d-flex flex-row flex-shrink-0 align-items-center justify-content-center sidebar-icon">
+                                                <span class="material-icons" style="color: #a53434;"> description </span>
+                                            </span>
+                                            <span class="flex-grow-1 expanded-only">Data Load</span>
+                                        </div> -->
+
+                                        <!-- Dataset -->
+                                        <div id="tool" class="draggable_operator d-flex flex-row flex-grow-1 align-items-center txt-dark sidebar-item" style="width: 100%;"
+                                            data-color="#a53434"
+                                            data-inputs="0"
+                                            data-outputs="1"
+                                            data-type="Dataset"
+                                        >
+                                            <span class="d-flex flex-row flex-shrink-0 align-items-center justify-content-center sidebar-icon">
+                                                <span class="material-icons" style="color: #a53434;"> description </span>
+                                            </span>
+                                            <span class="flex-grow-1 expanded-only">Dataset</span>
+                                        </div>
+                                        
+                                        <!-- Join Datasets -->
+                                        <div id="tool" class="draggable_operator d-flex flex-row flex-grow-1 align-items-center txt-dark sidebar-item" style="width: 100%;"
+                                            data-color="#a53434"
+                                            data-inputs="1"
+                                            data-outputs="1"
+                                            data-type="Join Datasets"
+                                        >
+                                            <span class="d-flex flex-row flex-shrink-0 align-items-center justify-content-center sidebar-icon">
+                                                <span class="material-icons" style="color: #a53434;"> join_full </span>
+                                            </span>
+                                            <span class="flex-grow-1 expanded-only">Join Datasets</span>
+                                        </div>
+                                        
+                                        <!-- Cleaning -->
+                                        <div id="tool" class="draggable_operator d-flex flex-row flex-grow-1 align-items-center txt-dark sidebar-item" style="width: 100%;"
+                                            data-color="#eeb63e"
+                                            data-inputs="1"
+                                            data-outputs="1"
+                                            data-type="Cleaning"
+                                        >
+                                            <span class="d-flex flex-row flex-shrink-0 align-items-center justify-content-center sidebar-icon">
+                                                <!-- <span class="material-icons" style="color: #eeb63e;"> cleaning_services </span> -->
+                                                <i class="fas fa-broom" style="color: #eeb63e;"></i>
+                                            </span>
+                                            <span class="flex-grow-1 expanded-only">Cleaning</span>
+                                        </div>
+                                        
+                                        <!-- Classification -->
+                                        <div id="tool" class="draggable_operator d-flex flex-row flex-grow-1 align-items-center txt-dark sidebar-item" style="width: 100%;"
+                                            data-color="#eeb63e"
+                                            data-inputs="1"
+                                            data-outputs="1"
+                                            data-type="Classification"
+                                        >
+                                            <span class="d-flex flex-row flex-shrink-0 align-items-center justify-content-center sidebar-icon">
+                                                <span class="material-icons" style="color: #eeb63e;"> donut_small </span>
+                                            </span>
+                                            <span class="flex-grow-1 expanded-only">Classification</span>
+                                        </div>
+                                        
+                                        <!-- Regression -->
+                                        <div id="tool" class="draggable_operator d-flex flex-row flex-grow-1 align-items-center txt-dark sidebar-item" style="width: 100%;"
+                                            data-color="#eeb63e"
+                                            data-inputs="1"
+                                            data-outputs="1"
+                                            data-type="Regression"
+                                        >
+                                            <span class="d-flex flex-row flex-shrink-0 align-items-center justify-content-center sidebar-icon">
+                                                <span class="material-icons" style="color: #eeb63e;"> scatter_plot </span>
+                                            </span>
+                                            <span class="flex-grow-1 expanded-only">Regression</span>
+                                        </div>
+                                        
+                                        <!-- Data Sink -->
+                                        <div id="tool" class="draggable_operator d-flex flex-row flex-grow-1 align-items-center txt-dark sidebar-item" style="width: 100%;"
+                                            data-color="#5f8b4d"
+                                            data-inputs="1"
+                                            data-outputs="0"
+                                            data-type="Data Sink"
+                                        >
+                                            <span class="d-flex flex-row flex-shrink-0 align-items-center justify-content-center sidebar-icon">
+                                                <span class="material-icons" style="color: #5f8b4d;"> archive </span>
+                                            </span>
+                                            <span class="flex-grow-1 expanded-only">Data Sink</span>
+                                        </div>
+
                                     </div>
-                                </li>
-                                <!-- Join Datasets -->
-                                <li>
-                                    <div id="tool" class="draggable_operator d-flex flex-row flex-grow-1 align-items-center txt-dark sidebar-item" style="width: 100%;">
+                                </div>
+
+                            </div>
+
+                            <!-- Saved Functions -->
+                            <div class="accordion-item">
+                                
+                                <!-- Title -->
+                                <h2 class="accordion-header">
+                                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+                                    <i class="fa-solid fa-bookmark" style="color: var(--main);font-size: 20px;"></i>
+                                    <span>Saved Functions</span>
+                                  </button>
+                                </h2>
+
+                                <!-- Content -->
+                                <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
+                                  <div class="accordion-body">
+                                    
+                                    <% for (var func of functions) {%>
+                                        <div id="tool" class="draggable_operator d-flex flex-row flex-grow-1 align-items-center txt-dark sidebar-item" style="width: 100%;"
+                                            data-color="<%= func.color %>"
+                                            data-inputs="<%= func.args.length %>"
+                                            data-inptypes=
+                                            "
+                                                <% for (var arg in func.args) { %>
+                                                    <%= func.args[arg].type+',' %> 
+                                                <% } %>
+                                            "
+                                            data-outputs="1"
+                                            data-outputtype="<%= func.output_type %>"
+                                            data-type="Saved Function"
+                                            data-name="<%= func.name %>"
+                                        >
                                         <span class="d-flex flex-row flex-shrink-0 align-items-center justify-content-center sidebar-icon">
-                                            <span class="material-icons" style="color: #a53434;"> join_full </span>
+                                            <i class="fa-solid fa-floppy-disk" style="font-size: 20px;color: <%= func.color %> ;"></i>
                                         </span>
-                                        <span class="flex-grow-1 expanded-only">Join Datasets</span>
+                                        <span class="flex-grow-1 expanded-only"><%= func.name %></span>
                                     </div>
-                                </li>
-                                <!-- Data Load -->
-                                <li>
-                                    <div id="tool" class="draggable_operator d-flex flex-row flex-grow-1 align-items-center txt-dark sidebar-item" style="width: 100%;">
-                                        <span class="d-flex flex-row flex-shrink-0 align-items-center justify-content-center sidebar-icon">
-                                            <span class="material-icons" style="color: #a53434;"> description </span>
-                                        </span>
-                                        <span class="flex-grow-1 expanded-only">Data Load</span>
-                                    </div>
-                                </li>
-                                <!-- Cleaning -->
-                                <li>
-                                    <div id="tool" class="draggable_operator d-flex flex-row flex-grow-1 align-items-center txt-dark sidebar-item" style="width: 100%;">
-                                        <span class="d-flex flex-row flex-shrink-0 align-items-center justify-content-center sidebar-icon">
-                                            <!-- <span class="material-icons" style="color: #eeb63e;"> cleaning_services </span> -->
-                                            <i class="fas fa-broom" style="color: #eeb63e;"></i>
-                                        </span>
-                                        <span class="flex-grow-1 expanded-only">Cleaning</span>
-                                    </div>
-                                </li>
-                                <!-- Classification -->
-                                <li>
-                                    <div id="tool" class="draggable_operator d-flex flex-row flex-grow-1 align-items-center txt-dark sidebar-item" style="width: 100%;">
-                                        <span class="d-flex flex-row flex-shrink-0 align-items-center justify-content-center sidebar-icon">
-                                            <span class="material-icons" style="color: #eeb63e;"> donut_small </span>
-                                        </span>
-                                        <span class="flex-grow-1 expanded-only">Classification</span>
-                                    </div>
-                                </li>
-                                <!-- Regression -->
-                                <li>
-                                    <div id="tool" class="draggable_operator d-flex flex-row flex-grow-1 align-items-center txt-dark sidebar-item" style="width: 100%;">
-                                        <span class="d-flex flex-row flex-shrink-0 align-items-center justify-content-center sidebar-icon">
-                                            <span class="material-icons" style="color: #eeb63e;"> scatter_plot </span>
-                                        </span>
-                                        <span class="flex-grow-1 expanded-only">Regression</span>
-                                    </div>
-                                </li>
-                                <!-- Visualization -->
-                                <li>
-                                    <div id="tool" class="draggable_operator d-flex flex-row flex-grow-1 align-items-center txt-dark sidebar-item" style="width: 100%;">
-                                        <span class="d-flex flex-row flex-shrink-0 align-items-center justify-content-center sidebar-icon">
-                                            <span class="material-icons" style="color: #5f8b4d;"> archive </span>
-                                        </span>
-                                        <span class="flex-grow-1 expanded-only">Data Sink</span>
-                                    </div>
-                                </li>
-                            </ul>
+                                    <% }; %>
+
+                                  </div>
+                                </div>
+                            </div>
+
                         </div>
 
                         <!-- Load Data -->
@@ -211,9 +306,9 @@
                             </span>
                             <span class="expanded-only">Back to dashboard</span>
                         </div>
-                        <div id="sidebarCollapse" class="d-flex flex-row flex-shrink-0 align-items-center justify-content-center sidebar-icon py-2" onclick="minimize()">
+                        <!-- <div id="sidebarCollapse" class="d-flex flex-row flex-shrink-0 align-items-center justify-content-center sidebar-icon py-2" onclick="minimize()">
                             <i class="zmdi zmdi-chevron-left zmdi-hc-2x"></i>
-                        </div>
+                        </div> -->
                     </div>
 
                 </div>
@@ -224,7 +319,7 @@
                 <!-- Header -->
                 <div class="row" id="canvas" style="border-bottom: 1px solid #e2e2e2;margin-top: 15px;">
                     <div class="col-md-7" style="left: 15px;">
-                        <h3>Pipeline</h3>
+                        <h3>Pipeline Modeller</h3>
                     </div>
                     <!-- Buttons -->
                     <div class="col-md-5">
@@ -249,7 +344,7 @@
                                 <div class="modal-dialog   modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Store pipeline for later use</h5>
+                                            <h5 class="modal-title" id="exampleModalLabel">Save pipeline for later use</h5>
                                             <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body" style="margin-top: 10px;margin-bottom: 10px;">
@@ -270,9 +365,25 @@
 
                             <!-- Download Graph -->
                             <div class="inline">
-                                <button type="button" class="set_data btn btn-primary" id="download_graph" data-mdb-ripple-duration="0s">
+                                <button type="button" class="set_data btn btn-primary" id="download_data" data-mdb-toggle="modal" data-mdb-target="#downloadGraphModal" data-mdb-ripple-duration="0s">
                                     <i class="fas fa-download" style="font-size: 15px;"></i>
                                 </button>
+                            </div>
+
+                            <!-- Download Graph Modal -->
+                            <div class="modal top fade" id="downloadGraphModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="true" data-mdb-keyboard="true">
+                                <div class="modal-dialog   modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Please fill the information below</h5>
+                                            <button id="little_x" type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close" style="margin-right: 5px;"></button>
+                                        </div>
+                                        <div class="modal-body" style="margin-top: 10px;display: flex;">
+                                            <input class="form-control" id="download_graph_input" type="text" placeholder="Provide a function name" aria-label="default input example" style="display: inline-block;margin-right: 20px">
+                                            <button id="download_graph" type="button" class="btn btn-primary" style="display:inline-block;">Download</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -294,18 +405,18 @@
 
                     <div style="position:absolute;display: flex;right: 20px;bottom: 5%;">
                         <!-- Zoom -->
-                        <div class="inline">
+                        <!-- <div class="inline">
                             <button id="zoomcanvas" type="button" class="btn btn-primary" style="padding:4px 7px 0px 7px;margin: 0;" data-mdb-ripple-duration="0s">
                                 <span class="material-icons" style="color: white;">zoom_in</span>
                             </button>
-                        </div>
+                        </div> -->
 
                         <!-- Unzoom -->
-                        <div class="inline">
+                        <!-- <div class="inline">
                             <button id="unzoomcanvas" type="button" class="btn btn-primary" style="padding:4px 7px 0px 7px;margin: 0;" data-mdb-ripple-duration="0s">
                                 <span class="material-icons" style="color: white">zoom_out</span>
                             </button>
-                        </div>
+                        </div> -->
                     </div>
 
                 </footer>
@@ -320,7 +431,7 @@
     <!-- Popper.JS -->
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
     <!-- Toastr / Socket.io -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.min.js" integrity="sha512-2hIBfT6wur46uR5ayhmyICuA8s15BvJhagB+jZImgktQAy832P7EuY8njl1HGp4YS0Sk8DXRo9dByhvD3jfDxA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -348,52 +459,52 @@
 
         // sidebarCollapse event listener
         sidebarCollapse.on("click", () => {
-        sidebarContent.toggleClass("expanded");
-        sidebarCollapse.toggleClass("rotated-icon");
+            sidebarContent.toggleClass("expanded");
+            sidebarCollapse.toggleClass("rotated-icon");
         });
 
         // sidebarToggle event listener
         sidebarToggle.on("click", () => {
-        var sidebarContainerMargin = parseInt(sidebarContainer.css("marginLeft").replace('px', ''));
-        (sidebarContainerMargin == 0) ? closeSidebar() : openSidebar();
+            var sidebarContainerMargin = parseInt(sidebarContainer.css("marginLeft").replace('px', ''));
+            (sidebarContainerMargin == 0) ? closeSidebar() : openSidebar();
         });
 
         // Opens sidebar
         function openSidebar() {
-        sidebarContainer.css('margin-left', 0);
-        mainContainer.css('left', '48px');
+            sidebarContainer.css('margin-left', 0);
+            mainContainer.css('left', '48px');
         }
 
         // Closes sidebar
         function closeSidebar() {
-        sidebarContainer.css('margin-left', - sidebarContainer.width());
-        mainContainer.css('left', 0);
-        // sidebarToggle.removeClass('open');
+            sidebarContainer.css('margin-left', - sidebarContainer.width());
+            mainContainer.css('left', 0);
+            // sidebarToggle.removeClass('open');
         }
 
         // Sets correct styling based on screen width
         function responsive(mql) {
-        if (mql.matches) { // Small screen
-            addInlineStyling();
-            closeSidebar();
-        } else { // Large screen
-            removeInlineStyling();
-            openSidebar();
-        }
+            if (mql.matches) { // Small screen
+                addInlineStyling();
+                closeSidebar();
+            } else { // Large screen
+                removeInlineStyling();
+                openSidebar();
+            }
         }
 
         // Adds styling for main container
         function addInlineStyling() {
-        mainContainer.css('position', 'absolute');
-        mainContainer.css('bottom', 0);
-        mainContainer.css('right', 0);
-        mainContainer.css('top', '48px');
-        if (sidebarContainer.css('margin-left') == '0px') {
-            mainContainer.css('left', '48px');
-        }
-        else {
-            mainContainer.css('left', '0px');
-        }
+            mainContainer.css('position', 'absolute');
+            mainContainer.css('bottom', 0);
+            mainContainer.css('right', 0);
+            mainContainer.css('top', '48px');
+            if (sidebarContainer.css('margin-left') == '0px') {
+                mainContainer.css('left', '48px');
+            }
+            else {
+                mainContainer.css('left', '0px');
+            }
 
         }
 
