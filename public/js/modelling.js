@@ -204,13 +204,13 @@ $(document).ready(function() {
 	}
 
 	// Generate data
-	var data;
+	//var data;
 	async function generateData() {
 
 		const d = new Date();
 
 		// Main json file template ---------------------------------------
-		data = {
+		let data = {
 			"analysis-datetime" :"2021-10-06 02:55:45:796", //weird bug testing
 			"diastema-token":"diastema-key",
 			"analysis-id": $("#analysisid").val(),
@@ -394,15 +394,17 @@ $(document).ready(function() {
 		} else {
 			data.automodel = false;
 		}
+
+		return data;
 	}
 
 	// Save graph to application
-	$('#save_graph').click(()=>{
+	$('#save_graph').click( async ()=>{
 
 		if ($("#save_graph_input").val() === "") {
 			toastr.error("Please give a name to your analysis graph.", "Notification:");
 		} else {
-			generateData();
+			let data = await generateData();
 		
 			data['analysis-name'] = $("#save_graph_input").val();
 
@@ -481,9 +483,9 @@ $(document).ready(function() {
 
 
 	// Deploy graph
-	$('#deploy_graph').click(()=>{
+	$('#deploy_graph').click(async ()=>{
 		if (validateFields()) {
-			generateData();
+			let data = await generateData();
 
 			// Send data to backend
 			fetch("/messages", {
@@ -501,14 +503,14 @@ $(document).ready(function() {
 	});
 
 	// Download graph
-	$('#download_graph').click(() => {
+	$('#download_graph').click( async () => {
 
 		if ($("#download_graph_input").val() === "") {
 			toastr.error("Please give a name to your analysis graph.", "Notification:");
 		} else {
 			if (validateFields()) {
 
-				generateData();
+				let data = await generateData();
 				console.log(data);
 				download(JSON.stringify(data, null, 2), "data.json", "text/plain");
 
