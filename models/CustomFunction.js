@@ -6,7 +6,7 @@ const functionSchema = new mongoose.Schema ({
     output_type: String,
     color:String,
     args: Object,
-    expressions: Object,
+    expression: Object,
     metadata: Object,
     nodes: Object,
     connections: Object
