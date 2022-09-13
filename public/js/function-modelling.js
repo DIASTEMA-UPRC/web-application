@@ -57,7 +57,7 @@ socket.on('Modeller', (update) => {
 
 // Display toast after save and redirect
 if(sessionStorage.getItem("showmsg")=='1'){
-	toastr.success("Graph was saved successfully.", "Notification:");
+	toastr.info("Function was saved successfully.", "Notification:");
 	sessionStorage.removeItem("showmsg");
 }
 
@@ -70,7 +70,7 @@ $(".draggable_operator").draggable({
 
 // actions when dropped
 canvas.droppable({
-	drop:function (event,ui) {  
+	drop:function (event,ui) {
 
 		if (ui.helper[0].children[1] === undefined) {
 			return;
@@ -88,6 +88,23 @@ canvas.droppable({
 			color:dom.dataset.color
 		}
 		
+		// Find cutom function input types
+		if (node.type === "Saved-Function") {
+			node.inptypes = [];
+			let types = dom.dataset.inptypes.split(",");
+			types.forEach((type,index)=>{
+				type.split(" ").forEach((t,i)=>{
+					if (t !== "") {
+						if (t!=="\n") {
+							node.inptypes.push(t);
+						}
+					}
+				})
+			})
+
+			node.outputtype = dom.dataset.outputtype;
+		}
+
 		// Adjust position of the node
 		node.position.top +=25;
 
@@ -97,7 +114,7 @@ canvas.droppable({
 });
 
 // Save graph to application
-$('#save_graph').click(()=>{
+$('#save_graph').click(async ()=>{
 
 	if ($("#save_graph_input").val() === "") {
 		toastr.error("Please give a name to your function.", "Notification:");
@@ -107,43 +124,55 @@ $('#save_graph').click(()=>{
 
 		let data = generateData(name);
 
-		fetch("/functions/save", {
-			method: 'POST',
-			headers: {'Content-Type': 'application/json'},
-			body: JSON.stringify(data)
-		})
-		.then(dataWrappedByPromise => data)
-		.then(data => {
-			$("#save_graph_input").val("")
-			$('#saveGraphModal').modal('hide');
+		// Save complex function
+		if (data.metadata["function-type"] === "complex") {
 
-			sessionStorage.setItem("showmsg", "1");
+			try {
+				var resp = await fetch("/messages", {
+					method: 'POST',
+					headers: {'Content-Type': 'application/json'},
+					body: JSON.stringify({message:"save-complex", info:data})
+				});
+				var response = await resp.json();
+			} catch (error) {
+				console.log(error);	
+			}
 
-			window.location.replace("/function-modelling");
-		})
+			try {
+				await fetch("/functions/save", {
+					method: 'POST',
+					headers: {'Content-Type': 'application/json'},
+					body: JSON.stringify(response)
+				})	
+			} catch (error) {
+				console.log(error);
+			}
 
-		
+		// Save simple function
+		} else {
+			try {
+				await fetch("/functions/save", {
+					method: 'POST',
+					headers: {'Content-Type': 'application/json'},
+					body: JSON.stringify(data)
+				})	
+			} catch (error) {
+				console.log(error);
+			}
+		}
+
+		$("#save_graph_input").val("")
+		$('#saveGraphModal').modal('hide');
+
+		sessionStorage.setItem("showmsg", "1");
+
+		window.location.replace("/function-modelling");
 	}
 });
 
 // Clear graph
 $('#deploy_graph').click(()=>{
-	if (validateFields()) {
-		generateData();
-
-		// Send data to backend
-		fetch("/messages", {
-			method: 'POST',
-			headers: {'Content-Type': 'application/json'},
-			body: JSON.stringify({message:"send-to-orchestrator", info:data})
-		})
-		.then(res => {
-			console.log("Data sent to backend", res);
-		});
-
-	} else {
-		toastr.error("Please fill all the requied fields.", "Notification:");
-	}
+	window.location.reload();
 });
 
 // Download graph
@@ -223,56 +252,6 @@ $('#dashb').click(()=> {
 	let url = window.location.origin;
 	window.location.replace(url+"/functions");
 });
-
-function editColumn(element) {
-	// Set up a parent array
-	let parents = [];
-
-	// Push each parent element to the array
-	for ( ; element && element !== document; element = element.parentNode ) {
-		parents.push(element);
-	}
-	let elemid = parents[2].id;
-
-	// Click field to add field property (column) to node object
-	$('#'+elemid+'  input[name="field"]').keyup(function(){
-		for (s in diagram) {
-			if (diagram[s]._id == elemid) {
-				diagram[s].field = $(this).val();
-				// Cleaning service max shrink validation check ---------------------------- //
-				if (diagram[s].property === "Cleaning") {
-					if (isNaN($(this).val())) {
-						toastr.error("Please enter a numeric value between 0 and 1.", "Notification:");
-						$(this).val("")
-					}
-					if ($(this).val() < 0 || $(this).val()> 1) {
-						toastr.error("Please enter a value between 0 and 1.", "Notification:");
-						$(this).val("")
-					}
-				}
-				// ------------------------------------------------------------------------ //
-			}
-		}
-	});
-
-	// Click field to add link property to node object
-	$('#'+elemid+'  input[name="link"]').keyup(function(){
-		for (s in diagram) {
-			if (diagram[s]._id == elemid) {
-				diagram[s].link = $(this).val();
-			}
-		}
-	});
-
-	// Click field to add token property to node object
-	$('#'+elemid+'  input[name="token"]').keyup(function(){
-		for (s in diagram) {
-			if (diagram[s]._id == elemid) {
-				diagram[s].token = $(this).val();
-			}
-		}
-	});
-}
 
 function minimize() {
 	$("#delete_node").toggleClass('resizeDel');
