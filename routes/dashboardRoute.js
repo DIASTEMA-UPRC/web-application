@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 const CustomFunction = require("../models/CustomFunction");
+const Pipeline = require("../models/Graph");
+const Dataset = require('../models/Dataset');
 
 router.route("/dashboard")
     .get(async (req,res) => {
@@ -9,7 +11,20 @@ router.route("/dashboard")
         // Get all functions from database
         try {
             var functions = await CustomFunction.find();
-            var functions_length = functions.length;
+        } catch (err) {
+            console.log(err);
+        }
+
+        // Get all pipelines from database
+        try {
+            var pipelines = await Pipeline.find();
+        } catch (err) {
+            console.log(err);
+        }
+
+        // Get all datasets from database
+        try {
+            var datasets = await Dataset.find();
         } catch (err) {
             console.log(err);
         }
@@ -24,8 +39,9 @@ router.route("/dashboard")
             org:organization, 
             prop:property, 
             img:image,
+            pipelines:pipelines,
             functions:functions,
-            functions_length:functions_length
+            datasets:datasets
         });
     })
 
