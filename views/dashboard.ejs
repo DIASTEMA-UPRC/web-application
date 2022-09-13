@@ -154,7 +154,7 @@
                             <div class="inner-card-padding">
                                 <div class="card-body">
                                 
-                                    <p class="card-text" style="font-size: 60px;">0</p>
+                                    <p class="card-text" style="font-size: 60px;"><%= datasets.length %></p>
                                 </div>
                             </div>
                             
@@ -174,7 +174,7 @@
                             <div class="inner-card-padding">
                                 <div class="card-body">
                                 
-                                    <p class="card-text" style="font-size: 60px;">0</p>
+                                    <p class="card-text" style="font-size: 60px;"><%= pipelines.length %></p>
                                 </div>
                             </div>
                             
@@ -194,7 +194,7 @@
                             <div class="inner-card-padding">
                                 <div class="card-body">
                                 
-                                    <p class="card-text" style="font-size: 60px;"><%= functions_length %></p>
+                                    <p class="card-text" style="font-size: 60px;"><%= functions.length %></p>
                                 </div>
                             </div>
                             
@@ -241,15 +241,18 @@
                                 <div class="card-body" style="height: inherit;">
 
                                     <div class="card-inner">
-                                        <div class="card inner-card">
-                                            <div class="card-head" style="padding:0 24px 10px 24px">
-                                                <i class='bx bx-code' ></i>
-                                                <h5 class="card-title">Name</h5>
+                                        <% for (var pipeline of pipelines) {%>
+                                            
+                                            <div class="card inner-card">
+                                                <div class="card-head" style="padding:0 24px 10px 24px">
+                                                    <i class='bx bx-code' ></i>
+                                                    <h5 class="card-title"><%= pipeline.name %></h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                                </div>
                                             </div>
-                                            <div class="card-body">
-                                                <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                            </div>
-                                        </div>
+                                        <%}%>
                                     </div>
                                     
                                 </div>
@@ -273,22 +276,28 @@
 
                                 <div class="card-body" style="height: inherit;">
 
-                                <div class="card-inner">
-                                    <% for (var func of functions) {%>
-                                        
-                                        <div class="card inner-card">
-                                            <div class="card-head" style="padding:0 24px 10px 24px">
-                                                <i class='bx bx-code' ></i>
-                                                <h5 class="card-title"><%= func.name %></h5>
-                                            </div>
-                                            <div class="card-body">
-                                                <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                            </div>
-                                        </div>
-                                    <%}%>
-                                </div>
+                                    <div class="card-inner">
+                                        <% for (var func of functions) {%>
+                                            
+                                            <div class="card inner-card">
+                                                <div class="card-head" style="padding:0 24px 10px 24px">
+                                                    <i class='bx bx-code' ></i>
+                                                    <h5 class="card-title"><%= func.name %></h5>
+                                                </div>
+                                                <div class="card-body">
 
-                                    
+                                                    <div class="pipeline-line" style="margin-top:15px">
+                                                        <i class='bx bxs-pin' style="color: var(--primary-color);"></i>
+                                                        <span style="margin-right:25px"><b>Arguments: </b><%= func.args.length %></span>
+
+                                                        <i class='bx bxs-pin' style="color: var(--primary-color);"></i>
+                                                        <span style="margin-right:25px"><b>Output Type: </b><%= func.output_type %></span>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        <%}%>
+                                    </div>
                                     
                                 </div>
 
