@@ -117,7 +117,7 @@
                                 <h2 class="accordion-header" id="panelsStayOpen-headingOne">
                                   <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
                                     <i class="fa-solid fa-calculator" style="color: var(--main);font-size: 20px;"></i>
-                                    <span>Basic Functions</span>
+                                    <span>Operators</span>
                                   </button>
                                 </h2>
 
@@ -420,7 +420,7 @@
                                         <span class="d-flex flex-row flex-shrink-0 align-items-center justify-content-center sidebar-icon">
                                             <span style="color: #272727;font-weight:700;"> int </span>
                                         </span>
-                                        <span class="flex-grow-1 expanded-only">Int Column</span>
+                                        <span class="flex-grow-1 expanded-only">Integer Column</span>
                                     </div>
                                     
                                     <!-- Float -->
@@ -471,8 +471,15 @@
                                     <% for (var func of functions) {%>
                                         <div id="tool" class="draggable_operator d-flex flex-row flex-grow-1 align-items-center txt-dark sidebar-item" style="width: 100%;"
                                             data-color="<%= func.color %>"
-                                            data-inputs="1"
+                                            data-inputs="<%= func.args.length %>"
+                                            data-inptypes=
+                                            "
+                                                <% for (var arg in func.args) { %>
+                                                    <%= func.args[arg].type+',' %> 
+                                                <% } %>
+                                            "
                                             data-outputs="1"
+                                            data-outputtype="<%= func.output_type %>"
                                             data-type="Saved-Function"
                                         >
                                         <span class="d-flex flex-row flex-shrink-0 align-items-center justify-content-center sidebar-icon">
@@ -516,7 +523,7 @@
                 <!-- Header -->
                 <div class="row" id="canvas" style="border-bottom: 1px solid #e2e2e2;margin-top: 15px;">
                     <div class="col-md-7" style="left: 15px;">
-                        <h3>Function</h3>
+                        <h3>Function Modelling</h3>
                     </div>
 
                     <!-- Buttons -->
