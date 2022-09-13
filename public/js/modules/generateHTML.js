@@ -17,12 +17,21 @@ function generateHTML(node) {
             
             // Inputs
             for (let i = 0; i < node.inputs; i++) {
+                if (node.type == "Saved-Function") {
+                    nodeDOM += `
+                    <div class="flowchart-operator-connector">
+                        <div class="flowchart-operator-connector-label">${i+1} (${node.inptypes[i]})</div>
+                        <div class="flowchart-operator-connector-arrow" onclick="drawLine(this)"></div>
+                        <div class="flowchart-operator-connector-small-arrow"></div>
+                    </div>`;    
+                } else {
                 nodeDOM += `
                         <div class="flowchart-operator-connector">
                             <div class="flowchart-operator-connector-label">${i==0 ? "Left" : "Right"}</div>
                             <div class="flowchart-operator-connector-arrow" onclick="drawLine(this)"></div>
                             <div class="flowchart-operator-connector-small-arrow"></div>
                         </div>`;
+                }
             }
 
             nodeDOM += `
@@ -33,12 +42,21 @@ function generateHTML(node) {
 
             // Outputs
             for (let i = 0; i < node.outputs; i++) {
+                if (node.type == "Saved-Function") {
+                    nodeDOM += `
+                        <div class="flowchart-operator-connector">
+                            <div class="flowchart-operator-connector-label">${node.outputtype}</div>
+                            <div class="flowchart-operator-connector-arrow" onclick="drawLine(this)"></div>
+                            <div class="flowchart-operator-connector-small-arrow"></div>
+                        </div>`;
+                } else {
                 nodeDOM += `
                         <div class="flowchart-operator-connector">
                             <div class="flowchart-operator-connector-label">Output</div>
                             <div class="flowchart-operator-connector-arrow" onclick="drawLine(this)"></div>
                             <div class="flowchart-operator-connector-small-arrow"></div>
                         </div>`;
+                }
             }
 
             nodeDOM += `
