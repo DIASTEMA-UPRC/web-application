@@ -3,7 +3,7 @@ const router = express.Router();
 const fetch = require('node-fetch');
 
 const Graph = require("../models/Graph");
-const {ORCHESTRATOR_URL} = require("../config/config");
+const {ORCHESTRATOR_URL, NORMALIZATION_URL} = require("../config/config");
 
 router.route("/messages")
     .post((req,res) => {
@@ -16,8 +16,22 @@ router.route("/messages")
                 res.sendStatus(200);
                 break;
 
+            case "save-complex":
+
+                console.log(NORMALIZATION_URL);
+
+                fetch(NORMALIZATION_URL, {
+                    method: "POST",
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data.info)
+                }).then(res => {
+                    return res.json();
+                }).then((result)=> {
+                    res.send(result);
+                }).catch(error => console.warn(error));
+                break;
+
             case "send-to-orchestrator":
-                console.log("[INFO] Backend got the data");
 
                 fetch(ORCHESTRATOR_URL, {
                     method: "POST",
