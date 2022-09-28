@@ -219,7 +219,7 @@ $(document).ready(function() {
 		let data = {
 			"diastema-token":"diastema-key",
 			"analysis-id": $("#analysisid").val(),
-			"database-id": $("#org").val(),
+			"database-id": $("#org").val().toLowerCase(),
 			"jobs":[],
 			"metadata":{
 				"user": $("#user").val(),
