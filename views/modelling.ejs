@@ -104,7 +104,7 @@
                     <div class="separator flex-row flex-shrink-0"></div>
 
                     <!-- Sidebar middle section -->
-                    <div class="d-flex flex-column flex-grow-1 sidebar-middle py-2">
+                    <div class="d-flex flex-column flex-grow-1 sidebar-middle py-2" style="height: 1px;overflow-y:auto;scrollbar-width:thin;">
 
                         <!-- Accordion -->
                         <div class="accordion" id="accordionPanelsStayOpenExample">
@@ -123,30 +123,6 @@
                                 <!-- Content -->
                                 <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
                                     <div class="accordion-body">
-
-                                        <!-- Data Ingestion -->
-                                        <!-- <div id="tool" class="draggable_operator d-flex flex-row flex-grow-1 align-items-center txt-dark sidebar-item" style="width: 100%;"
-                                            data-color="#a53434"
-                                            data-inputs="0"
-                                            data-outputs="1"
-                                        >
-                                            <span class="d-flex flex-row flex-shrink-0 align-items-center justify-content-center sidebar-icon">
-                                                <span class="material-icons" style="color: #a53434;"> move_down </span>
-                                            </span>
-                                            <span class="flex-grow-1 expanded-only">Data Ingestion</span>
-                                        </div> -->
-
-                                        <!-- Data Load -->
-                                        <!-- <div id="tool" class="draggable_operator d-flex flex-row flex-grow-1 align-items-center txt-dark sidebar-item" style="width: 100%;"
-                                            data-color="#a53434"
-                                            data-inputs="1"
-                                            data-outputs="1"
-                                        >
-                                            <span class="d-flex flex-row flex-shrink-0 align-items-center justify-content-center sidebar-icon">
-                                                <span class="material-icons" style="color: #a53434;"> description </span>
-                                            </span>
-                                            <span class="flex-grow-1 expanded-only">Data Load</span>
-                                        </div> -->
 
                                         <!-- Dataset -->
                                         <div id="tool" class="draggable_operator d-flex flex-row flex-grow-1 align-items-center txt-dark sidebar-item" style="width: 100%;"
@@ -345,18 +321,20 @@
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="exampleModalLabel">Save pipeline for later use</h5>
-                                            <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                                            <button id="little_x" type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close" style="margin-right: 5px;"></button>
                                         </div>
-                                        <div class="modal-body" style="margin-top: 10px;margin-bottom: 10px;">
-                                            <input class="form-control" id="save_graph_input" type="text" placeholder="Provide a pipeline label" aria-label="default input example">
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button id="save_graph" type="button" class="btn btn-primary">Save</button>
+                                        <div class="modal-body" style="margin-top: 10px;display: flex;">
+                                            <input class="form-control" id="save_graph_input" type="text" placeholder="Provide a pipeline name" aria-label="default input example" style="display: inline-block;">
+                                            <button id="save_graph" type="button" class="btn btn-primary" style="display:inline-block;margin-left: 20px;">Save</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-  
+
+                            <!-- Validate Graph -->
+                            <div class="inline">
+                                <button type="button" class="set_data btn btn-primary" id="validate_graph" data-mdb-ripple-duration="0s">Validate</button>
+                            </div>
 
                             <!-- Deploy Graph -->
                             <div class="inline">
@@ -385,11 +363,13 @@
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
 
                     <input type="hidden" id="user" value="<%=user%>">
                     <input type="hidden" id="analysisid" value="<%=id%>">
+                    <input type="hidden" id="org" value="<%=org%>">
 
                 </div>
 
