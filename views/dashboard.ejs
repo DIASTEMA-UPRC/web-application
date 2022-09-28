@@ -249,7 +249,22 @@
                                                     <h5 class="card-title"><%= pipeline.name %></h5>
                                                 </div>
                                                 <div class="card-body">
-                                                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                                    
+                                                    <div class="pipeline-line" style="margin-top:15px">
+                                                        <span style="margin-right:20px"><b>Jobs: </b><%= pipeline.jobs.length %></span>
+
+                                                        <% let sets = [...new Set(pipeline.metadata.datasets)] %>
+
+                                                        <span style="margin-right:14px"><b>Datasets: </b>
+
+                                                        <% for (var set of sets) {%>
+                                                            <span style="margin-right:6px"><%= set %> </span>
+                                                        <% } %>
+                                                        </span>
+
+                                                        <span style="margin-right:20px"><b>Date: </b><%= pipeline.metadata["analysis-date"] %></span>
+                                                    </div>
+
                                                 </div>
                                             </div>
                                         <%}%>
@@ -287,11 +302,11 @@
                                                 <div class="card-body">
 
                                                     <div class="pipeline-line" style="margin-top:15px">
-                                                        <i class='bx bxs-pin' style="color: var(--primary-color);"></i>
-                                                        <span style="margin-right:25px"><b>Arguments: </b><%= func.args.length %></span>
+                                                        <span style="margin-right:20px"><b>Arguments: </b><%= func.args.length %></span>
 
-                                                        <i class='bx bxs-pin' style="color: var(--primary-color);"></i>
-                                                        <span style="margin-right:25px"><b>Output Type: </b><%= func.output_type %></span>
+                                                        <span style="margin-right:20px"><b>Output Type: </b><%= func.output_type %></span>
+
+                                                        <span style="margin-right:20px"><b>Date: </b><%= func.metadata["function-date"] %></span>
                                                     </div>
 
                                                 </div>
