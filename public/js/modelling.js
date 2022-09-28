@@ -2,6 +2,7 @@ var diagram = [];
 var linesArray = [];
 
 $("#delete_node").hide();
+$("#deploy_graph").attr("disabled", true);
 
 // Send notification when receiving message from orchestrator //
 const socket = io.connect();
@@ -61,6 +62,12 @@ $('#navbarNotification').click(() => {
 });
 // --------------------------------------------------------- //
 
+// Display toast after save and redirect
+if(sessionStorage.getItem("showmsg")=='1'){
+	toastr.info("Pipeline was saved successfully.", "Notification:");
+	sessionStorage.removeItem("showmsg");
+}
+
 
 $(document).ready(function() {
 
@@ -74,7 +81,7 @@ $(document).ready(function() {
 	// actions when dropped
 	canvas.droppable({
 		drop:function (event,ui) {
-			
+
 			if (ui.helper[0].children[1] === undefined) {
 				return;
 			}
@@ -131,7 +138,7 @@ $(document).ready(function() {
 							}
 						})
 					})
-	
+
 					node.outputtype = dom.dataset.outputtype;
 					node.field = [];
 					for(var i=0; i<node.inputs ;i++){
@@ -142,7 +149,7 @@ $(document).ready(function() {
 					break;
 			}
 
-			node.position.top +=25;			
+			node.position.top +=25;
 
 			diagram.push(node);
 			renderDiagram(diagram);
@@ -166,7 +173,7 @@ $(document).ready(function() {
 					});
 					var response = await resp.json();
 				} catch (error) {
-					console.log(error);	
+					console.log(error);
 				}
 			}
 
@@ -200,32 +207,31 @@ $(document).ready(function() {
 		}
 
 		reDraw();
-		
+
 	}
 
 	// Generate data
-	//var data;
 	async function generateData() {
 
 		const d = new Date();
 
 		// Main json file template ---------------------------------------
 		let data = {
-			"analysis-datetime" :"2021-10-06 02:55:45:796", //weird bug testing
 			"diastema-token":"diastema-key",
 			"analysis-id": $("#analysisid").val(),
-			"database-id": "Metis",
+			"database-id": $("#org").val(),
 			"jobs":[],
 			"metadata":{
 				"user": $("#user").val(),
-				"analysis-date": ('0'+d.getDate()).slice(-2) + "-" + ('0'+(d.getMonth()+1)).slice(-2) + "-" + d.getFullYear(), 
+				"datasets":[],
+				"analysis-date": ('0'+d.getDate()).slice(-2) + "-" + ('0'+(d.getMonth()+1)).slice(-2) + "-" + d.getFullYear(),
 				"analysis-time": ('0'+d.getHours()).slice(-2) + ":" + ('0'+d.getMinutes()).slice(-2) + ":" + ('0'+d.getSeconds()).slice(-2) + ":" + d.getMilliseconds()
 			},
 			"nodes":[],
 			"connections":[]
 		};
 
-		// Get nodes -------------------
+		// Get nodes -----------------------------
 		for (l in diagram) {
 			data.nodes.push(diagram[l]);
 			data.nodes[l].index = parseInt(l) + 1;
@@ -249,7 +255,7 @@ $(document).ready(function() {
 			};
 
 			// Calculate the next / from properties of every node
-			// by looping through all existing connections and 
+			// by looping through all existing connections and
 			// comparing node id's.
 			if (job.step === 1 || data.nodes[m].type === "Dataset") job.from = 0;
 			if (data.nodes[m].type === "Join Datasets" || data.nodes[m].type === "Saved Function") job.from = [];
@@ -271,7 +277,7 @@ $(document).ready(function() {
 				} else if (line.from === job.id) {
 					for (l in data.nodes) {
 						if (data.nodes[l]._id === line.to) {
-							job.next.push(data.nodes[l].index); 
+							job.next.push(data.nodes[l].index);
 						}
 					}
 				}
@@ -295,6 +301,7 @@ $(document).ready(function() {
 			// Properties specific to the Dataset job
 			if (data.nodes[m].type === "Dataset") {
 				job.label = data.nodes[m].property;
+				data.metadata.datasets.push(data.nodes[m].property);
 			}
 
 			// Properties specific to the Data Join job
@@ -302,14 +309,14 @@ $(document).ready(function() {
 				job.title = "data-join";
 				job["join-type"] = data.nodes[m].property.toLowerCase();
 				if (job["join-type"] === "select join") job["join-type"] = "join";
-				job.column = data.nodes[m].field.toLowerCase(); 
+				job.column = data.nodes[m].field.toLowerCase();
 			}
 
 			// Properties specific to the Classification and Regression jobs
 			if (data.nodes[m].type === "Classification" || data.nodes[m].type === "Regression") {
 				job.algorithm = data.nodes[m].property.toLowerCase();
 				if (job.algorithm === "select algorithm") job.algorithm = false;
-				job.column = data.nodes[m].field.toLowerCase(); 
+				job.column = data.nodes[m].field.toLowerCase();
 			}
 
 			// Properties specific to the Cleaning job
@@ -329,64 +336,97 @@ $(document).ready(function() {
 			if (data.jobs[m].next.length === 0) data.jobs[m].next.push(0);
 		}
 
-		// Calculate the args for each Saved Function by
-		// backgracking the graph to find the nearest Dataset node
+		// Add args to each Function job
 		for (a in data.nodes) {
 			if (data.nodes[a].type === "Saved Function") {
-				
-				let temp = data.nodes[a]._id;
-				console.log("Temp is: ",  data.nodes[a].type);
-				let exploredLines = []
-				
-				for (let ind = 0; ind < linesArray.length; ind++) {
-					if (linesArray[ind].to === temp) {
 
-						if (exploredLines.findIndex((obj) => obj._id === linesArray[ind]._id) !== -1) {
-							console.log("Found explored line: ", linesArray[ind]._id);
-							continue;
-						}
+				data.nodes[a].field.forEach((arg, i) => {
+					data.jobs.forEach((job) => {
+						if (job.id === data.nodes[a]._id) {
 
-						// If the line ends in a Saved Function then save the end number
-						if (!isNaN(parseInt(linesArray[ind].to_type.split(" ")[0]))) {
-							var pos = parseInt(linesArray[ind].to_type.split(" ")[0]) - 1
-							var explored = ind
-						}
-
-						console.log("Exploring line: ", linesArray[ind]._id);
-
-						for (b in data.nodes) {
-							if (data.nodes[b]._id === linesArray[ind].from) {
-
-								if (data.nodes[b].type === "Dataset") {
-
-									let feature = data.nodes[b].selectedFeature;
-
-									data.jobs.forEach((job) => {
-										if (job.id === data.nodes[a]._id) {
-
-											job.function.args[pos].feature = feature;
-											console.log("Added to ", pos, "arg feature: ", feature);
-											exploredLines.push(linesArray[explored])
-											console.log("Added explored line: ", linesArray[explored]._id);
-											temp = data.nodes[a]._id;
-											console.log("New temp is: ",  data.nodes[a].type);
-										}
-									})
-
-									break;
-								}
-								else {
-									temp = data.nodes[b]._id
-									console.log("New temp is: ", data.nodes[b].type);
-									ind=-1;
-									break;
-								}
+							if ((job.function.args[i].type).includes("column")) {
+								job.function.args[i].feature = arg;
+							} else {
+								job.function.args[i].value = arg;
 							}
 						}
-					}
-				}
+					})
+				})
+
 			}
 		}
+
+		// Calculate the args for each Saved Function by
+		// backgracking the graph to find the nearest Dataset node
+
+		// for (a in data.nodes) {
+		// 	if (data.nodes[a].type === "Saved Function") {
+
+		// 		// Add int values to final graph -------------------------------
+		// 		data.nodes[a].field.forEach((arg, i) => {
+		// 			data.jobs.forEach((job) => {
+		// 				if (job.id === data.nodes[a]._id) {
+		// 					if (!(job.function.args[i].type).includes("column")) {
+		// 						job.function.args[i].value = arg;
+		// 					}
+		// 				}
+		// 			})
+		// 		})
+		// 		// -------------------------------------------------------------
+
+		// 		let temp = data.nodes[a]._id;
+		// 		console.log("Temp is: ",  data.nodes[a].type);
+		// 		let exploredLines = []
+
+		// 		for (let ind = 0; ind < linesArray.length; ind++) {
+		// 			if (linesArray[ind].to === temp) {
+
+		// 				if (exploredLines.findIndex((obj) => obj._id === linesArray[ind]._id) !== -1) {
+		// 					console.log("Found explored line: ", linesArray[ind]._id);
+		// 					continue;
+		// 				}
+
+		// 				// If the line ends in a Saved Function then save the end number
+		// 				if (!isNaN(parseInt(linesArray[ind].to_type.split(" ")[0]))) {
+		// 					var pos = parseInt(linesArray[ind].to_type.split(" ")[0]) - 1
+		// 					var explored = ind
+		// 				}
+
+		// 				console.log("Exploring line: ", linesArray[ind]._id);
+
+		// 				for (b in data.nodes) {
+		// 					if (data.nodes[b]._id === linesArray[ind].from) {
+
+		// 						if (data.nodes[b].type === "Dataset") {
+
+		// 							let feature = data.nodes[b].selectedFeature;
+
+		// 							data.jobs.forEach((job) => {
+		// 								if (job.id === data.nodes[a]._id) {
+
+		// 									job.function.args[pos].feature = feature;
+		// 									console.log("Added to ", pos, "arg feature: ", feature);
+		// 									exploredLines.push(linesArray[explored])
+		// 									console.log("Added explored line: ", linesArray[explored]._id);
+		// 									temp = data.nodes[a]._id;
+		// 									console.log("New temp is: ",  data.nodes[a].type);
+		// 								}
+		// 							})
+
+		// 							break;
+		// 						}
+		// 						else {
+		// 							temp = data.nodes[b]._id
+		// 							console.log("New temp is: ", data.nodes[b].type);
+		// 							ind=-1;
+		// 							break;
+		// 						}
+		// 					}
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// }
 
 		// Determine if auto modelling is enabled or not
 		if ($("#checkbox").is(':checked')) {
@@ -404,27 +444,95 @@ $(document).ready(function() {
 		if ($("#save_graph_input").val() === "") {
 			toastr.error("Please give a name to your analysis graph.", "Notification:");
 		} else {
-			let data = await generateData();
-		
-			data['analysis-name'] = $("#save_graph_input").val();
 
-			fetch("/messages", {
-				method: 'POST',
-				headers: {'Content-Type': 'application/json'},
-				body: JSON.stringify({message:"save-graph", info:data})
-			})
+			if (validateFields()) {
+				
+				let data = await generateData();
 
-			$("#save_graph_input").val("")
-			$('#saveGraphModal').modal('hide');
+				let name = $("#save_graph_input").val();
+	
+				data['analysis-name'] = name
+	
+				// Send pipeline to server
+				try {
+					let resp = await fetch("/pipelines/save", {
+						method: 'POST',
+						headers: {'Content-Type': 'application/json'},
+						body: JSON.stringify(data)
+					})
+					var response = await resp;
+				} catch (error) {
+					console.log(error);
+				}
+	
+				// Check response
+				if (response.statusText === "OK") {
+	
+					$("#save_graph_input").val("")
+					$('#saveGraphModal').modal('hide');
+	
+					sessionStorage.setItem("showmsg", "1");
+	
+					window.location.replace("/modelling");
+				} else {
+					toastr.error("This name is used by another pipeline.", "Notification:");
+				}
 
-			toastr.info("Graph was saved successfully.", "Notification:");
+			} else {
+				toastr.error("Please fill all the required fields.", "Notification:");
+			}
 		}
 	});
 
+	// Validate graph
+	$('#validate_graph').click( async ()=> {
+		if (validateFields()) {
+
+			let data = await generateData();
+
+			try {
+				let resp = await fetch("/pipelines/validate", {
+					method: 'POST',
+					headers: {'Content-Type': 'application/json'},
+					body: JSON.stringify(data)
+				})
+				var response = await resp;
+			} catch (error) {
+				console.log(error);
+			}
+			
+			let text = await response.text();
+
+			switch (response.status) {
+				case 200:
+					toastr.info("Pipeline is valid and ready for deployment.", "Notification:");
+					$("#deploy_graph").attr("disabled", false);		
+					break;
+			
+				case 425:
+					toastr.warning(text, "Issues found:");	
+					toastr.info("Minor issues that don't affect deployment.", "Notification:");
+					$("#deploy_graph").attr("disabled", false);		
+					break;
+
+				case 409:
+					toastr.error(text, "Issues found:");	
+					toastr.info("Critical issues that affect deployment.", "Notification:");
+					break;
+
+				default:
+					break;
+			}
+			
+		} else {
+			toastr.error("Please fill all the required fields.", "Notification:");
+		}
+	})
+
 	// Load data
-	
+
 	// $('#save_data').click(()=>{
-		
+
 	// 	let data = $("#flowchart_data").val();
 
 	// 	try {
@@ -460,10 +568,10 @@ $(document).ready(function() {
 	// 					size: 5
 	// 				}
 	// 			);
-		
+
 	// 			newLine["from"] = line.from;
 	// 			newLine["to"] = line.to;
-		
+
 	// 			linesArray.push(newLine);
 	// 		}
 
@@ -487,7 +595,7 @@ $(document).ready(function() {
 		if (validateFields()) {
 			let data = await generateData();
 
-			// Send data to backend
+			// Send data to server for orchestrator
 			fetch("/messages", {
 				method: 'POST',
 				headers: {'Content-Type': 'application/json'},
@@ -541,7 +649,7 @@ $(document).ready(function() {
 				target.css('transform', 'scale('+newscale+')');
 			}
 		});
-		
+
 		if (newscale >= 0.6) {
 			scale = newscale;
 			reDraw()
@@ -575,7 +683,7 @@ $(document).ready(function() {
 			toastr.error("Max zoom in reached.", "Notification:");
 		}
 		console.log(scale);
-		
+
 	});
 
 	// Go to dashboard button
@@ -608,9 +716,9 @@ function getParams(params) {
 }
 
 function drawLine(item) {
-	
+
 	count++;
-	
+
 	// Set up a parent array
 	var parents = [];
 	// Push each parent element to the array
@@ -631,7 +739,7 @@ function drawLine(item) {
 		}
 	// Set end node
 	} else if (count == 2) {
-		
+
 		dots.push(dot);
 
 		for (o in diagram) {
@@ -647,6 +755,7 @@ function drawLine(item) {
 			return;
 		}
 
+		// Draw the line
 		var line = new LeaderLine(
 			LeaderLine.pointAnchor(dots[0]),
 			LeaderLine.pointAnchor(dots[1]),
@@ -698,7 +807,7 @@ function editNode(element) {
 	} catch(err) {
 		console.log(err);
 	}
-	
+
 	// Change property of node object
 	window.changeProperty = async function (node) {
 
@@ -717,13 +826,46 @@ function editNode(element) {
 				diagram[pos].property = node.value;
 				diagram[pos].features = features;
 
-				renderDiagram(diagram)
+				//renderDiagram(diagram)
 			} catch (error) {
 				console.log(error);
 			}
 
-		} else if (node.id === "datasetFeatures") {
-			diagram[pos].selectedFeature = node.value;
+		// } else if (node.id === "datasetFeatures") {
+		// 	diagram[pos].selectedFeature = node.value;
+
+		// 	let dataset = node.previousElementSibling.value;
+
+		// 	try {
+		// 		var resp = await fetch("/datasets/features", {
+		// 			method: "POST",
+		// 			headers: {
+		// 				'Accept': 'application/json',
+		// 				'Content-Type': 'application/json',
+		// 			},
+		// 			body: JSON.stringify({dataset:dataset})
+		// 		});
+		// 		var feats = await resp.json();
+		// 	} catch (error) {
+		// 		console.log(error);
+		// 	}
+			
+		// 	feats.forEach((feat) => {
+		// 		if (feat.name === node.value) {
+		// 			if (feat.positive === true) {
+		// 				toastr.info("Feature contains all positive numbers", "Notification:");
+		// 			} else if (feat.negative === true) {
+		// 				toastr.info("Feature contains all negative numbers", "Notification:");
+		// 			} else if (feat.positive === false && feat.negative === false) {
+		// 				if (feat["all-zero"] === true) {
+		// 					toastr.info("Feature contains all zeros", "Notification:");
+		// 				} else {
+		// 					toastr.info("Feature contains both positive and negative numbers", "Notification:");
+		// 				}
+		// 			}
+		// 		}
+		// 	});
+
 		} else {
 			diagram[pos].property = node.value;
 		}
@@ -767,9 +909,9 @@ function editColumn(element) {
 	$('#'+elemid+'  input[name="field"]').keyup(function(){
 		for (s in diagram) {
 			if (diagram[s]._id == elemid) {
-				
+
 				diagram[s].field = $(this).val();
-				
+
 				// Cleaning service max shrink validation check ---------------------------- //
 				if (diagram[s].property === "Cleaning") {
 					if (isNaN($(this).val())) {
@@ -786,11 +928,34 @@ function editColumn(element) {
 		}
 	});
 
-	// Click field to add func_input property to node object
-	$('#'+elemid+'  input[name="func_input"]').keyup(function(){
+	// Click field to add func_input_num property to node object
+	$('#'+elemid+'  input[name="func_input_num"]').keyup(function(){
 		for (s in diagram) {
 			if (diagram[s]._id == elemid) {
+
 				diagram[s].field[$(this)[0].id] = $(this).val();
+
+				if (isNaN($(this).val())) {
+					toastr.error("Please enter a numeric value.", "Notification:");
+					$(this).val("")
+				}
+
+			}
+		}
+	});
+
+	// Click field to add func_input_col property to node object
+	$('#'+elemid+'  input[name="func_input_col"]').keyup(function(){
+		for (s in diagram) {
+			if (diagram[s]._id == elemid) {
+
+				diagram[s].field[$(this)[0].id] = $(this).val();
+
+				if (typeof $(this).val() !== "string") {
+					toastr.error("Please enter a string value.", "Notification:");
+					$(this).val("")
+				}
+
 			}
 		}
 	});
@@ -798,12 +963,12 @@ function editColumn(element) {
 
 function reDraw() {
 	for (var d in diagram) {
-		
-			
+
+
 		// Redraw each connected line
 		let templines = [];
 		for (k in linesArray) {
-			
+
 			let fromid = linesArray[k].from;
 			let toid = linesArray[k].to;
 			let to_type = linesArray[k].to_type;
@@ -868,8 +1033,22 @@ function validateFields() {
 			};
 		}
 
-		if (diagram[m].type === "Cleaning") { 
+		if (diagram[m].type === "Cleaning") {
 			if (diagram[m].field === "") {
+				outcome = false;
+			}
+		}
+
+		if (diagram[m].type === "Saved Function") {
+			diagram[m].field.forEach((f) => {
+				if (f === "") {
+					outcome = false;
+				}
+			});
+		}
+
+		if (diagram[m].type === "Dataset") {
+			if (diagram[m].property === "Select Dataset") {
 				outcome = false;
 			}
 		}
