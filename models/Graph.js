@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 
 const graphSchema = new mongoose.Schema ({
-    user: String,
-    name: String,
     analysisid: String,
-    datetime: String,
+    name: String,
+    databaseid: String,
     jobs: Object,
+    metadata: Object,
     nodes: Object,
     connections: Object
 });
