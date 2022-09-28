@@ -16,6 +16,7 @@ services:
     depends_on:
       - "mongo"
 
+  # Function Normalization Service
   # flask:
   #   container_name: function-normalization-server
   #   image: function-normalization-server-image
