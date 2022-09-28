@@ -55,6 +55,12 @@ socket.on('Modeller', (update) => {
 	toastr.info(update, "Notification:");
 });
 
+// Reset bell counter
+$('#navbarNotification').click(() => {
+	$('#alerts').empty();
+	i=0;
+});
+
 // Display toast after save and redirect
 if(sessionStorage.getItem("showmsg")=='1'){
 	toastr.info("Function was saved successfully.", "Notification:");
@@ -88,7 +94,7 @@ canvas.droppable({
 			color:dom.dataset.color
 		}
 		
-		// Find cutom function input types
+		// Find custom function input types
 		if (node.type === "Saved-Function") {
 			node.inptypes = [];
 			let types = dom.dataset.inptypes.split(",");
@@ -103,6 +109,7 @@ canvas.droppable({
 			})
 
 			node.outputtype = dom.dataset.outputtype;
+			node.lines = []
 		}
 
 		// Adjust position of the node
@@ -124,9 +131,10 @@ $('#save_graph').click(async ()=>{
 
 		let data = generateData(name);
 
-		// Save complex function
+		// Manage complex function
 		if (data.metadata["function-type"] === "complex") {
 
+			// Turn complex function to simple
 			try {
 				var resp = await fetch("/messages", {
 					method: 'POST',
@@ -138,35 +146,55 @@ $('#save_graph').click(async ()=>{
 				console.log(error);	
 			}
 
+			// Send function to server
 			try {
-				await fetch("/functions/save", {
+				let resp = await fetch("/functions/save", {
 					method: 'POST',
 					headers: {'Content-Type': 'application/json'},
 					body: JSON.stringify(response)
-				})	
+				})
+				var serverRes = await resp;
 			} catch (error) {
 				console.log(error);
 			}
 
-		// Save simple function
+			// Check for duplicate name
+			if (serverRes.statusText === "OK") {
+				$("#save_graph_input").val("")
+				$('#saveGraphModal').modal('hide');
+		
+				sessionStorage.setItem("showmsg", "1");
+		
+				window.location.replace("/function-modelling");
+			} else {
+				toastr.error("This name is used by another function.", "Notification:");
+			}
+
+		// Function was simple so save it
 		} else {
 			try {
-				await fetch("/functions/save", {
+				let resp = await fetch("/functions/save", {
 					method: 'POST',
 					headers: {'Content-Type': 'application/json'},
 					body: JSON.stringify(data)
-				})	
+				})
+				var serverRess = await resp;
 			} catch (error) {
 				console.log(error);
 			}
+
+			// Check for duplicate name
+			if (serverRess.statusText === "OK") {
+				$("#save_graph_input").val("")
+				$('#saveGraphModal').modal('hide');
+		
+				sessionStorage.setItem("showmsg", "1");
+		
+				window.location.replace("/function-modelling");
+			} else {
+				toastr.error("This name is used by another function.", "Notification:");
+			}
 		}
-
-		$("#save_graph_input").val("")
-		$('#saveGraphModal').modal('hide');
-
-		sessionStorage.setItem("showmsg", "1");
-
-		window.location.replace("/function-modelling");
 	}
 });
 
@@ -189,7 +217,7 @@ $('#download_graph').click(()=>{
 		$("#download_graph_input").val("")
 		$('#downloadGraphModal').modal('hide');
 
-		toastr.success("Graph was downloaded successfully.", "Notification:");
+		toastr.info("Graph was downloaded successfully.", "Notification:");
 		
 	}
 });
