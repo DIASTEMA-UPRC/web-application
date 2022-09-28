@@ -30,11 +30,12 @@ function generatePipelineHTML(node,dataset) {
                 if (node.type == "Saved Function") {
 
                     // if node input is a column
-                    if (node.inptypes[i].includes("column")) {
+                    if (node.inptypes[i].includes("column")) {                        
                         nodeDOM += `
                         <div class="flowchart-operator-connector">
                             <div class="flowchart-operator-connector-label">${i+1} (${node.inptypes[i]})</div>
                             <div class="flowchart-operator-connector-arrow" onclick="drawLine(this)"></div>
+                            <input type="text" id="${i}" name="func_input_col" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="${node.field[i]}"></input>
                             <div class="flowchart-operator-connector-small-arrow"></div> 
                         </div>
                         `
@@ -51,7 +52,7 @@ function generatePipelineHTML(node,dataset) {
                             }
 
                             nodeDOM += `
-                            <input type="text" id="${i}" name="func_input" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="${node.field[i]}"></input>
+                            <input type="text" id="${i}" name="func_input_num" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="${node.field[i]}"></input>
                             <div class="flowchart-operator-connector-small-arrow"></div>
                         </div>
                         `
@@ -147,20 +148,11 @@ function generatePipelineHTML(node,dataset) {
                                 `
                     break;
                 case "Dataset":
-                    nodeDOM += `<select name="nodeProperty" id="datasetProperty" onchange="changeProperty(this)" style="margin:5px auto 10px auto;width:70%">
-                                    <option selected="true" disabled="disabled" value="default">${node.property}</option>`
+                    nodeDOM += `<select name="nodeProperty" id="datasetProperty" onchange="changeProperty(this)" style="margin:5px auto 10px auto;width:90%">
+                                    <option selected="true" disabled="disabled" value="${node.property}">${node.property}</option>`
 
                                     for (let i = 0; i < dataset.length; i++) {
                                         nodeDOM += `<option value="${dataset[i].label}">${dataset[i].label}</option>`
-                                    }
-                    nodeDOM += `
-                                </select>
-
-                                <select name="nodeProperty" id="datasetFeatures" onchange="changeProperty(this)" style="margin:5px auto 10px auto;width:70%"">
-                                    <option selected="true" disabled="disabled" value="default">${node.selectedFeature}</option>
-                                    `
-                                    for (let i = 0; i < node.features.length; i++) {
-                                        nodeDOM += `<option value="${node.features[i].name}">${node.features[i].name}</option>`
                                     }
                     nodeDOM += `
                                 </select>
