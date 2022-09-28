@@ -440,7 +440,7 @@ button:not(.accordion-button, #little_x, .toast-close-button) {
 }
 
 button:hover:not(.accordion-button, #little_x, .toast-close-button) {
-  background-color: #33809e!important;
+  background-color: #023a51!important;
 }
 
 .accordion-button {
