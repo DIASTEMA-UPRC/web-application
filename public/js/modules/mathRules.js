@@ -86,13 +86,11 @@ function checkTheMath(node_end,dots) {
         }
     } else if (node_end.type == "Saved-Function") {
         let start_index = diagram.findIndex(obj => obj._id == start_id)
-
-        console.log(diagram[start_index].outputtype);
         
         // if the start node is a saved function
         if (diagram[start_index].type === "Saved-Function") {
             if (!dots[1].previousElementSibling.innerHTML.includes(diagram[start_index].outputtype)) {
-                toastr.error("This variable is not accepted as input", "Notification:"); 
+                toastr.error("This function is not accepted as input", "Notification:"); 
                 return false;    
             }
             if (dots[1].previousElementSibling.innerHTML.includes("column") && !diagram[start_index].outputtype.includes("column")) {
