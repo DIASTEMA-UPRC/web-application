@@ -19,6 +19,8 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>
     <!-- MDB -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.css" rel="stylesheet"/>
+    <!-- Toastr -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
 </head>
 
@@ -156,7 +158,7 @@
 
                                 <div class="card-head" style="padding-bottom: 20px;">
                                     <img src="img/pipelines.png">
-                                    <h5 class="card-title">Pipeline 1</h5>
+                                    <h5 class="card-title"><%= pipeline.name %></h5>
                                 </div>
 
                                 <div class="inner-card-padding" style="margin-bottom: 0px;">
@@ -164,23 +166,28 @@
 
                                         <div class="pipeline-line">
                                             <i class='bx bxs-user' style="color: var(--primary-color);"></i>
-                                            <span><b>Created by:</b> adreaskar</span>
+                                            <span><b>Created by: </b><%= pipeline.metadata.user %></span>
                                         </div>
                                         
                                         <div class="pipeline-line">
                                             <i class='bx bxs-time-five' style="color: var(--primary-color);"></i>
-                                            <span><b>Time of creation</b> 25/02/2022</span>
+                                            <span><b>Time of creation: </b><%= pipeline.metadata["analysis-date"] %></span>
                                         </div>
 
                                         <div class="pipeline-line">
                                             <i class='bx bxs-file' style="color: var(--primary-color);"></i>
-                                            <span class="tag">Ships</span>
-                                            <span class="tag">Engines</span>
+                                            <span style="margin-right:6px"><b>Datasets: </b></span>
+
+                                            <% let sets = [...new Set(pipeline.metadata.datasets)] %>
+
+                                            <% for (var set of sets) {%>
+                                                <span class="tag"><%= set %></span>
+                                            <% } %>
                                         </div>
 
                                         <div class="pipeline-line">
                                             <i class='bx bx-fingerprint' style="color: var(--primary-color);"></i>
-                                            <span><b>Pipeline ID:</b> 2k92asf8jgy0ag</span>
+                                            <span><b>Pipeline ID: </b><%= pipeline.analysisid %></span>
                                         </div>
                                         
                                     </div>
@@ -196,6 +203,10 @@
                                         <div class="card-footer-button">
                                             <i class='bx bx-code-alt' ></i>
                                             <span>Deploy</span>
+                                        </div>
+                                        <div class="card-footer-button" onclick="deletePipeline(this)">
+                                            <i class='bx bx-trash' ></i>
+                                            <span>Delete</span>
                                         </div>
 
                                     </div>
@@ -219,8 +230,34 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.js"></script>
     <!-- JQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <!-- Toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script>
+
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": true,
+            "positionClass": "toast-bottom-right",
+            "preventDuplicates": false,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "3000",
+            "extendedTimeOut": "1500",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+
+        // Display toast after save and redirect
+        if (sessionStorage.getItem("dltpip")=='1'){
+            toastr.info("Pipeline was deleted successfully.", "Notification:");
+            sessionStorage.removeItem("dltpip");
+        }
+
         const body = document.querySelector("body");
         const sidebarToggle = body.querySelector(".sidebar-toggle");
         const sidebar = body.querySelector("nav");
@@ -256,6 +293,27 @@
         if(true == $('#row').hasClass('row-cols-md-4') && $(window).width() <= 1000) {
             $('#row').removeClass('row-cols-md-4');
             $('#row').addClass('row-cols-md-2');
+        }
+
+        async function deletePipeline (element) {
+
+            let id = element.parentNode.parentNode.parentNode.children[1].children[0].children[3].children[1].lastChild.data;
+
+            try {
+
+                await fetch("/pipelines/delete", {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({id:id})
+		        });
+                
+            } catch (error) {
+                console.log(error);
+            }
+
+            sessionStorage.setItem("dltpip", "1");
+
+            window.location.replace("/pipelines");
         }
     </script>
 
