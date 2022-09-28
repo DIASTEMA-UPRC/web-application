@@ -478,8 +478,6 @@ $(document).ready(function() {
 					toastr.error("This name is used by another pipeline.", "Notification:");
 				}
 
-			} else {
-				toastr.error("Please fill all the required fields.", "Notification:");
 			}
 		}
 	});
@@ -490,6 +488,7 @@ $(document).ready(function() {
 
 			let data = await generateData();
 
+			// Send pipeline to server
 			try {
 				let resp = await fetch("/pipelines/validate", {
 					method: 'POST',
@@ -500,9 +499,15 @@ $(document).ready(function() {
 			} catch (error) {
 				console.log(error);
 			}
-			
-			let text = await response.text();
 
+			// Get text from response
+			try {
+				var text = await response.text();	
+			} catch (error) {
+				console.log(error);
+			}
+
+			// Check response
 			switch (response.status) {
 				case 200:
 					toastr.info("Pipeline is valid and ready for deployment.", "Notification:");
@@ -524,8 +529,6 @@ $(document).ready(function() {
 					break;
 			}
 			
-		} else {
-			toastr.error("Please fill all the required fields.", "Notification:");
 		}
 	})
 
@@ -605,8 +608,6 @@ $(document).ready(function() {
 				console.log("Data sent to backend", res);
 			});
 
-		} else {
-			toastr.error("Please fill all the requied fields.", "Notification:");
 		}
 	});
 
@@ -627,8 +628,6 @@ $(document).ready(function() {
 
 				toastr.info("Graph was downloaded successfully.", "Notification:");
 
-			} else {
-				toastr.error("Please fill all the requied fields.", "Notification:");
 			}
 		}
 	});
@@ -1025,34 +1024,41 @@ function minimize() {
 
 function validateFields() {
 	let outcome = true;
-	for (m in diagram) {
+	if (diagram.length === 0) {
+		toastr.error("Please add at least one node to the diagram.", "Notification:");
+		outcome = false;
+	} else {
+		for (m in diagram) {
 
-		if (diagram[m].type === "Classification" || diagram[m].type === "Regression" || diagram[m].type === "Join Datasets") {
-			if (diagram[m].field === "") {
-				outcome = false;
-			};
-		}
-
-		if (diagram[m].type === "Cleaning") {
-			if (diagram[m].field === "") {
-				outcome = false;
+			// Operation Nodes Validation
+			if (diagram[m].type === "Classification" || diagram[m].type === "Regression" || diagram[m].type === "Join Datasets" || diagram[m].type === "Cleaning") {
+				if (diagram[m].field === "") {
+					toastr.error("Please fill all the required fields.", "Notification:");
+					outcome = false;
+				};
 			}
-		}
-
-		if (diagram[m].type === "Saved Function") {
-			diagram[m].field.forEach((f) => {
-				if (f === "") {
+	
+			// Function Node Validation
+			if (diagram[m].type === "Saved Function") {
+				for (n in diagram[m].field) {
+					if (diagram[m].field[n] === "") {
+						toastr.error("Please fill all the Function Node fields.", "Notification:");
+						outcome = false;
+						break;
+					};
+				}
+			}
+	
+			// Dataset Node validation
+			if (diagram[m].type === "Dataset") {
+				if (diagram[m].property === "Select Dataset") {
+					toastr.error("Please select a Dataset.", "Notification:");
 					outcome = false;
 				}
-			});
-		}
-
-		if (diagram[m].type === "Dataset") {
-			if (diagram[m].property === "Select Dataset") {
-				outcome = false;
 			}
 		}
 	}
+	
 	return outcome;
 }
 
