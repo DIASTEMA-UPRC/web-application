@@ -7,29 +7,30 @@ const Dataset = require('../models/Dataset');
 
 router.route("/dashboard")
     .get(async (req,res) => {
+
+        const username = req.session.user;
         
         // Get all functions from database
         try {
-            var functions = await CustomFunction.find();
+            var functions = await CustomFunction.find({"metadata.user": username});
         } catch (err) {
             console.log(err);
         }
 
         // Get all pipelines from database
         try {
-            var pipelines = await Pipeline.find();
+            var pipelines = await Pipeline.find({"metadata.user": username});
         } catch (err) {
             console.log(err);
         }
 
         // Get all datasets from database
         try {
-            var datasets = await Dataset.find();
+            var datasets = await Dataset.find({user: username});
         } catch (err) {
             console.log(err);
         }
 
-        const username = req.session.user;
         const organization = req.session.organization;
         const property = req.session.property;
         const image = req.session.image;
