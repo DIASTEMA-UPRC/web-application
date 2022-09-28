@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
+const fetch = require('node-fetch');
 
 const Pipeline = require("../models/Graph");
 const Graph = require("../models/Graph");
 const CustomFunction = require("../models/CustomFunction");
+
+const {VALIDATION_URL} = require("../config/config");
 
 router.route("/pipelines")
     .get(async(req,res) => {
@@ -83,10 +86,21 @@ router.route("/pipelines/delete")
 
 router.route("/pipelines/validate")
     .post(async (req,res) => {
-        
-        console.log("[INFO] Validating pipeline");
 
-        res.status(409).send('This is dogshit yo');
+        let data = req.body;
+
+        try {
+            let resp = await fetch(VALIDATION_URL, {
+                method: "POST",
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            var result = await resp;
+        } catch (error) {
+            console.log(error);
+        }
+
+        res.status(result.status).send(result.text());
     
     })
 
