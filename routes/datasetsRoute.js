@@ -8,14 +8,15 @@ const {ORCHESTRATOR_INGESTION_URL} = require("../config/config");
 router.route("/datasets")
     .get(async(req,res) => {
 
+        const username = req.session.user;
+        
         // Get all datasets from database
         try {
-            var datasets = await Dataset.find();
+            var datasets = await Dataset.find({user: username});
         } catch (err) {
             console.log(err);
         }
-
-        const username = req.session.user;
+        
         const organization = req.session.organization;
         const property = req.session.property;
         const image = req.session.image;
@@ -164,7 +165,7 @@ router.route("/datasets/ready")
 
             try {
                 // Get all datasets from database
-                var datasets = await Dataset.find()
+                var datasets = await Dataset.find({user: req.session.user});
 
                 // Check if dataset has features
                 datasets.forEach(set => {
