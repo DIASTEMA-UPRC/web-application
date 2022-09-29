@@ -295,6 +295,11 @@ $(document).ready(function() {
 				} catch (error) {
 					console.log(error);
 				}
+
+				delete response.nodes
+				delete response.connections
+				delete response.metadata
+
 				job.function = response
 			}
 
@@ -526,6 +531,7 @@ $(document).ready(function() {
 					break;
 
 				default:
+					toastr.error("Validation returned status code: " + response.status, "Notification:");
 					break;
 			}
 			
@@ -596,13 +602,19 @@ $(document).ready(function() {
 	// Deploy graph
 	$('#deploy_graph').click(async ()=>{
 		if (validateFields()) {
+
 			let data = await generateData();
+			let compressed_data = data;
+
+			delete compressed_data.nodes
+			delete compressed_data.connections
+			delete compressed_data.metadata
 
 			// Send data to server for orchestrator
 			fetch("/messages", {
 				method: 'POST',
 				headers: {'Content-Type': 'application/json'},
-				body: JSON.stringify({message:"send-to-orchestrator", info:data})
+				body: JSON.stringify({message:"send-to-orchestrator", info:compressed_data})
 			})
 			.then(res => {
 				console.log("Data sent to backend", res);
@@ -619,9 +631,11 @@ $(document).ready(function() {
 		} else {
 			if (validateFields()) {
 
+				let name = $("#download_graph_input").val();
+
 				let data = await generateData();
 				console.log(data);
-				download(JSON.stringify(data, null, 2), "data.json", "text/plain");
+				download(JSON.stringify(data, null, 2), name+".json", "text/plain");
 
 				$("#download_graph_input").val("")
 				$('#downloadGraphModal').modal('hide');
@@ -655,7 +669,6 @@ $(document).ready(function() {
 		} else {
 			toastr.error("Max zoom out reached.", "Notification:");
 		}
-		console.log(scale);
 	});
 
 	// Zoom canvas
