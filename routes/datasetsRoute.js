@@ -191,8 +191,6 @@ router.route("/datasets/features")
             } catch (err) {
                 console.log(err);
             }
-
-            console.log(features);
     
             res.send(features);
     })

@@ -6,5 +6,5 @@ services:
     ports:
       - "50000:5400"
     env_file:
-      - ../.env
+      - ./.env
     command: node app.js

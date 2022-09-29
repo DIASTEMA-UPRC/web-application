@@ -89,5 +89,5 @@ app.use(route404);
 app.use(githubAuth);
 
 server.listen(PORT, function () {
-    console.log('Started on port 5400');
+    console.log('[INFO] Started on port 5400');
 });
