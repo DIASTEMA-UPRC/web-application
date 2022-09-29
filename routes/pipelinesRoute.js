@@ -95,12 +95,15 @@ router.route("/pipelines/validate")
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)
             });
-            var result = await resp;
+            let result = await resp;
+            let text = await result.text();
+
+            res.status(result.status).send(text);
+
         } catch (error) {
+            console.log("[ERROR] Validation failed");
             console.log(error);
         }
-
-        res.status(result.status).send(result.text());
     
     })
 
