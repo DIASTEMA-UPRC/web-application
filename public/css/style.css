@@ -389,7 +389,7 @@ nav.close ~ .dashboard .top{
 }
 .main-content .card .inner-card-padding {
     height: inherit;
-    overflow-y: hidden;
+    overflow-y: auto;
     margin-bottom: 28px;
 }
 .main-content .card .inner-card {
