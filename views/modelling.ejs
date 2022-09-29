@@ -5,7 +5,7 @@
     <link style="width: 16px;" rel="shortcut icon" type="image/png" href="img/favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+    <!--<link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">-->
     <title>Diastema | Process Modeller</title>
     
     <!-- Bootstrap -->
@@ -107,21 +107,21 @@
                     <div class="d-flex flex-column flex-grow-1 sidebar-middle py-2" style="height: 1px;overflow-y:auto;scrollbar-width:thin;">
 
                         <!-- Accordion -->
-                        <div class="accordion" id="accordionPanelsStayOpenExample">
+                        <div class="accordion" id="accordionExample">
                             
                             <!-- Operations -->
                             <div class="accordion-item">
 
                                 <!-- Title -->
-                                <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-                                    <i class="fa-solid fa-window-restore" style="color: var(--main);font-size: 20px;"></i>
-                                    <span>Operations</span>
+                                <h2 class="accordion-header" id="headingOne">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        <i class="fa-solid fa-window-restore" style="color: var(--main);font-size: 20px;"></i>
+                                        <span>Operations</span>
                                     </button>
                                 </h2>
 
                                 <!-- Content -->
-                                <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+                                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                                     <div class="accordion-body">
 
                                         <!-- Dataset -->
@@ -213,14 +213,14 @@
                                 
                                 <!-- Title -->
                                 <h2 class="accordion-header">
-                                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+                                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                                     <i class="fa-solid fa-bookmark" style="color: var(--main);font-size: 20px;"></i>
                                     <span>Saved Functions</span>
                                   </button>
                                 </h2>
 
                                 <!-- Content -->
-                                <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
+                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                                   <div class="accordion-body">
                                     
                                     <% for (var func of functions) {%>
@@ -357,7 +357,7 @@
                                             <button id="little_x" type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close" style="margin-right: 5px;"></button>
                                         </div>
                                         <div class="modal-body" style="margin-top: 10px;display: flex;">
-                                            <input class="form-control" id="download_graph_input" type="text" placeholder="Provide a function name" aria-label="default input example" style="display: inline-block;margin-right: 20px">
+                                            <input class="form-control" id="download_graph_input" type="text" placeholder="Provide a pipeline name" aria-label="default input example" style="display: inline-block;margin-right: 20px">
                                             <button id="download_graph" type="button" class="btn btn-primary" style="display:inline-block;">Download</button>
                                         </div>
                                     </div>
