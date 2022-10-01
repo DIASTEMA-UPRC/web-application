@@ -5,7 +5,7 @@
     <link style="width: 16px;" rel="shortcut icon" type="image/png" href="img/favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!--<link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">-->
+    <!--<link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
     <title>Diastema | Process Modeller</title>
     
     <!-- Bootstrap -->
@@ -53,13 +53,24 @@
 
                 <!-- Notification Bell -->
                 <div class="d-flex flex-column flex-grow-0 dropdown h-100 mr-2">
-                    <a style = "box-shadow: none;padding: 8px;" class="btn dropdown-toggle hidden-arrow d-flex align-items-center h-100" role="button"
-                        id="navbarNotification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-mdb-ripple-duration="0s">
+
+                    <a 
+                        style = "box-shadow: none;padding: 8px;" 
+                        class="btn dropdown-toggle hidden-arrow d-flex align-items-center h-100" 
+                        role="button"
+                        id="navbarNotification" 
+                        data-bs-toggle="dropdown" 
+                        aria-haspopup="true" 
+                        aria-expanded="false" 
+                        data-mdb-ripple-duration="0s"
+                    >
                         <i class="fas fa-bell" alt="Notifications" style="color: #737373;font-size: 20px;"></i>
                         <span class='badge rounded-pill badge-notification bg-danger' id="alerts"></span>
                     </a>
-                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-end" aria-labelledby="navbarNotification" id="notif_list">                        
+                    
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-end" aria-labelledby="navbarNotification" id="notif_list">                    
                     </div>
+                    
                 </div>
                 
                 <!-- User Icon -->
