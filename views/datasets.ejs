@@ -187,7 +187,7 @@
                                                 <p class="card-text">
                                                     <b>Label</b>
                                                 </p>
-                                                <input type="text" class="form-control" name="label" id="label" style="font-size: 14px" required placeholder="Request Label"/>
+                                                <input type="text" class="form-control" name="label" id="label" style="font-size: 14px" placeholder="Request Label"/>
                                             </div>
 
                                             <dv class="col" style="padding-right: 0;">
@@ -589,14 +589,21 @@
         });
 
         // Test button
-        $('#test_submit').click(function(e){
+        $('#test_submit').click(function(e) {
 
             const data = gatherData();
 
             $.post('/datasets/test', { data });
         })
 
+        // Submit button
         $('#submit').click( async () => {
+
+            if ($('#label').val() === "") {
+                toastr.error("Please enter a label for the dataset", "Notification");
+                $('#label').focus();
+                return;
+            }
 
             try {
 				await fetch("/datasets", {
