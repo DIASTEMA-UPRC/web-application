@@ -45,7 +45,7 @@ services:
       - MONGO_PORT=27017
       - DATABASE=UIDB
       - COLLECTION=datasets
-      - DATA_VERIFIER_HOST=host.docker.internal
+      - DATA_VERIFIER_HOST=dummy-data-verifier-service
       - DATA_VERIFIER_PORT=5001
     restart: always
 
