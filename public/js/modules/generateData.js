@@ -97,14 +97,14 @@ function generateData(name) {
 		// comparing node id's.
 		if (expression.step === 1 || node.type === "Variable") expression.from = 0;
 
-		if (node.type === "Function" || node.type === "Feature-Function" || node.type === "Saved-Function") expression.from = [];
+		if (node.type === "Function" || node.type === "Saved-Function") expression.from = [];
 
 		data["connections"].forEach((line) => {
 			if (line.to === expression.id) {
 				for (l in data.nodes) {
 					if (data.nodes[l]._id === line.from) {
 						//data.expressions[l].next = expression.step;
-						if (node.type === "Function" || node.type === "Feature-Function") {
+						if (node.type === "Function") {
 							if (line.to_type === "Left") {
 								expression.from[0] = data.nodes[l].index;
 							} else {
