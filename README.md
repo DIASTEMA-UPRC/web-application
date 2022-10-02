@@ -14,6 +14,7 @@ The web application of the project, utilizing a basic nodejs [[1]](#1) express [
 ### Prerequisites
 - NodeJS [[1]](#1)
 - Docker [[3]](#3)
+- [Orchestrator Service](https://github.com/DIASTEMA-UPRC/orchestrator)
 
 ### How to run
 
@@ -22,6 +23,8 @@ Create a `.env` file containing the following:
 ```
 PORT=5400
 MONGO_URL=mongodb://mongo/
+ORCHESTRATOR_URL=http://orchestrator:5002/analysis
+ORCHESTRATOR_INGESTION_URL=http://orchestrator:5002/ingestion
 NORMALIZATION_URL=http://normalization:5000/normalize
 VALIDATION_URL=http://validation:5001/validation
 NODE_ENV=development
