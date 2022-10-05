@@ -2,7 +2,9 @@ version: "3"
 services: 
   web:
     container_name: diastema-web-app
-    image: adreaskar/diastema-web-app:latest
+    image: web-application-diastema
+    build:
+      context: .
     ports:
       - "5400:5400"    
     volumes:
