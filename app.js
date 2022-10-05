@@ -6,6 +6,13 @@ const MongoStore = require('connect-mongo');
 const mongoose = require("mongoose");
 const http = require("http");
 const session = require('express-session');
+const chalk = require('chalk');
+const time = require('./public/js/modules/getTime.js');
+
+// chalk colors
+const diastema = chalk.hex('#3990b2');
+const error = chalk.white.bold.bgRed
+const success = chalk.white.bold.bgGreen
 
 const { MONGO_URL, PORT} = require("./config/config");
 
@@ -89,5 +96,6 @@ app.use(route404);
 app.use(githubAuth);
 
 server.listen(PORT, function () {
-    console.log('[INFO] Started on port 5400');
+    //console.log('[INFO] Started on port 5400');
+    console.log(success(time() + "[INFO]") + " Started on port 5400");
 });
