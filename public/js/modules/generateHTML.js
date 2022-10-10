@@ -62,7 +62,24 @@ function generateHTML(node) {
             nodeDOM += `
                     </div>
                 </div>
-            </div>
+            </div>`
+
+            if (node.type === "Variable") {
+                
+                nodeDOM += `
+                <input 
+                    type="text" 
+                    name="field" 
+                    class="form-control column" 
+                    style="margin:auto;margin-bottom:15px;width:80%;height:70%"
+                    placeholder="Variable Name"
+                    onclick="editColumn(this)" 
+                    value="${node.field}">
+                </input>`;
+
+            }
+        
+        nodeDOM += `
         </div>
     </div>`;
 
