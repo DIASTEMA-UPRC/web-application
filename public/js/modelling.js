@@ -128,12 +128,25 @@ $(document).ready(function() {
 				case "Saved Function":
 					node.name = dom.dataset.name;
 					node.inptypes = [];
+					node.inpnames = [];
+
 					let types = dom.dataset.inptypes.split(",");
 					types.forEach((type,index)=>{
 						type.split(" ").forEach((t,i)=>{
 							if (t !== "") {
 								if (t!=="\n") {
 									node.inptypes.push(t);
+								}
+							}
+						})
+					})
+
+					let names = dom.dataset.inpnames.split(",");
+					names.forEach((name,index)=>{
+						name.split(" ").forEach((t,i)=>{
+							if (t !== "") {
+								if (t!=="\n") {
+									node.inpnames.push(t);
 								}
 							}
 						})
@@ -771,41 +784,6 @@ function editNode(element) {
 				console.log(error);
 			}
 
-		// } else if (node.id === "datasetFeatures") {
-		// 	diagram[pos].selectedFeature = node.value;
-
-		// 	let dataset = node.previousElementSibling.value;
-
-		// 	try {
-		// 		var resp = await fetch("/datasets/features", {
-		// 			method: "POST",
-		// 			headers: {
-		// 				'Accept': 'application/json',
-		// 				'Content-Type': 'application/json',
-		// 			},
-		// 			body: JSON.stringify({dataset:dataset})
-		// 		});
-		// 		var feats = await resp.json();
-		// 	} catch (error) {
-		// 		console.log(error);
-		// 	}
-			
-		// 	feats.forEach((feat) => {
-		// 		if (feat.name === node.value) {
-		// 			if (feat.positive === true) {
-		// 				toastr.info("Feature contains all positive numbers", "Notification:");
-		// 			} else if (feat.negative === true) {
-		// 				toastr.info("Feature contains all negative numbers", "Notification:");
-		// 			} else if (feat.positive === false && feat.negative === false) {
-		// 				if (feat["all-zero"] === true) {
-		// 					toastr.info("Feature contains all zeros", "Notification:");
-		// 				} else {
-		// 					toastr.info("Feature contains both positive and negative numbers", "Notification:");
-		// 				}
-		// 			}
-		// 		}
-		// 	});
-
 		} else {
 			diagram[pos].property = node.value;
 		}
@@ -873,10 +851,17 @@ function editColumn(element) {
 		for (s in diagram) {
 			if (diagram[s]._id == elemid) {
 
+				console.log(s);
+
 				diagram[s].field[$(this)[0].id] = $(this).val();
+
+				let type = $(this)[0].previousElementSibling.innerHTML.split(" ")[1].replace(/[{()}]/g, '');
 
 				if (isNaN($(this).val())) {
 					toastr.error("Please enter a numeric value.", "Notification:");
+					$(this).val("")
+				} else if (type === "int" && $(this).val() % 1 !== 0) {
+					toastr.error("Please enter an integer value.", "Notification:");
 					$(this).val("")
 				}
 
