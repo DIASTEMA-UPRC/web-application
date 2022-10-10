@@ -35,7 +35,17 @@ function generatePipelineHTML(node,dataset) {
                         <div class="flowchart-operator-connector">
                             <div class="flowchart-operator-connector-label">${i+1} (${node.inptypes[i]})</div>
                             <div class="flowchart-operator-connector-arrow" onclick="drawLine(this)"></div>
-                            <input type="text" id="${i}" name="func_input_col" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="${node.field[i]}"></input>
+                            <input 
+                                type="text" id="${i}" 
+                                name="func_input_col" 
+                                class="form-control column" 
+                                style="margin:auto auto 15px 
+                                auto;width:80%;height:70%" 
+                                onclick="editColumn(this)" 
+                                value="${node.field[i]}"
+                                placeholder="${node.inpnames[i]}"
+                            >
+                            </input>
                             <div class="flowchart-operator-connector-small-arrow"></div> 
                         </div>
                         `
@@ -52,7 +62,16 @@ function generatePipelineHTML(node,dataset) {
                             }
 
                             nodeDOM += `
-                            <input type="text" id="${i}" name="func_input_num" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="${node.field[i]}"></input>
+                            <input 
+                                type="text" id="${i}" 
+                                name="func_input_num" 
+                                class="form-control column" 
+                                style="margin:auto auto 15px auto;width:80%;height:70%" 
+                                onclick="editColumn(this)" 
+                                value="${node.field[i]}"
+                                placeholder="${node.inpnames[i]}"
+                            >
+                            </input>
                             <div class="flowchart-operator-connector-small-arrow"></div>
                         </div>
                         `
