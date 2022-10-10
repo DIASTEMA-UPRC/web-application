@@ -12,7 +12,7 @@
     "docker:downprod": "docker-compose --project-directory ./  -f ./docker/docker-compose.prod.yml down",
     "docker:build": "docker-compose --project-directory ./  -f ./docker/docker-compose.dev.yml up -d --build",
     "push:all": "git add . && git commit -m \"general updates\" && git push origin master",
-    "push:readme": "git add README.md && git commit -m \"Update README.md\" && git push origin master"
+    "push:readme": "git add README.md && git commit -m \"📚 docs: Updated Docs\" && git push origin master"
   },
   "keywords": [],
   "author": "Andreas Karabetian",
@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "body-parser": "^1.20.0",
+    "chalk": "^4.1.2",
     "connect-mongo": "^4.6.0",
     "ejs": "^3.1.8",
     "express": "^4.18.1",
