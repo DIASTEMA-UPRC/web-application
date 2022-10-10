@@ -270,6 +270,7 @@
 
                         <!-- Collected Datasets -->
                         <div class="card" style="margin-top: 16px; height: inherit;">
+
                             <div class="card-head">
                                 <i class='bx bx-cabinet'></i>
                                 <h5 class="card-title">Collected Data</h5>
@@ -293,7 +294,14 @@
 
                                                         <b>Method:</b> <span class="tag"><%= set.requestData.method %></span> |
 
-                                                        <b>URL:</b> <span class="tag"><%= set.requestData.url %></span>
+                                                        <b>URL:</b> <span class="tag"><%= set.requestData.url %></span> |
+
+                                                        <% if ('features' in set["_doc"]) { %>
+                                                            <b>Features:</b> <span class="tag" style="background-color:#6ac679;color:white">TRUE</span>
+                                                        <% } else { %>
+                                                            <%=  %>
+                                                            <b>Features:</b> <span class="tag" style="background-color:#fc575d;color:white">FALSE</span>
+                                                        <% } %>
                                                     </div>
 
                                                 </div>
