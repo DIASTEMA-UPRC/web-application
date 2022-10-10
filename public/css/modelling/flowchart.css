@@ -157,6 +157,7 @@
 .flowchart-operator-function, .flowchart-operator-variable {
     position: absolute;
     min-width: 10rem;
+    max-width: 11rem;
     border-radius: 8px;
     background: white;
     pointer-events: auto;
