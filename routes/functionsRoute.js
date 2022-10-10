@@ -79,9 +79,7 @@ router.route("/functions/save")
     })
 
 router.route("/functions/delete")
-    .post((req,res)=>{
-
-        console.log(req.body);
+    .post((req,res)=> {
 
         let id = req.body.id;
 
