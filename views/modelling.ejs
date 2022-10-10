@@ -244,6 +244,12 @@
                                                     <%= func.args[arg].type+',' %> 
                                                 <% } %>
                                             "
+                                            data-inpnames=
+                                            "
+                                                <% for (var arg in func.args) { %>
+                                                    <%= func.args[arg].name+',' %> 
+                                                <% } %>
+                                            "
                                             data-outputs="1"
                                             data-outputtype="<%= func.output_type %>"
                                             data-type="Saved Function"
