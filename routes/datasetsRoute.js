@@ -58,7 +58,7 @@ router.route("/datasets")
             requestData: data["ingestion_json"]
         });
         dataset.save()
-        console.log("[INFO] Dataset metadata saved to MongoDB!");
+        console.log("[INFO] Dataset saved to MongoDB");
 
         // Send data to Orchestrator
         fetch(ORCHESTRATOR_INGESTION_URL, {
@@ -66,7 +66,8 @@ router.route("/datasets")
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(data)
         }).then(res => {
-            console.log("[INFO] Ingestion data sent to orchestrator!", res);
+            console.log("[INFO] Ingestion data sent to orchestrator");
+            console.log("[INFO] Response status from orchestrator:", res.status);
         });
 
         res.sendStatus(200);

@@ -38,7 +38,8 @@ router.route("/messages")
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(data.info)
                 }).then(res => {
-                    console.log("[INFO] Graph data sent to orchestrator!", res);
+                    console.log("[INFO] Pipeline deployed to orchestrator");
+                    console.log("[INFO] Response status from orchestrator:", res.status);
                 });
 
                 res.sendStatus(200);
