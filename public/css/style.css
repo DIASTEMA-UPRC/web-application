@@ -59,6 +59,13 @@ body {
     min-height: 100vh;
 }
 
+input[type=checkbox] {
+    accent-color: var(--primary-color);
+}
+
+input[type=checkbox]:hover {
+    cursor: pointer;
+}
 
 .input-group select {
     border: none;
@@ -457,6 +464,11 @@ nav.close ~ .dashboard .top{
     cursor: pointer;
     border-radius: 25% !important;
     background: var(--highlight-color);
+}
+
+.collected-actions:hover {
+    color: var(--primary-color) !important;
+    cursor: pointer;
 }
 
 .pipeline-line {

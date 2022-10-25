@@ -2,7 +2,7 @@
 function generateHTML(node) {
 
     let nodeDOM = 
-    `<div onclick="editNode(this)">
+    `<div onclick="editNode(this)" style="border: 7px solid transparent">
         <div id="tool" class="flowchart-default-operator draggable_operator ${node.inputs == 0 ? "flowchart-operator-variable" : "flowchart-operator-function"}"
             data-nb-inputs="${node.inputs}" 
             data-nb-outputs="${node.outputs}"
