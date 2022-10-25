@@ -1,7 +1,7 @@
 
 function generatePipelineHTML(node,dataset) {
     let nodeDOM = 
-    `<div onclick="editNode(this)">
+    `<div onclick="editNode(this)" style="border: 7px solid transparent">
         <div id="tool" class="flowchart-default-operator draggable_operator flowchart-operator" 
             data-nb-inputs="${node.inputs}" 
             data-nb-outputs="${node.outputs}"
@@ -159,6 +159,13 @@ function generatePipelineHTML(node,dataset) {
                                 
                                 <label for="field" style="margin-bottom:-3px;">Use column:</label>
                                 <input type="text" name="field" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="${node.field}"></input>
+                                `
+                    break;
+                case "Clustering":
+                    nodeDOM += `<select name="nodeProperty" id="nodeProperty" onchange="changeProperty(this)" style="margin:5px auto 10px auto;">
+                                    <option selected="true" disabled="disabled" value="default">${node.property}</option>
+                                    <option value="K-means">K-means</option>
+                                </select>
                                 `
                     break;
                 case "Cleaning":
