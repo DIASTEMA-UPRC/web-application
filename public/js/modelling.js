@@ -27,32 +27,42 @@ toastr.options = {
 // Notifications counter
 let i = 0;
 let first = true;
-socket.on('Modeller', (update) => {
-	const date = new Date();
-	i++;
-	$('#alerts').html(i)
+socket.on('Modeller', (message) => {
 
-	if (first) {
-		// Add to notifications list
-		$('#notif_list').append(" \
-			<a gtm-id='Notifications' class='dropdown-item' style='padding: 10px 30px 10px 30px;'> \
-				<p class='small text-uppercase mb-2'>"+ ('0'+date.getHours()).slice(-2) + ":" + ('0'+date.getMinutes()).slice(-2) + ":" + ('0'+date.getSeconds()).slice(-2) +"</p> \
-				<p style='color:#5f5f5f' class='mb-0'>Update: " + update + "</p> \
-			</a> \
-		");
-		first = false;
-	} else {
-		// Add to notifications list
-		$('#notif_list').append(" \
-			<a gtm-id='Notifications' class='dropdown-item' style='padding: 10px 30px 10px 30px;border-top:2px solid #3a91b33f'> \
-				<p class='small text-uppercase mb-2'>"+ ('0'+date.getHours()).slice(-2) + ":" + ('0'+date.getMinutes()).slice(-2) + ":" + ('0'+date.getSeconds()).slice(-2) +"</p> \
-				<p style='color:#5f5f5f' class='mb-0'>Update: " + update + "</p> \
-			</a> \
-		");
+	const status = message.status;
+	const info = message.message;
+
+	if (status === "update") {
+		const date = new Date();
+		i++;
+		$('#alerts').html(i)
+	
+		if (first) {
+			// Add to notifications list
+			$('#notif_list').append(" \
+				<a gtm-id='Notifications' class='dropdown-item' style='padding: 10px 30px 10px 30px;'> \
+					<p class='small text-uppercase mb-2'>"+ ('0'+date.getHours()).slice(-2) + ":" + ('0'+date.getMinutes()).slice(-2) + ":" + ('0'+date.getSeconds()).slice(-2) +"</p> \
+					<p style='color:#5f5f5f' class='mb-0'>Update: " + info + "</p> \
+				</a> \
+			");
+			first = false;
+		} else {
+			// Add to notifications list
+			$('#notif_list').append(" \
+				<a gtm-id='Notifications' class='dropdown-item' style='padding: 10px 30px 10px 30px;border-top:2px solid #3a91b33f'> \
+					<p class='small text-uppercase mb-2'>"+ ('0'+date.getHours()).slice(-2) + ":" + ('0'+date.getMinutes()).slice(-2) + ":" + ('0'+date.getSeconds()).slice(-2) +"</p> \
+					<p style='color:#5f5f5f' class='mb-0'>Update: " + info + "</p> \
+				</a> \
+			");
+		}
+	
+		// Send push notification
+		toastr.info(info, "Notification:");
+	} else if (status === "error") {
+		// Send push notification
+		toastr.error(info, "Notification:");
 	}
-
-	// Send push notification
-	toastr.info(update, "Notification:");
+	
 });
 
 // Reset bell counter
@@ -104,6 +114,10 @@ $(document).ready(function() {
 					node.property = "Select Algorithm"
 					break;
 				case "Regression":
+					node.field = ''
+					node.property = "Select Algorithm"
+					break;
+				case "Clustering":
 					node.field = ''
 					node.property = "Select Algorithm"
 					break;
@@ -331,7 +345,7 @@ $(document).ready(function() {
 			}
 
 			// Properties specific to the Classification and Regression jobs
-			if (data.nodes[m].type === "Classification" || data.nodes[m].type === "Regression") {
+			if (data.nodes[m].type === "Classification" || data.nodes[m].type === "Regression" || data.nodes[m].type === "Clustering") {
 				job.algorithm = data.nodes[m].property.toLowerCase();
 				if (job.algorithm === "select algorithm") job.algorithm = false;
 				job.column = data.nodes[m].field.toLowerCase();
@@ -708,6 +722,16 @@ function drawLine(item) {
 			return;
 		}
 
+		// Check for output - output connection
+		const dot1 = dots[0].previousElementSibling.innerHTML
+		const dot2 = dots[1].previousElementSibling.innerHTML
+		if ( (dot1 === "Output" && dot2 === "Output") || dot2 === "Output" ) {
+			toastr.error("Invalid connection.", "Notification:");
+			count = 0;
+			dots= [];
+			return;
+		}
+
 		// Draw the line
 		var line = new LeaderLine(
 			LeaderLine.pointAnchor(dots[0]),
@@ -751,11 +775,21 @@ function editNode(element) {
 		}
 	}
 
-	// Click on title to show delete
+	// Click on title to show delete and select
 	try {
-		$("#"+elemid).click(function(event){
+		$("#"+elemid).click(function(event) {
 			event.stopPropagation();
 			$("#delete_node").show();
+
+			// Add selected class (blue border) to selected node
+			$('.ui-draggable').each(function(i, obj) {
+				if (obj.id == elemid) {
+					$("#"+elemid).addClass( 'selected-node');
+				} else {
+					$(obj).removeClass('selected-node');
+				}
+			});
+
 		});
 	} catch(err) {
 		console.log(err);
@@ -788,29 +822,48 @@ function editNode(element) {
 			diagram[pos].property = node.value;
 		}
 	}
+}
 
-	// Click button to delete node and re-render diagram
-	window.deleteNode = function () {
-		for (j in linesArray) {
-			if (linesArray[j].from == elemid || linesArray[j].to == elemid) {
-				tobedeleted.push(linesArray[j]);
-				linepos.push(parseInt(j));
+function getSelectedNode() {
+	
+	$('.ui-draggable').each(function(i, obj) {
+		if ($(obj).is('.selected-node')) {
+			deleteNode(obj.id);
+		}
+	});
+
+}
+
+function deleteNode(elemid) {
+
+	// Find position of selected node in diagram array
+	for (s in diagram) {
+		if (diagram[s]._id == elemid) {
+			var pos = s;
+		}
+	}
+
+	for (j in linesArray) {
+		if (linesArray[j].from == elemid || linesArray[j].to == elemid) {
+			tobedeleted.push(linesArray[j]);
+			linepos.push(parseInt(j));
+		}
+	}
+	for (g in tobedeleted) {
+		for (f in linesArray) {
+			if (tobedeleted[g]._id == linesArray[f]._id) {
+				linesArray.splice(f,1);
 			}
 		}
-		for (g in tobedeleted) {
-			for (f in linesArray) {
-				if (tobedeleted[g]._id == linesArray[f]._id) {
-					linesArray.splice(f,1);
-				}
-			}
-			tobedeleted[g].remove();
-		}
-		tobedeleted = [];
-		linepos = [];
+		tobedeleted[g].remove();
+	}
+	tobedeleted = [];
+	linepos = [];
 
+	if (pos != undefined) {
 		diagram.splice(pos,1);
 		renderDiagram(diagram);
-	};
+	}
 }
 
 function editColumn(element) {
@@ -995,4 +1048,26 @@ $('html').click(function() {
 
 	console.log(diagram);
 	console.log(linesArray);
+
+	$('.ui-draggable').each(function(i, obj) {
+		$(obj).removeClass('selected-node');
+	});
+});
+
+// When DEL key is pressed get selected node and delete it
+$('html').keydown(function(e){
+	if (e.keyCode == 46) {
+		
+		getSelectedNode()
+		$("#delete_node").hide();
+
+	} else if (e.key === 'Escape') {
+
+		$('.ui-draggable').each(function(i, obj) {
+			$(obj).removeClass('selected-node');
+		});
+	
+		$("#delete_node").hide();
+	}
+	
 });
