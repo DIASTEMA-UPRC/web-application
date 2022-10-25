@@ -24,33 +24,20 @@ function editNode(element) {
         $("#"+elemid).click(function(event){
             event.stopPropagation();
             $("#delete_node").show();
+
+        // Add selected class (blue border) to selected node
+        $('.ui-draggable').each(function(i, obj) {
+            if (obj.id == elemid) {
+                $("#"+elemid).addClass( 'selected-node');
+            } else {
+                $(obj).removeClass('selected-node');
+            }
+        });
+
         });
     } catch(err) {
         console.log(err);
     }
-
-    // Click button to delete node and re-render diagram
-    window.deleteNode = function () {
-        for (j in linesArray) {
-            if (linesArray[j].from == elemid || linesArray[j].to == elemid) {
-                tobedeleted.push(linesArray[j]);
-                linepos.push(parseInt(j));
-            }
-        }
-        for (g in tobedeleted) {
-            for (f in linesArray) {
-                if (tobedeleted[g]._id == linesArray[f]._id) {
-                    linesArray.splice(f,1);
-                }
-            }
-            tobedeleted[g].remove();
-        }
-        tobedeleted = [];
-        linepos = [];
-
-        diagram.splice(pos,1);
-        renderDiagram();
-    };
 
     // Change property of node object
     window.changeProperty = function (node) {
