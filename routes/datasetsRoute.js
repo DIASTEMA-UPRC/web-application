@@ -100,6 +100,13 @@ router.route("/datasets/collect")
 router.route("/datasets/test")
     .post((req,res) => {
 
+        // Create datetime
+        const d = new Date();
+        const date = ('0'+d.getDate()).slice(-2) + "-" + ('0'+(d.getMonth()+1)).slice(-2) + "-" + d.getFullYear();
+        const time = ('0'+d.getHours()).slice(-2) + ":" + ('0'+d.getMinutes()).slice(-2) + ":" + ('0'+d.getSeconds()).slice(-2) + ":" + d.getMilliseconds()
+
+        const datetime = date + " " + time;
+
         const ingestion = req.body.data
         let data = {
             "testing":true,
