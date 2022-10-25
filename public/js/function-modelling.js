@@ -303,4 +303,26 @@ $('html').click(function() {
 
 	console.log(diagram);
 	console.log(linesArray);
+
+	$('.ui-draggable').each(function(i, obj) {
+		$(obj).removeClass('selected-node');
+	});
+});
+
+// When DEL key is pressed get selected node and delete it
+$('html').keydown(function(e){
+	if (e.keyCode == 46) {
+		
+		getSelectedNode()
+		$("#delete_node").hide();
+
+	} else if (e.key === 'Escape') {
+
+		$('.ui-draggable').each(function(i, obj) {
+			$(obj).removeClass('selected-node');
+		});
+	
+		$("#delete_node").hide();
+	}
+	
 });
