@@ -19,6 +19,7 @@ function drawLine (item) {
 
 	// Set start node
 	if (count == 1) {
+		console.log("Start node: " + parents[5].firstElementChild.innerText);
 		dots.push(dot);
 		for (o in diagram) {
 			if (diagram[o]._id == id) {
@@ -29,6 +30,7 @@ function drawLine (item) {
 	// Set end node
 	} else if (count == 2) {
 
+		console.log("End node: " + parents[5].firstElementChild.innerText);
 		dots.push(dot);
 		
 		for (o in diagram) {
@@ -37,8 +39,53 @@ function drawLine (item) {
 			}
 		}
 
-		// Check if the same node was clicked twice
-		if (start_id === end_id) {
+		// LINE CHECKS -----------------------------
+		// -----------------------------------------
+		const dot1 = dots[0].previousElementSibling.innerHTML
+		const dot2 = dots[1].previousElementSibling.innerHTML
+
+		// If Output is clicked twice, then dont clear the dots
+		// Instead count just the first click as start node
+		if ((start_id === end_id) && (dot1 === "Output" && dot2 === "Output")) {
+			count = 1;
+			dots.pop();
+			return;
+		} else if ((start_id === end_id) && (dot1 === "int" && dot2 === "int")) {
+			count = 1;
+			dots.pop();
+			return;
+		} else if ((start_id === end_id) && (dot1 === "float" && dot2 === "float")) {
+			count = 1;
+			dots.pop();
+			return;
+		}
+		// Check if the same node was clicked twice 
+		else if (start_id === end_id) {
+			count = 0;
+			dots= [];
+			return;
+		}
+
+		// Connect from left to right
+		if ((dot1 === "Left" || dot1 === "Right") && dot2 === "Output") {
+			toastr.error("Please connect from left to right.", "Notification:");
+			count = 0;
+			dots= [];
+			return;
+		}
+
+		// Check for output - output connection
+		if ( (dot1 === "Output" && dot2 === "Output") || dot2 === "Output" ) {
+			console.log("Output - Output connection");
+			toastr.error("Invalid connection.", "Notification:");
+			count = 0;
+			dots= [];
+			return;
+		}
+
+		// Check for left - left / right - right / left - right / right - left connection
+		if ((dot1 === "Left" || dot1 === "Right") && (dot2 === "Left" || dot2 === "Right")) {
+			toastr.error("Invalid connection.", "Notification:");
 			count = 0;
 			dots= [];
 			return;
@@ -65,6 +112,9 @@ function drawLine (item) {
 				}
 			}
 		}
+
+		// END LINE CHECKS -----------------------------
+		// ---------------------------------------------
 
 		// Finally, draw the line
 		var line = new LeaderLine(
