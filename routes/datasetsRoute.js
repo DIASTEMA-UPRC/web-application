@@ -107,7 +107,8 @@ router.route("/datasets/test")
 
         const datetime = date + " " + time;
 
-        const ingestion = req.body
+        let ingestion = JSON.parse(req.body.body)
+
         let data = {
             "testing":true,
             "ingestion-datetime": datetime,
