@@ -107,7 +107,7 @@ router.route("/datasets/test")
 
         const datetime = date + " " + time;
 
-        const ingestion = req.body.data
+        const ingestion = req.body
         let data = {
             "testing":true,
             "ingestion-datetime": datetime,
@@ -130,7 +130,7 @@ router.route("/datasets/test")
         .then(res => {
 
             // Get type of data
-            const respType = res.headers.get("content-type");
+            //const respType = res.headers.get("content-type");
             
             if (res.status === 200) {
                 return {status:200, ans:res.text()}
