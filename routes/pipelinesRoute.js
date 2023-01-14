@@ -3,7 +3,6 @@ const router = express.Router();
 const fetch = require('node-fetch');
 
 const Pipeline = require("../models/Graph");
-const Graph = require("../models/Graph");
 const CustomFunction = require("../models/CustomFunction");
 
 const {VALIDATION_URL} = require("../config/config");
@@ -46,7 +45,7 @@ router.route("/pipelines/save")
             
         // If there is no duplicate, save pipeline
         } else {
-            const graph = new Graph ({
+            const graph = new Pipeline ({
                 analysisid: data["analysis-id"],
                 name: data["analysis-name"],
                 databaseid: data["database-id"],
@@ -68,7 +67,7 @@ router.route("/pipelines/delete")
     
         let id = req.body.id;
     
-        Graph.findOneAndRemove({ analysisid: id })
+        Pipeline.findOneAndRemove({ analysisid: id })
         .then((func) => {
             if (!func) {
                 console.log("[ERROR] Pipeline not found");
