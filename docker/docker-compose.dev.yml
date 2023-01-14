@@ -19,7 +19,7 @@ services:
   # Function Normalization Service
   normalization:
     container_name: function-normalization-service
-    image: function-normalization-server-image
+    image: adreaskar/function-normalization-dummy:latest
     ports: 
       - "5000:5000"
     environment:
@@ -67,6 +67,20 @@ services:
       - "27017:27017"
     volumes:
       - mongo-db:/data/db
+    restart: always
+
+  minio:
+    container_name: diastema-minio
+    image: minio/minio:latest
+    command: minio server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - C:\Users\Adreas\Desktop\MinIO\data:/data
+    environment:
+      - MINIO_ROOT_USER=diastema
+      - MINIO_ROOT_PASSWORD=diastema
     restart: always
 
 volumes:
