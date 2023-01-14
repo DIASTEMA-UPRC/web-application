@@ -484,7 +484,7 @@ nav.close ~ .dashboard .top{
 
 .tag {
     color: var(--primary-color);
-    padding: 3px 5px;
+    padding: 3px 6px;
     background-color: var(--highlight-color);
     border-radius: 5px;
 }
