@@ -185,6 +185,11 @@ function generatePipelineHTML(node,dataset) {
                                 `
 
                     break;
+                case "Visualization":
+                nodeDOM += `
+                            <input type="text" name="field" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="${node.field}" placeholder="Label"></input>
+                            `
+                break;
                 case "Integer":
                     nodeDOM += `<label for="field" style="margin-bottom:-3px;">Value:</label>
                                 <input type="number" step="1" pattern="^[-/d]/d*$" name="field" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="${node.field}"></input>

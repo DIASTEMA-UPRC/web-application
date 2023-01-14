@@ -139,6 +139,9 @@ $(document).ready(function() {
 					node.selectedFeature = "Select Feature"
 					node.features = []
 					break;
+				case "Visualization":
+					node.field = ''
+					break;
 				case "Saved Function":
 					node.name = dom.dataset.name;
 					node.inptypes = [];
@@ -359,6 +362,9 @@ $(document).ready(function() {
 					job["max-shrink"] = parseFloat(data.nodes[m].field);
 				}
 			}
+
+			// Properties specific to the Visualzation job
+			job.label = data.nodes[m].field;
 
 			data.jobs.push(job);
 		}
@@ -1010,7 +1016,7 @@ function validateFields() {
 		for (m in diagram) {
 
 			// Operation Nodes Validation
-			if (diagram[m].type === "Classification" || diagram[m].type === "Regression" || diagram[m].type === "Join Datasets" || diagram[m].type === "Cleaning") {
+			if (diagram[m].type === "Classification" || diagram[m].type === "Regression" || diagram[m].type === "Join Datasets" || diagram[m].type === "Cleaning" || diagram[m].type === "Visualization") {
 				if (diagram[m].field === "") {
 					toastr.error("Please fill all the required fields.", "Notification:");
 					outcome = false;
