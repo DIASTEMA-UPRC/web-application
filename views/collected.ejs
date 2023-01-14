@@ -74,17 +74,9 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/monitoring">
-                        <i class='bx bx-pulse' ></i>
-                        <span class="link-name">Monitoring</span>
-                        <span class="tag" style="margin-left: 10px; border: 3px solid var(--panel-color);">Soon</span>
-                    </a>
-                </li>
-                <li>
                     <a href="/visualization">
                         <i class='bx bx-bar-chart-square' ></i>
                         <span class="link-name">Visualization</span>
-                        <span class="tag" style="margin-left: 2px; border: 3px solid var(--panel-color);">Soon</span>
                     </a>
                 </li>
             </ul>
@@ -171,6 +163,12 @@
                                                 <div class="card-head" style="padding:4px 24px 34px 24px">
                                                     <i class='bx bx-code' ></i>
                                                     <h5 class="card-title"><%= set.label %></h5>
+
+                                                    <% if ('features' in set["_doc"]) { %>
+                                                        <span class="tag" style="margin-left:10px;background-color: #35ad5f;border-radius:50%;width:10px;height:12px"></span>
+                                                    <% } else { %>    
+                                                        <span class="tag" style="margin-left:10px;background-color: #ab4130;border-radius:50%;width:10px;height:12px"></span>
+                                                    <% } %>
                                                     
                                                     <div style="position:absolute;right:24px;display:flex;justify-content: center;align-items: center;">
                                                         <button 
@@ -202,18 +200,11 @@
                                                 <div class="card-body">
 
                                                     <div class="card-text">
-                                                        <b>ID:</b> <%= set.ingestationId %> |
+                                                        <span class="tag"><b>ID: </b><%= set.ingestationId %></span>
 
-                                                        <b>Method:</b> <span class="tag"><%= set.requestData.method %></span> |
+                                                        <span class="tag"><b>Method: </b><%= set.requestData.method %></span>
 
-                                                        <b>URL:</b> <span class="tag"><%= set.requestData.url %></span> |
-
-                                                        <% if ('features' in set["_doc"]) { %>
-                                                            <b>Features:</b> <span class="tag">TRUE</span>
-                                                        <% } else { %>
-                                                            <%=  %>
-                                                            <b>Features:</b> <span>FALSE</span>
-                                                        <% } %>
+                                                        <span class="tag"><b>URL: </b><%= set.requestData.url %></span>
                                                     </div>
 
                                                 </div>

@@ -72,17 +72,9 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/monitoring">
-                        <i class='bx bx-pulse' ></i>
-                        <span class="link-name">Monitoring</span>
-                        <span class="tag" style="margin-left: 10px; border: 3px solid var(--panel-color);">Soon</span>
-                    </a>
-                </li>
-                <li>
                     <a href="/visualization">
                         <i class='bx bx-bar-chart-square' ></i>
                         <span class="link-name">Visualization</span>
-                        <span class="tag" style="margin-left: 2px; border: 3px solid var(--panel-color);">Soon</span>
                     </a>
                 </li>
             </ul>
@@ -175,7 +167,6 @@
                                 <i class='bx bx-info-circle'></i>
                                 <h5 class="card-title">Pipelines</h5>
                             </div>
-                            
 
                             <div class="inner-card-padding">
                                 <div class="card-body">
@@ -195,7 +186,6 @@
                                 <i class='bx bx-info-circle'></i>
                                 <h5 class="card-title">Functions</h5>
                             </div>
-                            
 
                             <div class="inner-card-padding">
                                 <div class="card-body">
@@ -215,12 +205,11 @@
                                 <i class='bx bx-info-circle'></i>
                                 <h5 class="card-title">Results</h5>
                             </div>
-                            
 
                             <div class="inner-card-padding">
                                 <div class="card-body">
                                 
-                                    <p class="card-text" style="font-size: 60px;">0</p>
+                                    <p class="card-text" style="font-size: 60px;"><%= results.length %></p>
                                 </div>
                             </div>
                             
@@ -251,24 +240,28 @@
                                             
                                             <div class="card inner-card">
                                                 <div class="card-head" style="padding:0 24px 10px 24px">
-                                                    <i class='bx bx-code' ></i>
+                                                    <i class='bx bx-git-repo-forked' ></i>
                                                     <h5 class="card-title"><%= pipeline.name %></h5>
                                                 </div>
                                                 <div class="card-body">
                                                     
                                                     <div class="pipeline-line" style="margin-top:15px">
-                                                        <span style="margin-right:20px"><b>Jobs: </b><%= pipeline.jobs.length %></span>
+                                                        <span class="tag"><b>Jobs: </b><%= pipeline.jobs.length %></span>
 
                                                         <% let sets = [...new Set(pipeline.metadata.datasets)] %>
 
-                                                        <span style="margin-right:14px"><b>Datasets: </b>
-
-                                                        <% for (var set of sets) {%>
-                                                            <span style="margin-right:6px"><%= set %> </span>
-                                                        <% } %>
+                                                        <span class="tag"><b>Datasets: </b>
+                                                            <% for (var set of sets) {%>
+                                                                <%= set %>
+                                                            <% } %>
                                                         </span>
 
-                                                        <span style="margin-right:20px"><b>Date: </b><%= pipeline.metadata["analysis-date"] %></span>
+                                                        <span class="tag"><b>Date: </b><%= pipeline.metadata["analysis-date"] %></span>
+
+                                                        <% if (pipeline.status == "completed"){ %>
+                                                            <span class="tag" style="background-color: #35ad5f;color:white"><%= pipeline.status %></span>
+                                                        <% } %>
+
                                                     </div>
 
                                                 </div>
@@ -308,11 +301,11 @@
                                                 <div class="card-body">
 
                                                     <div class="pipeline-line" style="margin-top:15px">
-                                                        <span style="margin-right:20px"><b>Arguments: </b><%= func.args.length %></span>
+                                                        <span class="tag"><b>Arguments: </b><%= func.args.length %></span>
 
-                                                        <span style="margin-right:20px"><b>Output Type: </b><%= func.output_type %></span>
+                                                        <span class="tag"><b>Date: </b><%= func.metadata["function-date"] %></span>
 
-                                                        <span style="margin-right:20px"><b>Date: </b><%= func.metadata["function-date"] %></span>
+                                                        <span class="tag"><b>Output: </b><%= func.output_type %></span>
                                                     </div>
 
                                                 </div>
