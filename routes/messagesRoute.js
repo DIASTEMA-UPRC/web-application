@@ -12,7 +12,12 @@ router.route("/messages")
         switch (data.message) {
 
             case "update":
-                req.io.sockets.emit("Modeller", data.update);
+                req.io.sockets.emit("Modeller", {status:"update", message:data.update});
+                res.sendStatus(200);
+                break;
+
+            case "error":
+                req.io.sockets.emit("Modeller", {status:"error", message:data.error});
                 res.sendStatus(200);
                 break;
 
@@ -38,7 +43,8 @@ router.route("/messages")
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(data.info)
                 }).then(res => {
-                    console.log("[INFO] Graph data sent to orchestrator!", res);
+                    console.log("[INFO] Pipeline deployed to orchestrator");
+                    console.log("[INFO] Response status from orchestrator:", res.status);
                 });
 
                 res.sendStatus(200);

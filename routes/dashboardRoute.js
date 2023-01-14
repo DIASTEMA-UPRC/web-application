@@ -31,6 +31,13 @@ router.route("/dashboard")
             console.log(err);
         }
 
+        // Get all completed pipelines (results) from database
+        try {
+            var results = await Pipeline.find({"metadata.user": username, status: "completed"});
+        } catch (err) {
+            console.log(err);
+        }
+
         const organization = req.session.organization;
         const property = req.session.property;
         const image = req.session.image;
@@ -42,7 +49,8 @@ router.route("/dashboard")
             img:image,
             pipelines:pipelines,
             functions:functions,
-            datasets:datasets
+            datasets:datasets,
+            results:results
         });
     })
 

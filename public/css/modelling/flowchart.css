@@ -109,6 +109,11 @@
 
 /* PIPELINE MODELLING OPERATOR */
 
+.selected-node {
+    border: 7px solid #86bffc !important;
+    border-radius: 15px;
+} 
+
 .flowchart-operator {
     /* position: absolute;
     width: 140px;

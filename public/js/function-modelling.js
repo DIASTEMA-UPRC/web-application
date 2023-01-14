@@ -93,25 +93,30 @@ canvas.droppable({
 			outputs:parseInt(dom.dataset.outputs),
 			color:dom.dataset.color
 		}
-		
-		// Find custom function input types
-		if (node.type === "Saved-Function") {
-			node.inptypes = [];
-			let types = dom.dataset.inptypes.split(",");
-			types.forEach((type,index)=>{
-				type.split(" ").forEach((t,i)=>{
-					if (t !== "") {
-						if (t!=="\n") {
-							node.inptypes.push(t);
+
+		switch (node.type) {
+			case "Saved-Function":
+				node.inptypes = [];
+				let types = dom.dataset.inptypes.split(",");
+				types.forEach((type,index)=>{
+					type.split(" ").forEach((t,i)=>{
+						if (t !== "") {
+							if (t!=="\n") {
+								node.inptypes.push(t);
+							}
 						}
-					}
+					})
 				})
-			})
-
-			node.outputtype = dom.dataset.outputtype;
-			node.lines = []
+	
+				node.outputtype = dom.dataset.outputtype;
+				node.lines = []
+				break;
+			case "Variable":
+				node.field = '';
+				break;
+			default:
+				break;
 		}
-
 		// Adjust position of the node
 		node.position.top +=25;
 
@@ -127,72 +132,75 @@ $('#save_graph').click(async ()=>{
 		toastr.error("Please give a name to your function.", "Notification:");
 	} else {
 
-		let name = $("#save_graph_input").val()
+		if (validateFields()) {
+			
+			let name = $("#save_graph_input").val()
 
-		let data = generateData(name);
+			let data = generateData(name);
 
-		// Manage complex function
-		if (data.metadata["function-type"] === "complex") {
+			// Manage complex function
+			if (data.metadata["function-type"] === "complex") {
 
-			// Turn complex function to simple
-			try {
-				var resp = await fetch("/messages", {
-					method: 'POST',
-					headers: {'Content-Type': 'application/json'},
-					body: JSON.stringify({message:"save-complex", info:data})
-				});
-				var response = await resp.json();
-			} catch (error) {
-				console.log(error);	
-			}
+				// Turn complex function to simple
+				try {
+					var resp = await fetch("/messages", {
+						method: 'POST',
+						headers: {'Content-Type': 'application/json'},
+						body: JSON.stringify({message:"save-complex", info:data})
+					});
+					var response = await resp.json();
+				} catch (error) {
+					console.log(error);	
+				}
 
-			// Send function to server
-			try {
-				let resp = await fetch("/functions/save", {
-					method: 'POST',
-					headers: {'Content-Type': 'application/json'},
-					body: JSON.stringify(response)
-				})
-				var serverRes = await resp;
-			} catch (error) {
-				console.log(error);
-			}
+				// Send function to server
+				try {
+					let resp = await fetch("/functions/save", {
+						method: 'POST',
+						headers: {'Content-Type': 'application/json'},
+						body: JSON.stringify(response)
+					})
+					var serverRes = await resp;
+				} catch (error) {
+					console.log(error);
+				}
 
-			// Check for duplicate name
-			if (serverRes.statusText === "OK") {
-				$("#save_graph_input").val("")
-				$('#saveGraphModal').modal('hide');
-		
-				sessionStorage.setItem("showmsg", "1");
-		
-				window.location.replace("/function-modelling");
+				// Check for duplicate name
+				if (serverRes.statusText === "OK") {
+					$("#save_graph_input").val("")
+					$('#saveGraphModal').modal('hide');
+			
+					sessionStorage.setItem("showmsg", "1");
+			
+					window.location.replace("/function-modelling");
+				} else {
+					toastr.error("This name is used by another function.", "Notification:");
+				}
+
+			// Function was simple so save it
 			} else {
-				toastr.error("This name is used by another function.", "Notification:");
-			}
+				try {
+					let resp = await fetch("/functions/save", {
+						method: 'POST',
+						headers: {'Content-Type': 'application/json'},
+						body: JSON.stringify(data)
+					})
+					var serverRess = await resp;
+				} catch (error) {
+					console.log(error);
+				}
 
-		// Function was simple so save it
-		} else {
-			try {
-				let resp = await fetch("/functions/save", {
-					method: 'POST',
-					headers: {'Content-Type': 'application/json'},
-					body: JSON.stringify(data)
-				})
-				var serverRess = await resp;
-			} catch (error) {
-				console.log(error);
-			}
-
-			// Check for duplicate name
-			if (serverRess.statusText === "OK") {
-				$("#save_graph_input").val("")
-				$('#saveGraphModal').modal('hide');
-		
-				sessionStorage.setItem("showmsg", "1");
-		
-				window.location.replace("/function-modelling");
-			} else {
-				toastr.error("This name is used by another function.", "Notification:");
+				// Check for duplicate name
+				if (serverRess.statusText === "OK") {
+					$("#save_graph_input").val("")
+					$('#saveGraphModal').modal('hide');
+			
+					sessionStorage.setItem("showmsg", "1");
+			
+					window.location.replace("/function-modelling");
+				} else {
+					toastr.error("This name is used by another function.", "Notification:");
+				}
 			}
 		}
 	}
@@ -295,4 +303,26 @@ $('html').click(function() {
 
 	console.log(diagram);
 	console.log(linesArray);
+
+	$('.ui-draggable').each(function(i, obj) {
+		$(obj).removeClass('selected-node');
+	});
+});
+
+// When DEL key is pressed get selected node and delete it
+$('html').keydown(function(e){
+	if (e.keyCode == 46) {
+		
+		getSelectedNode()
+		$("#delete_node").hide();
+
+	} else if (e.key === 'Escape') {
+
+		$('.ui-draggable').each(function(i, obj) {
+			$(obj).removeClass('selected-node');
+		});
+	
+		$("#delete_node").hide();
+	}
+	
 });

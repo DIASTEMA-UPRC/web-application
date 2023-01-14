@@ -1,7 +1,7 @@
 # Diastema web app
 
 ## Description
-The web application of the project, utilizing a basic nodejs [[1]](#1) express [[2]](#2) API for all the different routes and functionalities. These include:
+The web application of the project, utilizing a basic Node.js [[1]](#1) express [[2]](#2) API for all the different routes and functionalities. These include:
 - An interactive Dashboard
 - The Process Modelling component
 - Dataset management interface
@@ -12,7 +12,7 @@ The web application of the project, utilizing a basic nodejs [[1]](#1) express [
 ## How to use
 
 ### Prerequisites
-- NodeJS [[1]](#1)
+- Node.js
 - Docker [[3]](#3)
 - [Orchestrator Service](https://github.com/DIASTEMA-UPRC/orchestrator)
 
@@ -22,11 +22,19 @@ Create a `.env` file containing the following:
 
 ```
 PORT=5400
+
 MONGO_URL=mongodb://mongo/
-ORCHESTRATOR_URL=http://orchestrator:5002/analysis
-ORCHESTRATOR_INGESTION_URL=http://orchestrator:5002/ingestion
+
+MINIO_URL=host.docker.internal
+MINIO_ACCESS_KEY=diastema
+MINIO_SECRET_KEY=diastema
+
+ORCHESTRATOR_URL=http://83.212.238.166:50001/analysis
+ORCHESTRATOR_INGESTION_URL=http://83.212.238.166:50001/ingestion
+
 NORMALIZATION_URL=http://normalization:5000/normalize
 VALIDATION_URL=http://validation:5001/validation
+
 NODE_ENV=development
 ```
 
@@ -40,7 +48,8 @@ The development script will also start some required services as containers:
 - [Function Normalization Service](https://github.com/DIASTEMA-UPRC/complex-function-normalization)
 - [Graph Validation Service](https://github.com/DIASTEMA-UPRC/graph-validation-service)
 - A dummy [Data Verifier Service](https://github.com/DIASTEMA-UPRC/data-verifier)
-- And a MongoDB [[4]](#4) database
+- A MongoDB [[4]](#4) database
+- And a MinIO [[5]](#5) object storage
 
 You can now visit [http://localhost:5400](http://localhost:5400) where the application will be running.
 
@@ -57,6 +66,7 @@ Some additional npm scripts have been created to execute complex Docker commands
 2. <a id="2">https://expressjs.com/</a>
 3. <a id="3">https://www.docker.com/</a>
 4. <a id="4">https://www.mongodb.com/</a>
+5. <a id="5">https://min.io/</a>
 
 ## License
 Licensed under the [Apache License Version 2.0](LICENSE) by [Andreas Karabetian](https://github.com/adreaskar) for the research project Diastema

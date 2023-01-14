@@ -2,7 +2,7 @@
 function generateHTML(node) {
 
     let nodeDOM = 
-    `<div onclick="editNode(this)">
+    `<div onclick="editNode(this)" style="border: 7px solid transparent">
         <div id="tool" class="flowchart-default-operator draggable_operator ${node.inputs == 0 ? "flowchart-operator-variable" : "flowchart-operator-function"}"
             data-nb-inputs="${node.inputs}" 
             data-nb-outputs="${node.outputs}"
@@ -62,7 +62,24 @@ function generateHTML(node) {
             nodeDOM += `
                     </div>
                 </div>
-            </div>
+            </div>`
+
+            if (node.type === "Variable") {
+                
+                nodeDOM += `
+                <input 
+                    type="text" 
+                    name="field" 
+                    class="form-control column" 
+                    style="margin:auto;margin-bottom:15px;width:80%;height:70%"
+                    placeholder="Variable Name"
+                    onclick="editColumn(this)" 
+                    value="${node.field}">
+                </input>`;
+
+            }
+        
+        nodeDOM += `
         </div>
     </div>`;
 

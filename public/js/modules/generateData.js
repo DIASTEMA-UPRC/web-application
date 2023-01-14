@@ -48,33 +48,22 @@ function generateData(name) {
 			"info": {}
 		};
 
-		// Args setup ------------------------
+		// Args setup -----------------------------
 		if (args_map[node.property] != undefined) {
 			arg_count++;
 			
 			var arg = {
 				"type": args_map[node.property],
-				"name": "",
+				"name": node.field,
 				"arg_id":arg_count
 			}
 
 			data.args.push(arg);
 
-			// linesArray.forEach((line) => {
-			// 	if (line.from == node._id && line.to_type == "Left") {
-			// 		data.args[0] = arg;	
-			// 	} else if (line.from == node._id && line.to_type == "Right") {
-			// 		data.args[1] = arg;	
-			// 	} else if (line.from == node._id && line.to_type.includes(arg.type)) {
-			// 		let index = line.to_type.split(" ")[0];
-			// 		data.args[index] = arg;
-			// 	}
-			// });
-
 			// it is a variable node
 			expression.info.kind = "arg";
 			expression.info.type = args_map[node.property];
-			expression.info.name = "";
+			expression.info.name = node.field;
 			expression.info.arg_id = arg_count;
 		} else {
 

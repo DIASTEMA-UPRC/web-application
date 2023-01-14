@@ -1,7 +1,7 @@
 
 function generatePipelineHTML(node,dataset) {
     let nodeDOM = 
-    `<div onclick="editNode(this)">
+    `<div onclick="editNode(this)" style="border: 7px solid transparent">
         <div id="tool" class="flowchart-default-operator draggable_operator flowchart-operator" 
             data-nb-inputs="${node.inputs}" 
             data-nb-outputs="${node.outputs}"
@@ -35,7 +35,17 @@ function generatePipelineHTML(node,dataset) {
                         <div class="flowchart-operator-connector">
                             <div class="flowchart-operator-connector-label">${i+1} (${node.inptypes[i]})</div>
                             <div class="flowchart-operator-connector-arrow" onclick="drawLine(this)"></div>
-                            <input type="text" id="${i}" name="func_input_col" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="${node.field[i]}"></input>
+                            <input 
+                                type="text" id="${i}" 
+                                name="func_input_col" 
+                                class="form-control column" 
+                                style="margin:auto auto 15px 
+                                auto;width:80%;height:70%" 
+                                onclick="editColumn(this)" 
+                                value="${node.field[i]}"
+                                placeholder="${node.inpnames[i]}"
+                            >
+                            </input>
                             <div class="flowchart-operator-connector-small-arrow"></div> 
                         </div>
                         `
@@ -52,7 +62,16 @@ function generatePipelineHTML(node,dataset) {
                             }
 
                             nodeDOM += `
-                            <input type="text" id="${i}" name="func_input_num" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="${node.field[i]}"></input>
+                            <input 
+                                type="text" id="${i}" 
+                                name="func_input_num" 
+                                class="form-control column" 
+                                style="margin:auto auto 15px auto;width:80%;height:70%" 
+                                onclick="editColumn(this)" 
+                                value="${node.field[i]}"
+                                placeholder="${node.inpnames[i]}"
+                            >
+                            </input>
                             <div class="flowchart-operator-connector-small-arrow"></div>
                         </div>
                         `
@@ -142,6 +161,13 @@ function generatePipelineHTML(node,dataset) {
                                 <input type="text" name="field" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="${node.field}"></input>
                                 `
                     break;
+                case "Clustering":
+                    nodeDOM += `<select name="nodeProperty" id="nodeProperty" onchange="changeProperty(this)" style="margin:5px auto 10px auto;">
+                                    <option selected="true" disabled="disabled" value="default">${node.property}</option>
+                                    <option value="K-means">K-means</option>
+                                </select>
+                                `
+                    break;
                 case "Cleaning":
                     nodeDOM += `<label for="field" style="margin-bottom:-3px;">Max Shrink:</label>
                                 <input type="text" inputmode="numeric" name="field" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="${node.field}"></input>
@@ -159,6 +185,11 @@ function generatePipelineHTML(node,dataset) {
                                 `
 
                     break;
+                case "Visualization":
+                nodeDOM += `
+                            <input type="text" name="field" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="${node.field}" placeholder="Label"></input>
+                            `
+                break;
                 case "Integer":
                     nodeDOM += `<label for="field" style="margin-bottom:-3px;">Value:</label>
                                 <input type="number" step="1" pattern="^[-/d]/d*$" name="field" class="form-control column" style="margin:auto auto 15px auto;width:80%;height:70%" onclick="editColumn(this)" value="${node.field}"></input>

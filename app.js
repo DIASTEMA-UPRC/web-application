@@ -10,6 +10,7 @@ const session = require('express-session');
 const { MONGO_URL, PORT} = require("./config/config");
 
 // Database connection -----------------------------------------------------------------------------
+mongoose.set('strictQuery', false);
 mongoose.connect(MONGO_URL + "UIDB");
 
 // Routes imports ----------------------------------------------------------------------------------
