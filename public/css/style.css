@@ -530,6 +530,23 @@ nav.close ~ .dashboard .top{
     border-radius: 7px;
 }
 
+.vis-filter {
+    padding: 3px 7px;
+    border: 2px solid var(--secondary-color);
+    border-radius: 5px;
+}
+
+.vis-filter:not(:last-child) {
+    margin-right: 10px;
+}
+
+.vis-filter:hover, .vis-filter-selected {
+    cursor: pointer;
+    border-color: transparent;
+    background-color: var(--highlight-color);
+    color: var(--primary-color);
+}
+
 @media (max-width: 1116px) {
     nav {
         width: 73px;
