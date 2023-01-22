@@ -364,8 +364,10 @@ $(document).ready(function() {
 			}
 
 			// Properties specific to the Visualzation job
-			job.label = data.nodes[m].field;
-
+			if (data.nodes[m].type == "Visualization") {
+				job.label = data.nodes[m].field;
+			}
+			
 			data.jobs.push(job);
 		}
 
@@ -569,7 +571,7 @@ $(document).ready(function() {
 
 			delete compressed_data.nodes
 			delete compressed_data.connections
-			delete compressed_data.metadata
+			//delete compressed_data.metadata
 
 			// Send data to server for orchestrator
 			fetch("/messages", {
