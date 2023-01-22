@@ -11,7 +11,11 @@ const { MONGO_URL, PORT} = require("./config/config");
 
 // Database connection -----------------------------------------------------------------------------
 mongoose.set('strictQuery', false);
-mongoose.connect(MONGO_URL + "UIDB");
+try {
+    mongoose.connect(MONGO_URL + "UIDB");
+} catch (error) {
+    console.log(error);
+}
 
 // Routes imports ----------------------------------------------------------------------------------
 const homeRoute = require('./routes/homeRoute');
