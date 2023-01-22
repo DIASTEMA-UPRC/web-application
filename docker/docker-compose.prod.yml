@@ -2,9 +2,7 @@ version: "3"
 services: 
   web:
     container_name: diastema-web-app
-    image: web-application-diastema-enhancements
-    build:
-      context: .
+    image: adreaskar/diastema-web-app:latest
     ports:
       - "50000:5400"
     env_file:
