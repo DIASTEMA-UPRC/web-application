@@ -21,7 +21,6 @@ const dashboardRoute = require('./routes/dashboardRoute');
 const datasetsRoute = require('./routes/datasetsRoute');
 const pipelinesRoute = require('./routes/pipelinesRoute');
 const functionsRoute = require('./routes/functionsRoute');
-const monitoringRoute = require('./routes/monitoringRoute');
 const visualizationRoute = require('./routes/visualizationRoute');
 const messagesRoute = require('./routes/messagesRoute');
 const route404 = require('./routes/404Route');
@@ -73,9 +72,6 @@ app.use(pipelinesRoute);
 
 // Functions route ------
 app.use(functionsRoute);
-
-// Monitoring route -----
-app.use(monitoringRoute);
 
 // Visualization route --
 app.use(visualizationRoute);
