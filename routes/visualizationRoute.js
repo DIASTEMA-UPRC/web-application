@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const minioClient = require('../middleware/minio-connect');
+const { randomUUID } = require('crypto');
 
 const Pipeline = require("../models/Graph");
 
@@ -57,22 +58,25 @@ router.route("/visualization/results/:id")
         // 3. Get a signed url for the file
         // 4. Add the signed url to the signedUrls array
         let signedUrls = []
+        let visid;
         for (let i = 0; i < urls.length; i++) {
             const path = urls[i];
             
             if (!path.includes('/')) {
-                signedUrls.push(path)
+                visid = randomUUID().replace(/-/g, '').replace(/[0-9]/g, '');
+                signedUrls.push(path + ' ' + visid)
                 continue
             }
 
-            // Get the organization name and file name from the url
+            // Get the organization, filename and path from the url
             const org = path.slice(0, path.indexOf('/'))
+            const name = (path.split('/')[3]).slice(14, path.split('/')[3].length-5)
             const url = path.slice(path.indexOf('/') + 1);
 
             // Get a signed url for the file
             try {
-                const signedUrl = await minioClient.presignedUrl('GET', org, url, 24*60*60)
-                signedUrls.push(signedUrl)
+                const signedUrl = await minioClient.presignedUrl('GET', org, url, 30*60)
+                signedUrls.push({signedUrl, name, visid})
             
             } catch (error) {
                 console.log(error);

@@ -231,7 +231,8 @@
                             
                             <div class="inner-card-padding" style="height: calc(100% - 81px);">
                                 <div class="card-body" style="height: 100%;">
-                                    <p class="card-text">Your results will appear below:</p>
+                                    <p>Your results will appear below:</p>
+
                                     <div class="visuals" style="height: calc(100% - 41px);overflow: auto;">
                                     </div>
                                 </div>
@@ -323,6 +324,8 @@
         // ============================================================
 
         // Send analysis-id to backend
+        // 1. Get the analysis id
+        // 2. Send the id to the visualization endpoint
         function visualizeResults(id) {
             $.ajax({
                 url: "/visualization/results/"+id,
@@ -336,29 +339,99 @@
             });
         }
 
+        // Toggle between filters
+        // 1. Get the filter name
+        // 2. Loop through the children of the filters container
+        // 2.1. If the child is not the desired filter, remove the selected class
+        // 2.2. If the child is the desired filter, add the selected class
+        // 3. Loop through the iframes
+        // 3.1. If the filter is "All", show all the iframes
+        // 3.2. Else, hide the iframes that belong to the same visualization and do not have the filter name
+        function selectFilter(filter, placeholder) {
+            const filter_name = ($(filter).html()).toString();
+            const id = placeholder.id;
+            
+            $(placeholder).children().each(function () {
+                if (this.innerText !== filter_name) {
+                    $(this).removeClass("vis-filter-selected");
+                } else {
+                    $(this).addClass("vis-filter-selected");
+                }
+            });
+
+            $('.visuals').children('iframe').each(function () {
+                if (filter_name == "All") {
+                    $(this).show();
+                } else {
+                    // Does not belong to the same visualization
+                    if (this.id.includes(id) == false) {
+                        return
+                    // Belongs to the same visualization
+                    } else {
+                        if (this.id.includes(filter_name.replace(' ','_')) == false) {
+                            $(this).hide();
+                        } else {
+                            $(this).show();
+                        }
+                    }
+                }
+            });
+
+            //$('.visuals iframe').not("#"+filter_name+'_'+id).hide();
+        }
+
         // Recieve files from backend
         // 1. Get the signedUrls from the response
-        // 2. Check if there are any children in the display div
-        // 3. Loop through the signedUrls and create an iframe for each one
-        // 4. Append the iframe to the display div
+        // 2. Check if the display div is already populated
+        // 3. Loop through the results array
+        // 3.1. Check if the item is a string (title)
+        // 3.2. If it is a string, create a div placeholder and a title
+        // 3.3. If it is not a string, create a text and append it to the placeholder
+        // 3.4. Then, create an iframe and append it to the display div
+        // 4. Finally, notify the user that the results are ready
         socket.on('VisResults', (response) => {
-            const urls = response.signedUrls;
+            const results = response.signedUrls;
 
             if ( $('.visuals').children().length > 0 ) {
                 $('.visuals').empty();
             }
 
-            urls.forEach(url => {
-                // Check if the url is not a directory
-                if (!url.includes('/')) {
+            results.forEach(item => {
+                
+                if (typeof item === 'string') {
+
+                    const id = item.split(' ')[item.split(' ').length-1];
+                    item = item.replace(id,'')
+
                     $('<h5>', {
-                        text: url,
-                        style: 'margin:0px auto 20px auto;',
+                        text: item,
+                        style: 'margin-bottom:auto;',
                         class: 'tag'
                     }).appendTo('.visuals');
+
+                    $('<div>', {
+                        style: 'display:flex; align-items:left; flex-direction:row;padding:15px 0px 35px 0px;',
+                        class: 'vis-title',
+                        id: id
+                    }).appendTo('.visuals');
+
+                    $('<span>', {
+                        text: 'All',
+                        class: 'vis-filter vis-filter-selected',
+                        onclick: 'selectFilter(this, '+id+')'
+                    }).appendTo('#'+id)
+                
                 } else {
+               
+                    $('<span>', {
+                        text: (item.name).replace('_',' '),
+                        class: 'vis-filter',
+                        onclick: 'selectFilter(this, '+item.visid+')'
+                    }).appendTo('#'+item.visid)
+
                     $('<iframe>', {
-                        src: url,
+                        src: item.signedUrl,
+                        id: item.name+'_'+item.visid,
                         height: '100%',
                         width: '100%',
                         frameborder: 0,
