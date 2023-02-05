@@ -397,11 +397,11 @@ $(document).ready(function() {
 		}
 
 		// Determine if auto modelling is enabled or not
-		if ($("#checkbox").is(':checked')) {
-			data.automodel = true;
-		} else {
-			data.automodel = false;
-		}
+		// if ($("#checkbox").is(':checked')) {
+		// 	data.automodel = true;
+		// } else {
+		// 	data.automodel = false;
+		// }
 
 		return data;
 	}
