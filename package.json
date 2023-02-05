@@ -8,7 +8,7 @@
     "dev": "nodemon -L app.js",
     "docker:dev": "docker-compose --project-directory ./  -f ./docker/docker-compose.dev.yml up -d",
     "docker:downdev": "docker-compose --project-directory ./  -f ./docker/docker-compose.dev.yml down",
-    "docker:prod": "docker-compose --project-directory ./  -f ./docker/docker-compose.prod.yml up -d",
+    "docker:prod": "docker-compose --project-directory ./  -f ./docker/docker-compose.prod.yml up -d --build",
     "docker:downprod": "docker-compose --project-directory ./  -f ./docker/docker-compose.prod.yml down",
     "docker:build": "docker-compose --project-directory ./  -f ./docker/docker-compose.dev.yml up -d --build",
     "push:all": "git add . && git commit -m \"general updates\" && git push origin master",

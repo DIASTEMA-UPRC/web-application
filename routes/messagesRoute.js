@@ -45,7 +45,7 @@ router.route("/messages")
                 }).then(res => {
                     console.log("[INFO] Pipeline deployed to orchestrator");
                     console.log("[INFO] Response status from orchestrator:", res.status);
-                });
+                }).catch(err => console.warn(err));
 
                 res.sendStatus(200);
                 break;

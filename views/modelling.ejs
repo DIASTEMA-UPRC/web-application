@@ -5,7 +5,7 @@
     <link style="width: 16px;" rel="shortcut icon" type="image/png" href="img/favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!--<link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+    <!--<link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css"> -->
     <title>Diastema | Process Modeller</title>
     
     <!-- Bootstrap -->
@@ -353,40 +353,44 @@
                                 </label>
                             </div>
 
-                            <!-- Save Graph -->
+                            <!-- Validate Graph -->
                             <div class="inline">
-                                <button type="button" class="btn btn-primary" id="save_data" data-mdb-toggle="modal" data-mdb-target="#saveGraphModal" data-mdb-ripple-duration="0s">Save</button>
+                                <button type="button" class="btn btn-primary" id="validate_graph" data-mdb-ripple-duration="0s">Validate</button>
                             </div>
-                            
-                            <!-- Save Graph Modal -->
-                            <div class="modal top fade" id="saveGraphModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="true" data-mdb-keyboard="true">
+
+                            <!-- Deploy Graph -->
+                            <div class="inline">
+                                <button 
+                                    type="button" 
+                                    class="btn btn-primary" 
+                                    id="deploy_data" 
+                                    data-mdb-toggle="modal" 
+                                    data-mdb-target="#deployGraphModal"
+                                    data-mdb-ripple-duration="0s"
+                                >
+                                    Deploy
+                                </button>
+                            </div>
+
+                            <!-- Deploy Graph Modal -->
+                            <div class="modal top fade" id="deployGraphModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="true" data-mdb-keyboard="true">
                                 <div class="modal-dialog   modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Save pipeline for later use</h5>
+                                            <h5 class="modal-title" id="exampleModalLabel">Pipeline will be saved for later use</h5>
                                             <button id="little_x" type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close" style="margin-right: 5px;"></button>
                                         </div>
                                         <div class="modal-body" style="margin-top: 10px;display: flex;">
-                                            <input class="form-control" id="save_graph_input" type="text" placeholder="Provide a pipeline name" aria-label="default input example" style="display: inline-block;">
-                                            <button id="save_graph" type="button" class="btn btn-primary" style="display:inline-block;margin-left: 20px;">Save</button>
+                                            <input class="form-control" id="deploy_graph_input" type="text" placeholder="Provide a pipeline name" aria-label="default input example" style="display: inline-block;">
+                                            <button id="deploy_graph" type="button" class="btn btn-primary" style="display:inline-block;margin-left: 20px;">Deploy</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Validate Graph -->
-                            <div class="inline">
-                                <button type="button" class="set_data btn btn-primary" id="validate_graph" data-mdb-ripple-duration="0s">Validate</button>
-                            </div>
-
-                            <!-- Deploy Graph -->
-                            <div class="inline">
-                                <button type="button" class="set_data btn btn-primary" id="deploy_graph" data-mdb-ripple-duration="0s">Deploy</button>
-                            </div>
-
                             <!-- Download Graph -->
                             <div class="inline">
-                                <button type="button" class="set_data btn btn-primary" id="download_data" data-mdb-toggle="modal" data-mdb-target="#downloadGraphModal" data-mdb-ripple-duration="0s">
+                                <button type="button" class="btn btn-primary" id="download_data" data-mdb-toggle="modal" data-mdb-target="#downloadGraphModal" data-mdb-ripple-duration="0s">
                                     <i class="fas fa-download" style="font-size: 15px;"></i>
                                 </button>
                             </div>
@@ -401,7 +405,7 @@
                                         </div>
                                         <div class="modal-body" style="margin-top: 10px;display: flex;">
                                             <input class="form-control" id="download_graph_input" type="text" placeholder="Provide a pipeline name" aria-label="default input example" style="display: inline-block;margin-right: 20px">
-                                            <button id="download_graph" type="button" class="btn btn-primary" style="display:inline-block;">Download</button>
+                                            <button id="download_graph" type="button" class="btn btn-primary" style="display:inline-block;">Save</button>
                                         </div>
                                     </div>
                                 </div>

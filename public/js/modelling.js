@@ -2,7 +2,7 @@ var diagram = [];
 var linesArray = [];
 
 $("#delete_node").hide();
-$("#deploy_graph").attr("disabled", true);
+$("#deploy_data").attr("disabled", true);
 
 // Send notification when receiving message from orchestrator //
 const socket = io.connect();
@@ -74,7 +74,7 @@ $('#navbarNotification').click(() => {
 
 // Display toast after save and redirect
 if(sessionStorage.getItem("showmsg")=='1'){
-	toastr.info("Pipeline was saved successfully.", "Notification:");
+	toastr.info("Pipeline was saved and deployed.", "Notification:");
 	sessionStorage.removeItem("showmsg");
 }
 
@@ -407,48 +407,48 @@ $(document).ready(function() {
 	}
 
 	// Save graph to application
-	$('#save_graph').click( async ()=>{
+	// $('#save_graph').click( async ()=>{
 
-		if ($("#save_graph_input").val() === "") {
-			toastr.error("Please give a name to your analysis graph.", "Notification:");
-		} else {
+	// 	if ($("#deploy_graph_input").val() === "") {
+	// 		toastr.error("Please give a name to your analysis graph.", "Notification:");
+	// 	} else {
 
-			if (validateFields()) {
+	// 		if (validateFields()) {
 				
-				let data = await generateData();
+	// 			let data = await generateData();
 
-				let name = $("#save_graph_input").val();
+	// 			let name = $("#deploy_graph_input").val();
 	
-				data['analysis-name'] = name
+	// 			data['analysis-name'] = name
 	
-				// Send pipeline to server
-				try {
-					let resp = await fetch("/pipelines/save", {
-						method: 'POST',
-						headers: {'Content-Type': 'application/json'},
-						body: JSON.stringify(data)
-					})
-					var response = await resp;
-				} catch (error) {
-					console.log(error);
-				}
+	// 			// Send pipeline to server
+	// 			try {
+	// 				let resp = await fetch("/pipelines/save", {
+	// 					method: 'POST',
+	// 					headers: {'Content-Type': 'application/json'},
+	// 					body: JSON.stringify(data)
+	// 				})
+	// 				var response = await resp;
+	// 			} catch (error) {
+	// 				console.log(error);
+	// 			}
 	
-				// Check response
-				if (response.statusText === "OK") {
+	// 			// Check response
+	// 			if (response.statusText === "OK") {
 	
-					$("#save_graph_input").val("")
-					$('#saveGraphModal').modal('hide');
+	// 				$("#deploy_graph_input").val("")
+	// 				$('#deployGraphModal').modal('hide');
 	
-					sessionStorage.setItem("showmsg", "1");
+	// 				sessionStorage.setItem("showmsg", "1");
 	
-					window.location.replace("/modelling");
-				} else {
-					toastr.error("This name is used by another pipeline.", "Notification:");
-				}
+	// 				window.location.replace("/modelling");
+	// 			} else {
+	// 				toastr.error("This name is used by another pipeline.", "Notification:");
+	// 			}
 
-			}
-		}
-	});
+	// 		}
+	// 	}
+	// });
 
 	// Validate graph
 	$('#validate_graph').click( async ()=> {
@@ -479,13 +479,13 @@ $(document).ready(function() {
 			switch (response.status) {
 				case 200:
 					toastr.info("Pipeline is valid and ready for deployment.", "Notification:");
-					$("#deploy_graph").attr("disabled", false);		
+					$("#deploy_data").attr("disabled", false);		
 					break;
 			
 				case 425:
 					toastr.warning(text, "Issues found:");	
 					toastr.info("Minor issues that don't affect deployment.", "Notification:");
-					$("#deploy_graph").attr("disabled", false);		
+					$("#deploy_data").attr("disabled", false);		
 					break;
 
 				case 409:
@@ -494,7 +494,7 @@ $(document).ready(function() {
 					break;
 
 				default:
-					toastr.error("Validation returned status code: " + response.status, "Notification:");
+					toastr.error("There was an error with the validation service.", "Notification:");
 					break;
 			}
 			
@@ -564,26 +564,66 @@ $(document).ready(function() {
 
 	// Deploy graph
 	$('#deploy_graph').click(async ()=>{
-		if (validateFields()) {
 
-			let data = await generateData();
-			let compressed_data = data;
+		if ($("#deploy_graph_input").val() === "") {
+			toastr.error("Please give a name to your analysis graph.", "Notification:");
+		} else {
+			
+			if (validateFields()) {
 
-			delete compressed_data.nodes
-			delete compressed_data.connections
-			//delete compressed_data.metadata
+				let data = await generateData();
+				
+				// == Save graph to platform ==
 
-			// Send data to server for orchestrator
-			fetch("/messages", {
-				method: 'POST',
-				headers: {'Content-Type': 'application/json'},
-				body: JSON.stringify({message:"send-to-orchestrator", info:compressed_data})
-			})
-			.then(res => {
-				console.log("Data sent to backend", res);
-			});
+				let name = $("#deploy_graph_input").val();
+	
+				data['analysis-name'] = name
+	
+				// Send pipeline to server
+				try {
+					let resp = await fetch("/pipelines/save", {
+						method: 'POST',
+						headers: {'Content-Type': 'application/json'},
+						body: JSON.stringify(data)
+					})
+					var response = await resp;
+				} catch (error) {
+					console.log(error);
+				}
+	
+				// Check response
+				if (response.statusText === "OK") {
+	
+					$("#deploy_graph_input").val("")
+					$('#deployGraphModal').modal('hide');
+	
+					sessionStorage.setItem("showmsg", "1");
+	
+				} else {
+					toastr.error("This name is used by another pipeline.", "Notification:");
+				}
 
+				// == Deploy graph to orchestrator ==
+
+				let compressed_data = data;
+	
+				delete compressed_data.nodes
+				delete compressed_data.connections
+	
+				// Send data to server for orchestrator
+				fetch("/messages", {
+					method: 'POST',
+					headers: {'Content-Type': 'application/json'},
+					body: JSON.stringify({message:"send-to-orchestrator", info:compressed_data})
+				})
+				.then(res => {
+					console.log("Data sent to backend", res);
+					window.location.replace("/modelling");
+				});
+	
+			}
 		}
+		
 	});
 
 	// Download graph
@@ -734,6 +774,14 @@ function drawLine(item) {
 		const dot1 = dots[0].previousElementSibling.innerHTML
 		const dot2 = dots[1].previousElementSibling.innerHTML
 		if ( (dot1 === "Output" && dot2 === "Output") || dot2 === "Output" ) {
+			toastr.error("Invalid connection.", "Notification:");
+			count = 0;
+			dots= [];
+			return;
+		}
+
+		// Check for input - input connection
+		if ((dot1 === "Input" && dot2 === "Input")) {
 			toastr.error("Invalid connection.", "Notification:");
 			count = 0;
 			dots= [];
