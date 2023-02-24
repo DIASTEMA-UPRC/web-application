@@ -26,14 +26,14 @@ router.route("/register")
 
         req.body.password = crypto.createHash('sha256').update(req.body.password).digest('hex');
 
-        // Search for existing users with given username and email ------------------
-        User.find({username:req.body.username, email:req.body.email}, (err,data) => {
+        // Search for existing users with given username and email -------------------------------
+        User.find({$or:[{'email':req.body.email},{'username':req.body.username}]}, (err,data) => {
             if (err) {
                 console.log(err);
             } else {
                 
                 if (data.length === 0) {
-                    console.log('[INFO] Register success: No user found');
+                    console.log('[INFO] - Register success!');
 
                     let image = 'default.png';
                     if (req.file) {
@@ -54,7 +54,7 @@ router.route("/register")
                     res.redirect("/");
                 } else {
 
-                    console.log('[ERROR] Register failed: User exists');
+                    console.log('[ERROR] - Register failed: User exists');
                     res.render("register", {flag:true});
                 }
             }
