@@ -185,16 +185,15 @@
                                                             type="submit" 
                                                             class="btn btn-primary mb-4" 
                                                             style="
-                                                                width: 80px;
                                                                 font-size:12px;
                                                                 margin-bottom:0 !important;
                                                                 padding-right:0.3rem !important;
                                                                 padding-left:0.3rem !important;
                                                                 padding-top:0.4rem !important;
                                                                 padding-bottom:0.4rem !important"
-                                                            id="monitor"
+                                                            onclick="performanceResults('<%= analysis.analysisid %>')"
                                                         >
-                                                            Monitor
+                                                            Performance
                                                         </button>
                                                     </div>
                                                     
@@ -376,8 +375,6 @@
                     }
                 }
             });
-
-            //$('.visuals iframe').not("#"+filter_name+'_'+id).hide();
         }
 
         // Recieve files from backend
@@ -440,12 +437,90 @@
                 }
             })
 
-            toastr.info("Visualizing Results.", "Notification:");
+            toastr.info("Visualizing Analytics Results.", "Notification:");
         })
 
         socket.on('VisResultsError', (response) => {
             toastr.error(response, "Notification:");
         })
+
+        // ============================================================
+        // VISUALIZE PERFORMANCE RESULTS 
+        // ============================================================
+
+        // Send analysis-id to backend
+        // 1. Get the analysis id
+        // 2. Send the id to the visualization endpoint
+        function performanceResults(id) {
+            $.ajax({
+                url: "/visualization/performance/"+id,
+                type: "POST",
+                success: function (resp) {
+                    console.log(resp);
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        }
+
+        // Recieve information from backend
+        socket.on('PerfResults', (response) => {
+            const results = response.services;
+
+            if ( $('.visuals').children().length > 0 ) {
+                $('.visuals').empty();
+            }
+
+            results.forEach(item => {
+
+                const ramPercentage = ((item['ram-usage'] / item['ram-existing']) * 100).toFixed(2);
+                const diskPercentage = ((item['disk-usage'] / 1000) * 100).toFixed(2);
+
+                $('<h5>', {
+                    text: uppercaseWords(item.title) + " Service",
+                    style: 'margin-bottom:auto;',
+                    class: 'tag'
+                }).appendTo('.visuals');
+
+                $('<div>', {
+                    style: 'display:flex; flex-direction:row;padding:15px 0px 35px 0px;',
+                    id: item.id
+                }).appendTo('.visuals');
+
+                let content = `
+                <table class="table table-striped table-hover" style="width:100%;">
+                <tr>
+                    <td> <b>Ram Usage:</b> </td> 
+                    <td>${item['ram-usage']} MB </td>
+                    <td>${ramPercentage} % of total RAM </td> 
+                </tr>
+                <tr>
+                    <td> <b>Disk Usage:</b> </td> 
+                    <td>${item['disk-usage']} MB </td>
+                    <td>${diskPercentage} % of total DISK SPACE </td> 
+                </tr>
+                <tr>
+                    <td> <b>Execution Speed:</b> </td> 
+                    <td>${item['execution-speed']} ms </td>
+                    <td></td>
+                </tr>
+                </table>
+                `
+
+                $('#'+item.id).append(content);
+            
+            })
+
+            toastr.info("Visualizing Performance Results.", "Notification:");
+        })
+
+        socket.on('PerfResultsError', (response) => {
+            toastr.error(response, "Notification:");
+        })
+
+        const uppercaseWords = str => str.replace(/^(.)|\s+(.)/g, c => c.toUpperCase());
+
     </script>
 
 </body>
