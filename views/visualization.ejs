@@ -378,7 +378,7 @@
         }
 
         // Recieve files from backend
-        // 1. Get the signedUrls from the response
+        // 1. Get the localUrls from the response
         // 2. Check if the display div is already populated
         // 3. Loop through the results array
         // 3.1. Check if the item is a string (title)
@@ -387,7 +387,7 @@
         // 3.4. Then, create an iframe and append it to the display div
         // 4. Finally, notify the user that the results are ready
         socket.on('VisResults', (response) => {
-            const results = response.signedUrls;
+            const results = response.localUrls;
 
             if ( $('.visuals').children().length > 0 ) {
                 $('.visuals').empty();

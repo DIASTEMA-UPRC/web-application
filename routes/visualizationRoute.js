@@ -71,29 +71,29 @@ router.route("/visualization/results/:id")
             return
         }
 
-        // Loop through each url and get a signed url
+        // Loop through each url and download the file
         // 1. Check if the url is a visualization node or a file
         // 2. If the url is a visualization node, generate a random visid
         // 3. If the url is a file, get the bucket, filename and path from the url
-        // 4. Get a signed url for the file
-        // 5. Add the signed url, filename and visid to the signedUrls array
-        // Example signedUrls array
+        // 4. Download the file from MinIO
+        // 5. Create a url for the local file
+        // Example localUrls array
         // [
         //     'vis-1 <visid>',
         //     {
-        //        signedUrl: 'url',
+        //        localUrl: '/file/<visid>/<filename>',
         //        name: 'filename',
         //        visid: 'visid'
         //     },
         //    'vis-2 <visid-2>',
         //     {
-        //        signedUrl: 'url',
+        //        localUrl: '/file/<visid-2>/<filename-2>',
         //        name: 'filename',
         //        visid: 'visid-2'
         //     }
         // ]
 
-        let signedUrls = []
+        let localUrls = []
         let visid;
         for (let i = 0; i < urls.length; i++) {
             const path = urls[i];
@@ -101,27 +101,41 @@ router.route("/visualization/results/:id")
             // If the url is a visualization node, generate a random visid
             if (!path.includes('/')) {
                 visid = randomUUID().replace(/-/g, '').replace(/[0-9]/g, '');
-                signedUrls.push(path + ' ' + visid)
+                localUrls.push(path + ' ' + visid)
                 continue
             }
 
             // Get the bucket, filename and path from the url
             const bucket = path.slice(0, path.indexOf('/'))
+            const filename = path.split('/')[2]
             const name = (path.split('/')[2]).split('_').splice(-2, 2).join('_').split('.')[0]
             const url = path.slice(path.indexOf('/') + 1);
 
-            // Get a signed url for the file
+            const dowloadPath = 'public/downloads/vis/'+visid+'/'+filename
+
+            // Download the file from MinIO
+            // Create a url for the local file
             try {
-                const signedUrl = await minioClient.presignedUrl('GET', bucket, url, 30*60)
-                signedUrls.push({signedUrl, name, visid})
+                //const signedUrl = await minioClient.presignedUrl('GET', bucket, url, 30*60)
+                //signedUrls.push({signedUrl, name, visid})
+
+                minioClient.fGetObject(bucket, url, dowloadPath, function(err) {
+                    if (err) {
+                      return console.log(err)
+                    }
+                    console.log('[INFO] - File from MinIO downloaded successfully')
+                })
+
+                const signedUrl = '/file/'+visid+'/'+filename
+                localUrls.push({signedUrl, name, visid})
             
             } catch (error) {
                 console.log(error);
             }
         }
-        
-        // Send the signedUrls array to the client
-        req.io.sockets.emit("VisResults", {signedUrls});
+                
+        // Send the localUrls array to the client
+        req.io.sockets.emit("VisResults", {localUrls});
     })
 
 router.route("/visualization/performance/:id")
