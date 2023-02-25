@@ -6,6 +6,7 @@ const MongoStore = require('connect-mongo');
 const mongoose = require("mongoose");
 const http = require("http");
 const session = require('express-session');
+const path = require('path');
 
 const { MONGO_URL, PORT} = require("./config/config");
 
@@ -29,6 +30,7 @@ const visualizationRoute = require('./routes/visualizationRoute');
 const messagesRoute = require('./routes/messagesRoute');
 const route404 = require('./routes/404Route');
 const githubAuth = require('./routes/githubAuth');
+const getFileRoute = require('./routes/getFileRoute');
 // -------------------------------------------------------------------------------------------------
 
 const app = express();
@@ -40,6 +42,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json()); 
 app.use(express.static("public"));
+app.use('/vis',express.static(path.join(__dirname, 'public/downloads/vis')));
 app.use(session({
     secret:'diastema',
     resave:false,
@@ -79,6 +82,9 @@ app.use(functionsRoute);
 
 // Visualization route --
 app.use(visualizationRoute);
+
+// Get file route -------
+app.use(getFileRoute);
 
 // Messaging route ------
 app.use(messagesRoute);
