@@ -427,7 +427,7 @@
                     }).appendTo('#'+item.visid)
 
                     $('<iframe>', {
-                        src: item.signedUrl,
+                        src: item.localUrl,
                         id: item.name+'_'+item.visid,
                         height: '100%',
                         width: '100%',
@@ -475,7 +475,7 @@
             results.forEach(item => {
 
                 const ramPercentage = ((item['ram-usage'] / item['ram-existing']) * 100).toFixed(2);
-                const diskPercentage = ((item['disk-usage'] / 1000) * 100).toFixed(2);
+                const diskPercentage = ((item['disk-usage'] / 10000) * 100).toFixed(2);
 
                 $('<h5>', {
                     text: uppercaseWords(item.title) + " Service",

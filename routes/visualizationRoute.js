@@ -108,7 +108,10 @@ router.route("/visualization/results/:id")
             // Get the bucket, filename and path from the url
             const bucket = path.slice(0, path.indexOf('/'))
             const filename = path.split('/')[2]
-            const name = (path.split('/')[2]).split('_').splice(-2, 2).join('_').split('.')[0]
+            let name = (path.split('/')[2]).split('_')
+            name.shift()
+            name.shift()
+            name = name.join('_').split('.')[0]
             const url = path.slice(path.indexOf('/') + 1);
 
             const dowloadPath = 'public/downloads/vis/'+visid+'/'+filename
@@ -116,8 +119,6 @@ router.route("/visualization/results/:id")
             // Download the file from MinIO
             // Create a url for the local file
             try {
-                //const signedUrl = await minioClient.presignedUrl('GET', bucket, url, 30*60)
-                //signedUrls.push({signedUrl, name, visid})
 
                 minioClient.fGetObject(bucket, url, dowloadPath, function(err) {
                     if (err) {
@@ -126,8 +127,8 @@ router.route("/visualization/results/:id")
                     console.log('[INFO] - File from MinIO downloaded successfully')
                 })
 
-                const signedUrl = '/file/'+visid+'/'+filename
-                localUrls.push({signedUrl, name, visid})
+                const localUrl = '/file/'+visid+'/'+filename
+                localUrls.push({localUrl, name, visid})
             
             } catch (error) {
                 console.log(error);
