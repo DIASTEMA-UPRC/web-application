@@ -75,19 +75,18 @@ router.route("/visualization/results/:id")
         // 1. Check if the url is a visualization node or a file
         // 2. If the url is a visualization node, generate a random visid
         // 3. If the url is a file, get the bucket, filename and path from the url
-        // 4. Download the file from MinIO
-        // 5. Create a url for the local file
+        // 4. Create a url for the local file
         // Example localUrls array
         // [
         //     'vis-1 <visid>',
         //     {
-        //        localUrl: '/file/<visid>/<filename>',
+        //        localUrl: '/file/<visid>/<filename>/<bucket>/<jobid>',
         //        name: 'filename',
         //        visid: 'visid'
         //     },
         //    'vis-2 <visid-2>',
         //     {
-        //        localUrl: '/file/<visid-2>/<filename-2>',
+        //        localUrl: '/file/<visid-2>/<filename-2>/<bucket-2>/<jobid-2>',
         //        name: 'filename',
         //        visid: 'visid-2'
         //     }
@@ -113,26 +112,10 @@ router.route("/visualization/results/:id")
             name.shift()
             name = name.join('_').split('.')[0]
             const url = path.slice(path.indexOf('/') + 1);
+            const jobid = url.split('/')[0]
 
-            const dowloadPath = 'public/downloads/vis/'+visid+'/'+filename
-
-            // Download the file from MinIO
-            // Create a url for the local file
-            try {
-
-                minioClient.fGetObject(bucket, url, dowloadPath, function(err) {
-                    if (err) {
-                      return console.log(err)
-                    }
-                    console.log('[INFO] - File from MinIO downloaded successfully')
-                })
-
-                const localUrl = '/file/'+visid+'/'+filename
-                localUrls.push({localUrl, name, visid})
-            
-            } catch (error) {
-                console.log(error);
-            }
+            const localUrl = '/file/'+visid+'/'+filename+'/'+bucket+'/'+jobid
+            localUrls.push({localUrl, name, visid})
         }
                 
         // Send the localUrls array to the client
