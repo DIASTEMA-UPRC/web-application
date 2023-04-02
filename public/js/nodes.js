@@ -1,20 +1,29 @@
 
 function generatePipelineHTML(node,dataset) {
     let nodeDOM = 
-    `<div onclick="editNode(this)" style="border: 7px solid transparent">
+    `<div onclick="editNode(this)" style="border: 7px solid transparent" >
         <div id="tool" class="flowchart-default-operator draggable_operator flowchart-operator" 
             data-nb-inputs="${node.inputs}" 
             data-nb-outputs="${node.outputs}"
             style="border: 4px solid ${node.color};"
         >
-            <div class="flowchart-operator-title ui-draggable-handle" style="border-bottom: 2px solid ${node.color};background: ${node.color};">`
+            <div class="flowchart-operator-title ui-draggable-handle" style="border-bottom: 2px solid ${node.color};background: ${node.color};display:flex;justify-content:space-between;padding-left:10px">`
                 if (node.type === "Saved Function") {
                     nodeDOM += `${node.property}`;
                 } else {
                     nodeDOM += `${node.type}`;
                 }
+
+            // Data Toolkit Gear Icon
+            if (node.type === "Classification" || node.type === "Regression" || node.type === "Clustering") {
+                nodeDOM += `<span onclick="dataToolkitGear(this)" class="material-icons"  data-node="${node.type}" style="color:white;cursor:pointer;">settings</span>`
+            }
+
             nodeDOM += 
-            `</div>
+
+            `
+            </div>
+            
             <div class="flowchart-operator-inputs-outputs">
                 <div class="flowchart-operator-inputs">
                     <div class="flowchart-operator-connector-set">`
@@ -165,6 +174,8 @@ function generatePipelineHTML(node,dataset) {
                     nodeDOM += `<select name="nodeProperty" id="nodeProperty" onchange="changeProperty(this)" style="margin:5px auto 10px auto;">
                                     <option selected="true" disabled="disabled" value="default">${node.property}</option>
                                     <option value="K-means">K-means</option>
+                                    <option value="Latent Dirichlet Allocation">Latent Dirichlet Allocation</option>
+                                    <option value="Gaussian Mixture">Gaussian Mixture</option>
                                 </select>
                                 `
                     break;

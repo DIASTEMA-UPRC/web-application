@@ -1,0 +1,75 @@
+
+<div class="modal right fade" id="dataToolkitModal" tabindex="-1" aria-labelledby="myModalLabel2">
+	<div class="modal-dialog modal-dialog-slideout" role="document">
+		<div class="modal-content">
+
+			<div class="modal-header">
+				<h4 class="modal-title" id="myModalLabel2">Data Toolkit</h4>
+				<button id="little_x" type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close" style="margin-right: 5px;"></button>
+			</div>
+
+			<div class="modal-body">
+
+				<h3 id="dataToolkitComponent"></h3>
+
+				<br>
+
+				<form>
+
+					<!-- Selected Algorithm -->
+					<div class="mb-4">
+						<label class="form-label">Selected Algorithm:</label>
+						<input type="text" id="dataToolkitAlgorithm" class="form-control" placeholder="algorithm" disabled/>
+					</div>
+
+					<!-- Hiiden input for job id -->
+					<input type="hidden" id="dataToolkitId" value="" placeholder="jobid">
+
+					<p class="form-label">Available Parameters:</p>
+
+					<div id="availableParams">
+					</div>
+
+					<!-- Message to user -->
+					<div id="emailHelp" class="form-text">* Provided values will override default values</div>
+
+					<hr>
+
+					<h3>Auto Modelling</h3>
+
+					<br>
+
+					<!-- Checkbox -->
+					<div class="form-check d-flex mb-4" style="margin-left: 5px;">
+						<input class="form-check-input me-2" type="checkbox" id="autoMLCheck" 
+						onchange="
+							document.getElementById('maxTrials').disabled = !this.checked;
+							document.getElementById('metaLearning').disabled = !this.checked;
+
+							if (!this.checked) {
+								document.getElementById('maxTrials').value = '';
+								document.getElementById('metaLearning').value = '';
+							}
+						" />
+						<label class="form-check-label" for="form2Example33">
+							Use AutoML
+						</label>
+					</div>
+				
+					<div class="row mb-4">
+					  <div class="col">
+						<input type="text" class="form-control" placeholder="max-trials" id="maxTrials" disabled/>
+					  </div>
+					  <div class="col">
+						<input type="text" class="form-control" placeholder="meta-learning" id="metaLearning" disabled/>
+					  </div>
+					</div>
+				  
+					<!-- Submit button -->
+					<button type="button" id="saveToolkitConfig" class="btn btn-primary btn-block mb-4">Save</button>
+				</form>
+			</div>
+
+		</div>
+	</div>
+</div>

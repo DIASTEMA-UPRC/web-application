@@ -432,14 +432,14 @@ h3, .material-icons {
   opacity: 1; /* Firefox */
 }
 
-button:not(.accordion-button, #little_x, .toast-close-button) {
+button:not(.accordion-button, #little_x, .toast-close-button, #dataToolkitButton) {
   background-color: var(--main)!important;
   margin-bottom: 15px!important;
   box-shadow: none!important;
   font-size: 13px!important;
 }
 
-button:hover:not(.accordion-button, #little_x, .toast-close-button) {
+button:hover:not(.accordion-button, #little_x, .toast-close-button, #dataToolkitButton) {
   background-color: #023a51!important;
 }
 
@@ -580,6 +580,27 @@ input:checked + .slider:before {
   border-radius: 3px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+}
+
+/* Data Toolkit Modal */
+#dataToolkitModal .modal-dialog-slideout {
+  min-height: 100%;
+  margin: 0 0 0 auto;
+  background: #fff;
+}
+
+.modal.right.fade .modal-dialog.modal-dialog-slideout {
+  -webkit-transform: translate(100%, 0)scale(1);
+  transform: translate(100%, 0)scale(1);
+}
+
+.modal.right.fade.show .modal-dialog.modal-dialog-slideout {
+  -webkit-transform: translate(0, 0);
+  transform: translate(0, 0);
+  display: flex;
+  align-items: stretch;
+  -webkit-box-align: stretch;
+  height: 100%;
 }
 
 @media screen and (max-width: 1500px) {

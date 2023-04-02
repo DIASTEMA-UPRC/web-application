@@ -347,7 +347,7 @@ $(document).ready(function() {
 				job.column = data.nodes[m].field.toLowerCase();
 			}
 
-			// Properties specific to the Classification and Regression jobs
+			// Properties specific to the Classification, Regression and Clustering jobs
 			if (data.nodes[m].type === "Classification" || data.nodes[m].type === "Regression" || data.nodes[m].type === "Clustering") {
 				job.algorithm = data.nodes[m].property.toLowerCase();
 				if (job.algorithm === "select algorithm") job.algorithm = false;
@@ -885,6 +885,10 @@ function getSelectedNode() {
 	$('.ui-draggable').each(function(i, obj) {
 		if ($(obj).is('.selected-node')) {
 			deleteNode(obj.id);
+			// if session storage exists, delete the node from the session storage
+			if (sessionStorage.getItem(obj.id)) {
+				sessionStorage.removeItem(obj.id);
+			}
 		}
 	});
 
@@ -1097,6 +1101,181 @@ function validateFields() {
 	return outcome;
 }
 
+function dataToolkitGear(element) {
+
+	// Get node id, node type, and selected algorithm
+	const uid = element.offsetParent.offsetParent.id;
+	const nodeType = element.dataset.node;
+	for (var d in diagram) {
+		if (diagram[d]._id == uid) {
+			var selectedAlgo = diagram[d].property;
+		}
+	}
+
+
+	// Add node type to modal
+	// e.g Classification, Regression, etc.
+	$('#dataToolkitModal #dataToolkitComponent').text(nodeType);
+
+	// Add node id to modal
+	// e.g 1679994986693, 1679995214404, etc.
+	$('#dataToolkitModal #dataToolkitId').val(uid);
+
+	// Add selected algorithm to modal
+	// e.g Random Forest, Logistic Regression, etc.
+	$('#dataToolkitModal #dataToolkitAlgorithm').val(selectedAlgo);
+
+	// Clear modal params
+	$('#dataToolkitModal #availableParams').empty();
+	
+
+	// Check in sessionStorage if node has been configured before
+	if (sessionStorage.getItem(uid) != null) {
+
+		// Get node params from sessionStorage
+		var sessionParams = JSON.parse(sessionStorage.getItem(uid));
+		if (sessionParams[selectedAlgo] != undefined) {
+			var algoParams = sessionParams[selectedAlgo];
+		} else {
+			var algoParams = null;
+		}
+	}
+
+	// Call function to get node params blueprint
+	try {
+		var params = getToolkitParams(selectedAlgo);
+		var numberOfParams = Object.keys(params).length
+	}
+	// If no params are returned show notification
+	catch(err) {
+		toastr.error("Please select an algorithm to further configure.", "Notification:");
+		//return
+	}
+		
+	// If params are returned, add them to modal
+	if (numberOfParams != undefined) {
+
+		// Add params to modal in two bootstrap columns, after each two params add a new row
+		// Rows will be added inside of #availableParams
+		let row = 0;
+		let paramCount = 0;
+		for (const [key, value] of Object.entries(params)) {
+
+			// Add new row after two params
+			if (paramCount % 2 === 0) {
+				$('#dataToolkitModal #availableParams').append('<div class="row mb-4" id="toolkitRow'+row+'"></div>');
+				row++;
+			}
+
+			// If node has been configured before, add it's value to input field
+			var html = ''
+			if (algoParams != null) {
+
+				// Check if param exists in sessionStorage
+				if (algoParams.hasOwnProperty(key)) {
+					html = `<input type="text" class="form-control" placeholder="${key}" value="${algoParams[key]}"/>`;
+				
+				// If param doesn't exist in sessionStorage, add empty input field
+				} else {
+					html = `<input type="text" class="form-control" placeholder="${key}"/>`;
+				}
+
+			// If node hasn't been configured before, add empty input field
+			} else {
+				html = `<input type="text" class="form-control" placeholder="${key}"/>`;
+			}
+
+			$('#dataToolkitModal #toolkitRow'+(row-1)).append("<div class='col'>"+html+"</div>");
+			paramCount++;
+		}
+
+		// if (algoParams != null) {
+
+		// 	if (algoParams.hasOwnProperty('automl')) {
+		// 		// if its true, check the checkbox
+		// 		if (algoParams['automl']) {
+		// 			$('#dataToolkitModal #autoMLCheck').prop('checked', true);
+		// 		} else {
+		// 			$('#dataToolkitModal #autoMLCheck').prop('checked', false);
+		// 		}
+		// 	}
+
+		// 	if (algoParams.hasOwnProperty('max-trials')) {
+		// 		$('#dataToolkitModal #maxTrials').val(algoParams['max-trials']);
+		// 	} else {
+		// 		$('#dataToolkitModal #maxTrials').val('');
+		// 	}
+
+		// 	if (algoParams.hasOwnProperty('meta-learning')) {
+		// 		$('#dataToolkitModal #metaLearning').val(algoParams['meta-learning']);
+		// 	} else {
+		// 		$('#dataToolkitModal #metaLearning').val('');
+		// 	}
+		// } else {
+		// 	$('#dataToolkitModal #autoMLCheck').prop('checked', false);
+		// 	$('#dataToolkitModal #maxTrials').val('');
+		// 	$('#dataToolkitModal #metaLearning').val('');
+		// }
+	}
+	
+	$('#dataToolkitModal').modal('show')
+
+	
+}
+
+// Save Data Toolkit node params configuration
+$('#dataToolkitModal #saveToolkitConfig').click(function() {
+
+	// Get node id from modal
+	let uid = $('#dataToolkitModal #dataToolkitId').val();
+
+	// Get algorithm name
+	let algo = $('#dataToolkitModal #dataToolkitAlgorithm').val();
+		
+	// Get all the filled params from modal
+	let params = {};
+	$('#dataToolkitModal .row .col input').each(function(i, obj) {
+		if (obj.value !== "") params[obj.placeholder] = obj.value;
+	});
+
+	// Get #autoMLCheck checkbox value
+	let autoMLCheck = $('#dataToolkitModal #autoMLCheck').is(':checked');
+	params['automl'] = autoMLCheck;
+
+	// Get existing session storage object
+	// Has format :
+	//	"1679994986693": { 
+	//		
+	//		"Random Forest": {
+	//			"param1": "value1", 
+	//			"param2": "value2" 
+	//		},
+	//		"Logistic Regression": {
+	//			"param1": "value1",
+	//			"param2": "value2"
+	//		}
+	//	} 
+	let sessionParams = JSON.parse(sessionStorage.getItem(uid));
+
+	//If node has been configured before, add new params to existing object
+	if (sessionParams != null) {
+		sessionParams[algo] = params;
+		sessionStorage.setItem(uid, JSON.stringify(sessionParams))
+	} else {
+		sessionStorage.setItem(uid, JSON.stringify({[algo]: params}))
+	}	
+
+	// Update node params
+	// for (m in diagram) {
+	// 	if (diagram[m].id === uid) {
+	// 		diagram[m].params = params;
+	// 	}
+	// }
+
+	// Close modal
+	$('#dataToolkitModal').modal('hide');
+});
+
 // Click anywhere to hide node delete btn
 $('html').click(function() {
 	$("#delete_node").hide();
@@ -1127,3 +1306,8 @@ $('html').keydown(function(e){
 	}
 	
 });
+
+// Clear sessionStorage on page unload
+window.onunload = function () {
+	sessionStorage.clear();
+}
