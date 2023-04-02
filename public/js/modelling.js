@@ -1149,7 +1149,7 @@ function dataToolkitGear(element) {
 	// If no params are returned show notification
 	catch(err) {
 		toastr.error("Please select an algorithm to further configure.", "Notification:");
-		//return
+		return
 	}
 		
 	// If params are returned, add them to modal
