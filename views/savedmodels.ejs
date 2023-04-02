@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link style="width: 16px;" rel="shortcut icon" type="image/png" href="img/favicon.png">
+    <title>Diastema | Saved Models</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- BoxIcons CSS -->
+    <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.css" rel="stylesheet"/>
+    <!-- Toastr -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+</head>
+
+<body>
+    <nav>
+        <!-- Logo / Back to home -->
+        <a id="logo" href="/">
+            <div class="logo-name">
+                
+                <div class="logo-image">
+                    <img src="img/ICON.png" alt="">
+                </div>
+                
+                <span class="logo_name">Diastema</span>    
+                
+            </div>
+        </a>
+
+        <!-- Menu navigation items -->
+        <div class="menu-items">
+            <ul class="nav-links">
+                <li>
+                    <a href="/dashboard">
+                        <i class='bx bx-layer'></i>
+                        <span class="link-name">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/ingestion">
+                        <i class='bx bx-import'></i>
+                        <span class="link-name">Data Ingestion</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/collected">
+                        <i class='bx bx-data'></i>
+                        <span class="link-name">Collected Data</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/pipelines">
+                        <i class='bx bx-share-alt' ></i>
+                        <span class="link-name">Pipelines</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/functions">
+                        <i class='bx bx-code-block'></i>
+                        <span class="link-name">Functions</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/savedmodels" class="active">
+                        <i class='bx bx-network-chart'></i>
+                        <span class="link-name">Models</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/visualization">
+                        <i class='bx bx-bar-chart-square' ></i>
+                        <span class="link-name">Visualization</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div style="background-color: #eef2f7;">
+
+                <div class="logout-border-top"></div>
+    
+                <!-- Logout -->
+                <div class="logout-border">
+                    <ul class="logout-mode">
+                        <li>
+                            <a href="/logout">
+                                <i class='bx bx-log-out'></i>
+                                <span class="link-name">Exit application</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+        </div>
+    </nav>
+
+    <!-- Main section -->
+    <section class="dashboard">
+        
+        <!-- Top bar -->
+        <div class="top">
+
+            <div class="page-title">
+                <i class='bx bxs-chevrons-left sidebar-toggle'></i>
+
+                <div class="title">
+                    <span class="text">Pipelines</span>
+                </div>
+            </div>
+
+            <div class="user-group">
+                <div class="user-title">
+                    <!-- Username -->
+                    <span><%= user %></span>
+
+                    <!-- Check if org exists, and then if prop exists -->
+                    <% if(org){ %>
+                        <% if(prop){ %>
+                            <p><%= org %> - <%= prop %></p>
+                        <% } else { %>
+                            <p><%= org %></p>
+                        <% } %>
+                    <% } %>
+                </div>
+                
+                <img src="<%= img %>">
+            </div>
+        </div>
+
+
+        <div class="main-content">
+            <div class="inner-padding">
+    
+                <!-- Pipelines Created -->
+                <div id="row" class="row row-cols-md-4 g-5">
+
+                    <!-- Add Pipeline -->
+                    <!-- <div class="col first-pipeline">
+                        <button class="btn btn-primary" id="addpipeline" type="button">
+                            <i class='bx bx-plus-medical'></i>
+                        </button>
+                    </div> -->
+
+                    <% for (var model of models) {%>
+
+                        <!-- Pipeline -->
+                        <div class="col" id="<%= model['job_id'] %>">
+                            <div class="card" style="height: 31vh;">
+
+                                <div class="card-head" style="padding-bottom: 20px;">
+                                    <img src="img/pipelines.png">
+                                    <h5 class="card-title"><%= model.metadata.pipeline %></h5>
+                                </div>
+
+                                <div class="inner-card-padding" style="margin-bottom: 0px;">
+                                    <div class="card-body" style="display: flex;justify-content: space-between;align-items: flex-start;flex-direction: column;">
+
+                                        <div class="pipeline-line">
+                                            <i class='bx bxs-user' style="color: var(--primary-color);"></i>
+                                            <span><b>Created by: </b><%= model.metadata.user %></span>
+                                        </div>
+                                        
+                                        <div class="pipeline-line">
+                                            <i class='bx bxs-time-five' style="color: var(--primary-color);"></i>
+                                            <span><b>Job Type: </b><%= model.metadata.job %></span>
+                                        </div>
+
+                                        <div class="pipeline-line">
+                                            <i class='bx bx-fingerprint' style="color: var(--primary-color);"></i>
+                                            <span><b>Job ID: </b><%= model['job_id'] %></span>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+
+                                <div class="card-footer">
+                                    <div class="card-footer-padding">
+
+                                        <div class="card-footer-button" onclick="startModel(this)">
+                                            <i class='bx bx-code-alt' ></i>
+                                            <span>Start</span>
+                                        </div>
+                                        <div class="card-footer-button" onclick="killModel(this)">
+                                            <i class='bx bx-trash' ></i>
+                                            <span>Kill</span>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+
+                    <% } %>
+
+                </div>
+                
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    <!-- MDB -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.js"></script>
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <!-- Toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": true,
+            "positionClass": "toast-bottom-right",
+            "preventDuplicates": false,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "3000",
+            "extendedTimeOut": "1500",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+
+        // Display toast after save and redirect
+        if (sessionStorage.getItem("dltpip")=='1'){
+            toastr.info("Pipeline was deleted successfully.", "Notification:");
+            sessionStorage.removeItem("dltpip");
+        }
+
+        const body = document.querySelector("body");
+        const sidebarToggle = body.querySelector(".sidebar-toggle");
+        const sidebar = body.querySelector("nav");
+        const addPipeline = document.getElementById("addpipeline");
+
+        let getStatus = localStorage.getItem("status");
+        if (getStatus && getStatus==="close") {
+            sidebar.classList.toggle("close");
+        }
+
+        sidebarToggle.addEventListener("click", () => {
+        
+            $(".sidebar-toggle").toggleClass("rotate");
+        
+            sidebar.classList.toggle("close");
+
+            if (sidebar.classList.contains("close")) {
+                localStorage.setItem("status", "close");
+            } else {
+                localStorage.setItem("status", "open");
+            }
+        });
+
+        if(true == $('#row').hasClass('row-cols-md-4') && $(window).width() <= 1550) {
+            $('#row').removeClass('row-cols-md-4');
+            $('#row').addClass('row-cols-md-3');
+        }
+
+        if(true == $('#row').hasClass('row-cols-md-4') && $(window).width() <= 1000) {
+            $('#row').removeClass('row-cols-md-4');
+            $('#row').addClass('row-cols-md-2');
+        }
+
+        function startModel (element) {
+                
+            let id = element.parentNode.parentNode.parentNode.children[1].children[0].children[2].children[1].lastChild.data;
+
+            $.ajax({
+                url: '/savedmodels/start',
+                method: 'POST',
+                data: {id:id},
+                success: (response) => {
+                    console.log("Success:");
+
+                    // Create an input element to display the response as a value
+                    let input = `<input type="text" class="form-control" value="${response}" />`;
+
+                    // Append the input element to the div with same id
+                    $('#'+id + ' .card .inner-card-padding .card-body' ).append(input);
+                    
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log("Error:");
+                    console.log(errorThrown);
+                }
+            });
+        }
+
+        async function killModel (element) {
+
+            var id = element.parentNode.parentNode.parentNode.children[1].children[0].children[2].children[1].lastChild.data;
+
+            // Remove the input element
+            $('#'+id + ' .card .inner-card-padding .card-body input').remove();
+
+            // $.ajax({
+            //     url: '/savedmodels/start',
+            //     method: 'POST',
+            //     data: {id:id},
+            //     success: (response) => {
+            //         console.log("Success:");
+
+            //         // Create an input element to display the response as a value
+            //         let input = `<input type="text" class="form-control" value="${response}" />`;
+
+            //         // Append the input element to the div with same id
+            //         $('#'+id + ' .card .inner-card-padding .card-body' ).append(input);
+                    
+            //     },
+            //     error: function(jqXHR, textStatus, errorThrown) {
+            //         console.log("Error:");
+            //         console.log(errorThrown);
+            //     }
+            // });
+        }
+    </script>
+
+</body>
+</html>
