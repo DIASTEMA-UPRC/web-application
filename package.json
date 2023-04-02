@@ -8,11 +8,12 @@
     "dev": "nodemon -L app.js",
     "docker:dev": "docker-compose --project-directory ./  -f ./docker/docker-compose.dev.yml up -d",
     "docker:downdev": "docker-compose --project-directory ./  -f ./docker/docker-compose.dev.yml down",
-    "docker:prod": "docker-compose --project-directory ./  -f ./docker/docker-compose.prod.yml up -d --build",
-    "docker:downprod": "docker-compose --project-directory ./  -f ./docker/docker-compose.prod.yml down",
-    "docker:build": "docker-compose --project-directory ./  -f ./docker/docker-compose.dev.yml up -d --build",
-    "push:all": "git add . && git commit -m \"general updates\" && git push origin master",
-    "push:readme": "git add README.md && git commit -m \"Update README.md\" && git push origin master"
+    "docker": "docker-compose --project-directory ./  -f ./docker/docker-compose.prod.yml up -d --build",
+    "docker:down": "docker-compose --project-directory ./  -f ./docker/docker-compose.prod.yml down",
+    "docker:rmi": "docker rmi diastema-web-app-image:latest && docker rmi adreaskar/diastema-web-app:latest",
+    "docker:tag": "docker tag diastema-web-app-image:latest adreaskar/diastema-web-app:latest",
+    "docker:push": "docker push adreaskar/diastema-web-app:latest",
+    "push:all": "git add . && git commit -m \"general updates\" && git push origin master"
   },
   "keywords": [],
   "author": "Andreas Karabetian",
