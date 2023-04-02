@@ -74,6 +74,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="/savedmodels">
+                        <i class='bx bx-network-chart'></i>
+                        <span class="link-name">Models</span>
+                    </a>
+                </li>
+                <li>
                     <a href="/visualization" class="active">
                         <i class='bx bx-bar-chart-square' ></i>
                         <span class="link-name">Visualization</span>
@@ -145,7 +151,7 @@
                     <!-- Left column -->
                     <div class="col-md-5" style="height: inherit;">
 
-                        <!-- Collected Datasets -->
+                        <!-- Completed Pipelines -->
                         <div class="card" style="height: 100%;">
 
                             <div class="card-head">
@@ -156,27 +162,26 @@
                             <div class="inner-card-padding" style="height: calc(100% - 81px);">
                                 <div class="card-body" style="height: 100%;">
 
+                                    <!-- Loop through all completed pipelines -->
                                     <div class="card-inner">
                                         <% for (var analysis of analytics) {%>
                                             
                                             <div class="card inner-card">
-                                                <div class="card-head" style="padding:4px 24px 34px 24px">
-                                                    <i class='bx bx-git-repo-forked' ></i>
-                                                    <h5 class="card-title"><%= analysis.name %></h5>
+                                                <div id="completed_pipeline" class="card-head" style="padding:4px 24px 34px 24px">
+                                                    <div style="display: flex;align-items: center;flex-grow: 1;">
+                                                        <i class='bx bx-git-repo-forked' style="width: max-content;" ></i>
+                                                        <h5 id="completed_pipeline_title" class="card-title"><%= analysis.name %></h5>
+                                                    </div>
                                                     
-                                                    <div style="position:absolute;right:24px;display:flex;justify-content: center;align-items: center;">
+                                                    <div id="completed_pipeline_buttons" style="display:flex;align-items:center;margin-left: 10px;">
                                                         <button 
                                                             type="submit" 
                                                             class="btn btn-primary mb-4" 
                                                             style="
-                                                                width: 80px;
                                                                 font-size:12px;
                                                                 margin-right: 13px;
                                                                 margin-bottom:0 !important;
-                                                                padding-right:0.3rem !important;
-                                                                padding-left:0.3rem !important;
-                                                                padding-top:0.4rem !important;
-                                                                padding-bottom:0.4rem !important"
+                                                                padding: 0.4rem 0.6rem !important;"
                                                             onclick="visualizeResults('<%= analysis.analysisid %>')"
                                                         >
                                                             Results
@@ -187,10 +192,7 @@
                                                             style="
                                                                 font-size:12px;
                                                                 margin-bottom:0 !important;
-                                                                padding-right:0.3rem !important;
-                                                                padding-left:0.3rem !important;
-                                                                padding-top:0.4rem !important;
-                                                                padding-bottom:0.4rem !important"
+                                                                padding: 0.4rem 0.6rem !important;"
                                                             onclick="performanceResults('<%= analysis.analysisid %>')"
                                                         >
                                                             Performance
@@ -472,10 +474,37 @@
                 $('.visuals').empty();
             }
 
-            results.forEach(item => {
+            // Create the general information table
+            $('<h5>', {
+                    text: uppercaseWords(results[0].title),
+                    style: 'margin-bottom:auto;',
+                    class: 'tag'
+                }).appendTo('.visuals');
+
+            $('<div>', {
+                style: 'display:flex; flex-direction:row;padding:15px 0px 35px 0px;',
+                id: results[0].id
+            }).appendTo('.visuals');
+
+            let content = `
+            <table class="table table-striped table-hover" style="width:100%;">
+                <tr>
+                    <td> <b>Execution Speed:</b> </td> 
+                    <td>${results[0]['execution-speed']} ms </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+            `
+            $('#'+results[0].id).append(content);
+
+
+            // Create the individual service tables
+            results.slice(1).forEach(item => {
 
                 const ramPercentage = ((item['ram-usage'] / item['ram-existing']) * 100).toFixed(2);
-                const diskPercentage = ((item['disk-usage'] / 10000) * 100).toFixed(2);
+                const diskPercentage = ((item['disk-usage'] / 1000000) * 100).toFixed(2);
+                const executionPercentage = ((item['execution-speed'] / results[0]['execution-speed']) * 100).toFixed(2);
 
                 $('<h5>', {
                     text: uppercaseWords(item.title) + " Service",
@@ -503,7 +532,7 @@
                 <tr>
                     <td> <b>Execution Speed:</b> </td> 
                     <td>${item['execution-speed']} ms </td>
-                    <td></td>
+                    <td>${executionPercentage} % of total EXECUTION SPEED </td> 
                 </tr>
                 </table>
                 `

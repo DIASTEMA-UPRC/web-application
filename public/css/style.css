@@ -588,10 +588,22 @@ nav.close ~ .dashboard .top{
     }
 }
 
-@media (max-width: 780px) {
-}
+@media (max-width: 1800px) { 
 
-@media (max-width: 560px) {
+    #completed_pipeline {
+        flex-direction: column;
+        align-items: start;
+    }
+
+    #completed_pipeline_buttons {
+        margin-top: 15px;
+        margin-left: 0 !important;
+    }
+
+    #completed_pipeline_title {
+        font-size: 18px;
+    }
+
 }
 
 @media (max-width: 500px) {

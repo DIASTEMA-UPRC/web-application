@@ -162,25 +162,42 @@ router.route("/visualization/performance/:id")
         let services = []
         try {
             const perf_nodes = Object.keys(nodes)
-            perf_nodes.forEach(node => {
-              
-                let title =""
-                jobs.forEach(job => {
+
+            // Push the analysis-exec-speed node to the services array
+            services.push({
+                "id":"analysis-exec-speed",
+                "title":"Analysis Execution Information",
+                "execution-speed":nodes["analysis-exec-speed"]
+            })
+
+            for (let i = 0; i < perf_nodes.length; i++) {
+                
+                const node = perf_nodes[i];
+                let title = ""
+
+                // Compare the node id with the job id to get the job title
+                for (let j = 0; j < jobs.length; j++) {
+                    const job = jobs[j];
                     if (node == job.id) {
                         title = job.title;
                     }
-                })
+                }
 
+                // If the node is the analysis-exec-speed node, ignore and continue
+                if (node == "analysis-exec-speed") {
+                    continue
+                }
+
+                // Add the service information to the services array
                 services.push({
-                        "id":node,
-                        "title":title,
-                        "ram-usage":nodes[node]["ram-usage"], 
-                        "ram-existing":nodes[node]["ram-existing"], 
-                        "disk-usage":nodes[node]["disk-usage"],
-                        "execution-speed":nodes[node]["execution-speed"],
-                    })
-
-            });
+                    "id":node,
+                    "title":title,
+                    "ram-usage":nodes[node]["ram-usage"], 
+                    "ram-existing":nodes[node]["ram-existing"], 
+                    "disk-usage":nodes[node]["disk-usage"],
+                    "execution-speed":nodes[node]["execution-speed"],
+                })
+            }
         } catch (error) {
             console.log("[ERROR] - No performance data found");
             req.io.sockets.emit("PerfResultsError", 'No performance data found');
