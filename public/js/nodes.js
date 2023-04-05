@@ -145,10 +145,10 @@ function generatePipelineHTML(node,dataset) {
                     nodeDOM += `<select name="nodeProperty" id="nodeProperty" onchange="changeProperty(this)" style="margin:5px auto 10px auto;">
                                     <option selected="true" disabled="disabled" value="default">${node.property}</option>
                                     <option value="Logistic regression">Logistic regression</option>
-                                    <option value="Decision tree classifier">Decision tree classifier</option>
-                                    <option value="Random forest classifier">Random forest classifier</option>
-                                    <option value="Gradient-boosted tree classifier">Gradient-boosted tree classifier</option>
-                                    <option value="Multilayer perceptron classifier">Multilayer perceptron classifier</option>
+                                    <option value="Decision tree classifier">Decision tree</option>
+                                    <option value="Random forest classifier">Random forest</option>
+                                    <option value="Gradient boosted tree classifier">Gradient boosted tree</option>
+                                    <option value="Multilayer perceptron">Multilayer perceptron</option>
                                     <option value="Linear Support Vector Machine">Linear Support Vector Machine</option>
                                 </select>
                                 
@@ -160,10 +160,9 @@ function generatePipelineHTML(node,dataset) {
                     nodeDOM += `<select name="nodeProperty" id="nodeProperty" onchange="changeProperty(this)" style="margin:5px auto 10px auto;">
                                     <option selected="true" disabled="disabled" value="default">${node.property}</option>
                                     <option value="Linear regression">Linear regression</option>
-                                    <option value="Generalized linear regression">Generalized linear regression</option>
-                                    <option value="Decision tree regression">Decision tree regression</option>
-                                    <option value="Random forest regression">Random forest regression</option>
-                                    <option value="Gradient-boosted tree regression">Gradient-boosted tree regression</option>
+                                    <option value="Decision tree regression">Decision tree</option>
+                                    <option value="Random forest regression">Random forest</option>
+                                    <option value="Gradient boosted tree regression">Gradient-boosted tree</option>
                                 </select>
                                 
                                 <label for="field" style="margin-bottom:-3px;">Use column:</label>
@@ -173,9 +172,9 @@ function generatePipelineHTML(node,dataset) {
                 case "Clustering":
                     nodeDOM += `<select name="nodeProperty" id="nodeProperty" onchange="changeProperty(this)" style="margin:5px auto 10px auto;">
                                     <option selected="true" disabled="disabled" value="default">${node.property}</option>
-                                    <option value="K-means">K-means</option>
+                                    <option value="Kmeans">K-means</option>
                                     <option value="Latent Dirichlet Allocation">Latent Dirichlet Allocation</option>
-                                    <option value="Gaussian Mixture">Gaussian Mixture</option>
+                                    <option value="Gaussian Mixture Model">Gaussian Mixture Model</option>
                                 </select>
                                 `
                     break;

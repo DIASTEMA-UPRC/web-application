@@ -5,15 +5,18 @@ function getToolkitParams(selectedAlgo) {
         case "Logistic regression":
             return {
                 "maxIter":"int",
-                "regParam":"double",
-                "elasticNetParam":"double",
+                "regParam":"float",
+                "elasticNetParam":"float",
                 "tol":"string",
                 "fitIntercept":"boolean",
-                "threshold":"double",
+                "threshold":"float",
                 "standardization":"boolean",
                 "aggregationDepth":"int",
-                "family":"string",
-                "maxBlockSizeInMB":"double"
+                "family":{
+                    "type":"string",
+                    "options":["auto","binomial","multinomial"]
+                },
+                "maxBlockSizeInMB":"float"
             }
         case "Decision tree classifier":
             return {
@@ -21,11 +24,14 @@ function getToolkitParams(selectedAlgo) {
                 "maxBins": "int",
                 "minInstancesPerNode": "int",
                 "minInfoGain": "float",
-                "maxMemoryInMB": "int ",
-                "cacheNodeIds": "bool",
+                "maxMemoryInMB": "int",
+                "cacheNodeIds": "boolean",
                 "checkpointInterval": "int",
-                "impurity": "str ",
-                "minWeightFractionPerNode": "float "
+                "impurity": {
+                    "type": "string",
+                    "options": ["gini", "entropy"]
+                },
+                "minWeightFractionPerNode": "float"
             }
         case "Random forest classifier":
             return {        
@@ -34,21 +40,24 @@ function getToolkitParams(selectedAlgo) {
                 "minInstancesPerNode":"int",
                 "minInfoGain":"float",
                 "maxMemoryInMB":"int",
-                "cacheNodeIds":"bool",
+                "cacheNodeIds":"boolean",
                 "checkpointInterval":"int",
-                "impurity":"str",
+                "impurity":{
+                    "type":"string",
+                    "options":["gini","entropy"]
+                },
                 "numTrees":"int",
                 "subsamplingRate":"float",
                 "minWeightFractionPerNode":"float"
             }
-        case "Gradient-boosted tree classifier":
+        case "Gradient boosted tree classifier":
             return {
                 "maxDepth": "int",
                 "maxBins": "int",
                 "minInstancesPerNode": "int",
                 "minInfoGain": "float",
                 "maxMemoryInMB": "int",
-                "cacheNodeIds": "bool",
+                "cacheNodeIds": "boolean",
                 "checkpointInterval": "int",
                 "maxIter": "int",
                 "stepSize": "float",
@@ -56,21 +65,24 @@ function getToolkitParams(selectedAlgo) {
                 "validationTol": "float",
                 "minWeightFractionPerNode": "float"          
             }
-        case "Multilayer perceptron classifier":
+        case "Multilayer perceptron":
             return {
                 "maxIter": "int",
-                "tol": "float",
+                "tol": "string",
                 "blockSize": "int",
                 "stepSize": "float",
-                "solver": "str"
+                "solver": {
+                    "type": "string",
+                    "options": ["gd", "l-bfgs"]
+                }
             }
         case "Linear Support Vector Machine":
             return {
                 "maxIter": "int",
                 "regParam": "float",
-                "tol": "float",
-                "fitIntercept": "bool",
-                "standardization": "bool",
+                "tol": "string",
+                "fitIntercept": "boolean",
+                "standardization": "boolean",
                 "threshold": "float",
                 "aggregationDepth": "int",
                 "maxBlockSizeInMB": "float"
@@ -82,26 +94,18 @@ function getToolkitParams(selectedAlgo) {
                 "maxIter": "int",
                 "regParam": "float",
                 "elasticNetParam": "float",
-                "tol": "float",
-                "fitIntercept": "bool",
-                "standardization": "bool",
-                "solver": "str",
+                "tol": "string",
+                "fitIntercept": "boolean",
+                "standardization": "boolean",
+                "solver": {
+                    "type": "string",
+                    "options": ["auto", "normal", "l-bfgs"]
+                },
                 "aggregationDepth": "int",
-                "loss": "str",
-                "epsilon": "float",
-                "maxBlockSizeInMB": "float"
-            }
-        case "Generalized linear regression":
-            return {
-                "maxIter": "int",
-                "regParam": "float",
-                "elasticNetParam": "float",
-                "tol": "float",
-                "fitIntercept": "bool",
-                "standardization": "bool",
-                "solver": "str",
-                "aggregationDepth": "int",
-                "loss": "str",
+                "loss": {
+                    "type": "string",
+                    "options": ["squaredError", "huber"]
+                },
                 "epsilon": "float",
                 "maxBlockSizeInMB": "float"
             }
@@ -112,7 +116,7 @@ function getToolkitParams(selectedAlgo) {
                 "minInstancesPerNode": "int",
                 "minInfoGain": "float",
                 "maxMemoryInMB": "int",
-                "cacheNodeIds": "bool",
+                "cacheNodeIds": "boolean",
                 "checkpointInterval": "int",
                 "minWeightFractionPerNode": "float"
             }
@@ -123,54 +127,66 @@ function getToolkitParams(selectedAlgo) {
                 "minInstancesPerNode": "int",
                 "minInfoGain": "float",
                 "maxMemoryInMB": "int",
-                "cacheNodeIds": "bool",
+                "cacheNodeIds": "boolean",
                 "checkpointInterval": "int",
                 "subsamplingRate": "float",
                 "numTrees": "int",
                 "minWeightFractionPerNode": "float"
             }
-        case "Gradient-boosted tree regression":
+        case "Gradient boosted tree regression":
             return {
                 "maxDepth": "int",
                 "maxBins": "int",
                 "minInstancesPerNode": "int",
                 "minInfoGain": "float",
                 "maxMemoryInMB": "int",
-                "cacheNodeIds": "bool",
+                "cacheNodeIds": "boolean",
                 "subsamplingRate": "float",
                 "checkpointInterval": "int",
-                "lossType": "str",
+                "lossType": {
+                    "type": "string",
+                    "options": ["squared", "absolute"]
+                },
                 "maxIter": "int",
                 "stepSize": "float",
                 "validationTol": "float"
             }
 
         // Clustering
-        case "K-means":
+        case "Kmeans":
             return {
                 "k": "int",
-                "initMode": "str",
+                "initMode": {
+                    "type": "string",
+                    "options": ["random", "k-means||"]
+                },
                 "initSteps": "int",
-                "tol": "float",
+                "tol": "string",
                 "maxIter": "int",
-                "distanceMeasure": "str"
+                "distanceMeasure": {
+                    "type": "string",
+                    "options": ["euclidean", "cosine"]
+                }
             }
         case "Latent Dirichlet Allocation":
             return {
                 "maxIter": "int",
                 "checkpointInterval": "int",
                 "k": "int",
-                "optimizer": "str",
+                "optimizer": {
+                    "type": "string",
+                    "options": ["online", "em"]
+                },
                 "learningOffset": "float",
                 "learningDecay": "float",
                 "subsamplingRate": "float",
-                "optimizeDocConcentration": "bool",
-                "keepLastCheckpoint": "bool"
+                "optimizeDocConcentration": "boolean",
+                "keepLastCheckpoint": "boolean"
             } 
-        case "Gaussian Mixture":
+        case "Gaussian Mixture Model":
             return {
                 "k": "int",
-                "tol": "float",
+                "tol": "string",
                 "maxIter": "int",
                 "aggregationDepth": "int"
             }

@@ -25,9 +25,14 @@
 					<!-- Hiiden input for job id -->
 					<input type="hidden" id="dataToolkitId" value="" placeholder="jobid">
 
-					<p class="form-label">Available Parameters:</p>
+					<p class="form-label">Algorithm Parameters:</p>
 
 					<div id="availableParams">
+					</div>
+
+					<p class="form-label">Spark Parameters:</p>
+
+					<div id="sparkParams">
 					</div>
 
 					<!-- Message to user -->
@@ -39,18 +44,12 @@
 
 					<br>
 
-					<!-- Checkbox -->
-					<div class="form-check d-flex mb-4" style="margin-left: 5px;">
-						<input class="form-check-input me-2" type="checkbox" id="autoMLCheck" 
-						onchange="
-							document.getElementById('maxTrials').disabled = !this.checked;
-							document.getElementById('metaLearning').disabled = !this.checked;
+					<div id="autoMLdiv">
+					</div>
 
-							if (!this.checked) {
-								document.getElementById('maxTrials').value = '';
-								document.getElementById('metaLearning').value = '';
-							}
-						" />
+					<!-- Checkbox -->
+					<!-- <div class="form-check d-flex mb-4" style="margin-left: 5px;" id="autoMLdiv">
+						<input class="form-check-input me-2" type="checkbox" id="autoMLCheck" />
 						<label class="form-check-label" for="form2Example33">
 							Use AutoML
 						</label>
@@ -58,12 +57,12 @@
 				
 					<div class="row mb-4">
 					  <div class="col">
-						<input type="text" class="form-control" placeholder="max-trials" id="maxTrials" disabled/>
+						<input type="text" class="form-control" placeholder="max-trials" id="maxTrials" />
 					  </div>
 					  <div class="col">
-						<input type="text" class="form-control" placeholder="meta-learning" id="metaLearning" disabled/>
+						<input type="text" class="form-control" placeholder="meta-learning" id="metaLearning" />
 					  </div>
-					</div>
+					</div> -->
 				  
 					<!-- Submit button -->
 					<button type="button" id="saveToolkitConfig" class="btn btn-primary btn-block mb-4">Save</button>

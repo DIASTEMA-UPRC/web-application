@@ -350,8 +350,16 @@ $(document).ready(function() {
 			// Properties specific to the Classification, Regression and Clustering jobs
 			if (data.nodes[m].type === "Classification" || data.nodes[m].type === "Regression" || data.nodes[m].type === "Clustering") {
 				job.algorithm = data.nodes[m].property.toLowerCase();
-				if (job.algorithm === "select algorithm") job.algorithm = false;
+				if (job.algorithm === "select algorithm") job.algorithm = "false";
 				job.column = data.nodes[m].field.toLowerCase();
+				
+				// If the job has parameters, add them to the job object
+				if (diagram[m].params) {
+					job.params = diagram[m].params;
+					job.automl = job.params.automl;
+					delete job.params.automl;
+				}
+				
 			}
 
 			// Properties specific to the Cleaning job
@@ -396,59 +404,8 @@ $(document).ready(function() {
 			}
 		}
 
-		// Determine if auto modelling is enabled or not
-		if ($("#checkbox").is(':checked')) {
-			data.automodel = true;
-		} else {
-			data.automodel = false;
-		}
-
 		return data;
 	}
-
-	// Save graph to application
-	// $('#save_graph').click( async ()=>{
-
-	// 	if ($("#deploy_graph_input").val() === "") {
-	// 		toastr.error("Please give a name to your analysis graph.", "Notification:");
-	// 	} else {
-
-	// 		if (validateFields()) {
-				
-	// 			let data = await generateData();
-
-	// 			let name = $("#deploy_graph_input").val();
-	
-	// 			data['analysis-name'] = name
-	
-	// 			// Send pipeline to server
-	// 			try {
-	// 				let resp = await fetch("/pipelines/save", {
-	// 					method: 'POST',
-	// 					headers: {'Content-Type': 'application/json'},
-	// 					body: JSON.stringify(data)
-	// 				})
-	// 				var response = await resp;
-	// 			} catch (error) {
-	// 				console.log(error);
-	// 			}
-	
-	// 			// Check response
-	// 			if (response.statusText === "OK") {
-	
-	// 				$("#deploy_graph_input").val("")
-	// 				$('#deployGraphModal').modal('hide');
-	
-	// 				sessionStorage.setItem("showmsg", "1");
-	
-	// 				window.location.replace("/modelling");
-	// 			} else {
-	// 				toastr.error("This name is used by another pipeline.", "Notification:");
-	// 			}
-
-	// 		}
-	// 	}
-	// });
 
 	// Validate graph
 	$('#validate_graph').click( async ()=> {
@@ -1101,6 +1058,10 @@ function validateFields() {
 	return outcome;
 }
 
+// ********************************
+// DATA TOOLKIT COMPONENT FUNCTIONS
+// ********************************
+
 function dataToolkitGear(element) {
 
 	// Get node id, node type, and selected algorithm
@@ -1113,6 +1074,48 @@ function dataToolkitGear(element) {
 	}
 
 
+
+	// Check if div #autoMLCheckWrap exists so that it doesn't duplicate
+	if ($('#autoMLCheckWrap').length) {
+		$('#autoMLCheckWrap').remove();
+		$('#autoMLfields').remove();	
+	}
+
+	// Generate AutoML checkbox and fields
+	let autoMLhtml = `
+	<div class="form-check d-flex mb-4" style="margin-left: 5px;" id="autoMLCheckWrap">
+		<input class="form-check-input me-2" type="checkbox" id="autoMLCheck" onchange="
+			if (this.checked) {
+				$('#autoMLfields').show();
+			} else {
+				$('#autoMLfields').hide();
+				$('#maxTrials').val('')
+				$('#metaLearning').val('')
+			}
+		"/>
+		<label class="form-check-label">
+			Use AutoML
+		</label>
+	</div>
+
+	<div class="row mb-4" id="autoMLfields" style="display: none;">
+		<div class="col">
+			<input type="text" class="form-control" placeholder="max-trials" id="maxTrials" />
+		</div>
+		<div class="col">
+			<select class="form-select" id="metaLearning">
+				<option selected value="">meta-learning</option>
+				<option value="true">True</option>
+				<option value="false">False</option>
+			</select>
+		</div>
+	</div>`
+
+	// Append autoMLhtml to #autoMLdiv
+	$('#autoMLdiv').append(autoMLhtml);
+
+
+
 	// Add node type to modal
 	// e.g Classification, Regression, etc.
 	$('#dataToolkitModal #dataToolkitComponent').text(nodeType);
@@ -1123,11 +1126,17 @@ function dataToolkitGear(element) {
 
 	// Add selected algorithm to modal
 	// e.g Random Forest, Logistic Regression, etc.
-	$('#dataToolkitModal #dataToolkitAlgorithm').val(selectedAlgo);
-
-	// Clear modal params
-	$('#dataToolkitModal #availableParams').empty();
+	if (selectedAlgo === 'Select Algorithm') {
+		$('#dataToolkitModal #dataToolkitAlgorithm').val('No algorithm selected');
+	} else {
+		$('#dataToolkitModal #dataToolkitAlgorithm').val(selectedAlgo);
+	}
 	
+	// Clear modal params inputs
+	$('#dataToolkitModal #availableParams').empty();
+	$('#dataToolkitModal #sparkParams').empty();
+	
+
 
 	// Check in sessionStorage if node has been configured before
 	if (sessionStorage.getItem(uid) != null) {
@@ -1142,85 +1151,266 @@ function dataToolkitGear(element) {
 	}
 
 	// Call function to get node params blueprint
-	try {
-		var params = getToolkitParams(selectedAlgo);
-		var numberOfParams = Object.keys(params).length
-	}
-	// If no params are returned show notification
-	catch(err) {
-		toastr.error("Please select an algorithm to further configure.", "Notification:");
-		return
-	}
-		
+	let params = getToolkitParams(selectedAlgo);
+	
+	// *****************************************
 	// If params are returned, add them to modal
-	if (numberOfParams != undefined) {
+	// *****************************************
+	if (params != undefined) {
 
 		// Add params to modal in two bootstrap columns, after each two params add a new row
-		// Rows will be added inside of #availableParams
+		// Rows will be added inside of #availableParams div
 		let row = 0;
 		let paramCount = 0;
+
 		for (const [key, value] of Object.entries(params)) {
 
 			// Add new row after two params
 			if (paramCount % 2 === 0) {
-				$('#dataToolkitModal #availableParams').append('<div class="row mb-4" id="toolkitRow'+row+'"></div>');
+
+				// if param is maxMemoryInMB, add it to #sparkParams div
+				if (key === 'maxMemoryInMB') {
+					$('#dataToolkitModal #sparkParams').append('<div class="row mb-4" id="sparktoolkitRow'+row+'"></div>');
+				} else {
+					$('#dataToolkitModal #availableParams').append('<div class="row mb-4" id="toolkitRow'+row+'"></div>');
+				}
 				row++;
 			}
+			
 
+			// *****************************************************************
 			// If node has been configured before, add it's value to input field
+			// *****************************************************************
 			var html = ''
 			if (algoParams != null) {
 
 				// Check if param exists in sessionStorage
 				if (algoParams.hasOwnProperty(key)) {
-					html = `<input type="text" class="form-control" placeholder="${key}" value="${algoParams[key]}"/>`;
+
+					// if param is type string with default options, add dropdown
+					if (typeof value === 'object') {
+
+						let options = value.options;
+						
+						html = `
+						<select class="form-select">
+							<option value="">${key}</option>
+							`
+							for (i in options) {
+								if (algoParams[key] === options[i]) {
+
+									html+= `
+									<option value="${options[i]}" selected>${options[i]}</option>
+									`
+								} else {
+
+									html+= `
+									<option value="${options[i]}">${options[i]}</option>
+									`
+								}
+							}
+						html+=`
+						</select>
+						`
+					} else {
+
+						// if param is type boolean, add dropdown
+						if (value === 'boolean') {
+							html = `
+							<select class="form-select" aria-label="Default select example">
+								<option value="">${key}</option>
+								`
+								if (algoParams[key] === 'true') {
+									html+= `
+									<option value="true" selected>True</option>
+									<option value="false">False</option>
+									`
+								} else {
+									html+= `
+									<option value="true">True</option>
+									<option value="false" selected>False</option>
+									`
+								}
+							html+=`
+							</select>
+							`
+						} else {
+							html = `<input id="${key}" type="text" class="form-control" placeholder="${key}" value="${algoParams[key]}"/>`;
+						}
+					}
+
 				
 				// If param doesn't exist in sessionStorage, add empty input field
 				} else {
-					html = `<input type="text" class="form-control" placeholder="${key}"/>`;
-				}
 
+					html = addEmptyField(key, value);
+				}
+			
+			// ************************************************************
 			// If node hasn't been configured before, add empty input field
+			// ************************************************************
 			} else {
-				html = `<input type="text" class="form-control" placeholder="${key}"/>`;
+
+				html = addEmptyField(key, value);
+
 			}
 
-			$('#dataToolkitModal #toolkitRow'+(row-1)).append("<div class='col'>"+html+"</div>");
+			// Append html to row div
+			if (key === 'maxMemoryInMB') {
+				$('#dataToolkitModal #sparktoolkitRow'+(row-1)).append("<div class='col'>"+html+"</div>");
+			} else {
+				$('#dataToolkitModal #toolkitRow'+(row-1)).append("<div class='col'>"+html+"</div>");
+			}
 			paramCount++;
+
+			// Check if value is numeric in int and float input fields
+			if (value === 'int' || value === 'float') {
+				$(`#dataToolkitModal #${key}`).keyup((e)=>{
+					if (isNaN($(e.target).val())) {
+						toastr.error("Please enter a numeric value.", "Notification:");
+						$(e.target).val('');
+					}
+				})
+			}
 		}
 
-		// if (algoParams != null) {
-
-		// 	if (algoParams.hasOwnProperty('automl')) {
-		// 		// if its true, check the checkbox
-		// 		if (algoParams['automl']) {
-		// 			$('#dataToolkitModal #autoMLCheck').prop('checked', true);
-		// 		} else {
-		// 			$('#dataToolkitModal #autoMLCheck').prop('checked', false);
-		// 		}
-		// 	}
-
-		// 	if (algoParams.hasOwnProperty('max-trials')) {
-		// 		$('#dataToolkitModal #maxTrials').val(algoParams['max-trials']);
-		// 	} else {
-		// 		$('#dataToolkitModal #maxTrials').val('');
-		// 	}
-
-		// 	if (algoParams.hasOwnProperty('meta-learning')) {
-		// 		$('#dataToolkitModal #metaLearning').val(algoParams['meta-learning']);
-		// 	} else {
-		// 		$('#dataToolkitModal #metaLearning').val('');
-		// 	}
-		// } else {
-		// 	$('#dataToolkitModal #autoMLCheck').prop('checked', false);
-		// 	$('#dataToolkitModal #maxTrials').val('');
-		// 	$('#dataToolkitModal #metaLearning').val('');
-		// }
+		// Configure AutoML checkbox and fields
+		configureAutoML(algoParams);
+		
+	} else {
+		configureAutoML(algoParams);
 	}
 	
 	$('#dataToolkitModal').modal('show')
-
 	
+}
+
+function addEmptyField(key, value) {
+
+	// if param is type string with default options, add dropdown
+	if (typeof value == 'object') {
+
+		let options = value.options;
+
+		html = `
+			<select class="form-select" aria-label="Default select example">
+				<option selected value="">${key}</option>
+				`
+				for (i in options) {
+					html+= `
+					<option value="${options[i]}">${options[i]}</option>
+					`
+				}
+			html+=`
+			</select>
+			`
+	} else {
+		
+		// if param is type boolean, add dropdown
+		if (value === 'boolean') {
+			html = `
+			<select class="form-select" aria-label="Default select example">
+				<option selected value="">${key}</option>
+				<option value="true">True</option>
+				<option value="false">False</option>
+			</select>
+			`
+		} else {
+			html = `<input id="${key}" type="text" class="form-control" placeholder="${key}"/>`;
+		}
+	}
+
+	return html;
+}
+
+function configureAutoML(algoParams) {
+
+	// Check if node has been configured before
+	if (algoParams != null) {
+
+		// Check if AutoML exists in sessionStorage
+		if (algoParams.hasOwnProperty('automl')) {
+			
+			// if its true, check the checkbox
+			if (algoParams['automl']) {
+				$('#dataToolkitModal #autoMLCheck').prop('checked', true);
+				$('#dataToolkitModal #autoMLfields').show();
+			} else {
+				$('#dataToolkitModal #autoMLCheck').prop('checked', false);
+				$('#dataToolkitModal #autoMLfields').hide();
+			}
+		}
+		
+		// Check if max-trials exists in sessionStorage
+		if (algoParams.hasOwnProperty('max-trials')) {
+			$('#dataToolkitModal #maxTrials').val(algoParams['max-trials']);
+		} else {
+			$('#dataToolkitModal #maxTrials').val('');
+		}
+
+		// Check if meta-learning exists in sessionStorage
+		if (algoParams.hasOwnProperty('meta-learning')) {
+			$('#dataToolkitModal #metaLearning').val(algoParams['meta-learning']);
+		} else {
+			$('#dataToolkitModal #metaLearning').val('');
+		}
+
+	} else {
+		$('#dataToolkitModal #autoMLCheck').prop('checked', false);
+		$('#dataToolkitModal #autoMLfields').hide();
+	}
+
+	// Check if value is numeric in max-trials input field
+	$('#dataToolkitModal #maxTrials').keyup((e)=>{
+		if (isNaN($(e.target).val())) {
+			toastr.error("Please enter a numeric value.", "Notification:");
+			$(e.target).val('');
+		}
+	})
+}
+
+function updateNodeParams(uid,params) {
+
+	// Get selected algorithm
+	for (var d in diagram) {
+		if (diagram[d]._id == uid) {
+			var selectedAlgo = diagram[d].property;
+		}
+	}
+	var paramTypes = getToolkitParams(selectedAlgo);
+
+	// loop through params and convert to correct type
+	for (const [key, value] of Object.entries(params)) {
+
+		if (key === 'max-trials') {
+			params[key] = parseInt(value);
+			continue;
+		}
+
+		if (paramTypes[key] === 'int') {
+			params[key] = parseInt(value);
+			continue;
+		} else if (paramTypes[key] === 'float') {
+			params[key] = parseFloat(value);
+			continue;
+		}
+
+		if (value === 'true') {
+			params[key] = true;
+			continue;
+		} else if (value === 'false') {
+			params[key] = false;
+			continue;
+		}
+	}
+
+	// Update node params
+	for (m in diagram) {
+		if (diagram[m]._id.toString() === uid) {
+			diagram[m].params = params;
+			break;
+		}
+	}
 }
 
 // Save Data Toolkit node params configuration
@@ -1230,12 +1420,20 @@ $('#dataToolkitModal #saveToolkitConfig').click(function() {
 	let uid = $('#dataToolkitModal #dataToolkitId').val();
 
 	// Get algorithm name
-	let algo = $('#dataToolkitModal #dataToolkitAlgorithm').val();
+	for (var d in diagram) {
+		if (diagram[d]._id == uid) {
+			var algo = diagram[d].property;
+		}
+	}
 		
 	// Get all the filled params from modal
 	let params = {};
 	$('#dataToolkitModal .row .col input').each(function(i, obj) {
 		if (obj.value !== "") params[obj.placeholder] = obj.value;
+	});
+	// Add dropdown values to params
+	$('#dataToolkitModal .row .col select').each(function(i, obj) {
+		if (obj.value !== "") params[obj.children[0].innerHTML] = obj.value;
 	});
 
 	// Get #autoMLCheck checkbox value
@@ -1265,12 +1463,8 @@ $('#dataToolkitModal #saveToolkitConfig').click(function() {
 		sessionStorage.setItem(uid, JSON.stringify({[algo]: params}))
 	}	
 
-	// Update node params
-	// for (m in diagram) {
-	// 	if (diagram[m].id === uid) {
-	// 		diagram[m].params = params;
-	// 	}
-	// }
+	//Update node params
+	updateNodeParams(uid,params);
 
 	// Close modal
 	$('#dataToolkitModal').modal('hide');
