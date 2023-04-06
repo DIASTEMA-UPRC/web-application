@@ -15,8 +15,10 @@ function generatePipelineHTML(node,dataset) {
                 }
 
             // Data Toolkit Gear Icon
-            if (node.type === "Classification" || node.type === "Regression" || node.type === "Clustering") {
-                nodeDOM += `<span onclick="dataToolkitGear(this)" class="material-icons"  data-node="${node.type}" style="color:white;cursor:pointer;">settings</span>`
+            if (document.getElementById('user-property').value == "Data Scientist") {
+                if (node.type === "Classification" || node.type === "Regression" || node.type === "Clustering") {
+                    nodeDOM += `<span onclick="dataToolkitGear(this)" class="material-icons"  data-node="${node.type}" style="color:white;cursor:pointer;">settings</span>`
+                }
             }
 
             nodeDOM += 

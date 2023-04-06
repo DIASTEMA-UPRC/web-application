@@ -80,10 +80,11 @@
                         
                     </a> -->
                     <div class="d-flex align-items-center h-100">
-                        <!-- <i class="fas fa-user-circle" alt="Notifications" style="color: #737373;font-size: 22px;"></i> -->
                         <span class="pl-2 pr-2" style="text-transform: lowercase;font-size: 15px;"><%= user %></span>
                         <img src="<%= img %>" style="width: 30px;border-radius: 25%;">
                     </div>
+
+                    <input type="hidden" id="user-property" value="<%= property %>">
                     
                     <!-- <div id="profileDropdown" class="dropdown-menu dropdown-menu-right" aria-labelledby="profileDropdownMenu">
                         <a class="dropdown-item" href="/logout"><i class="zmdi zmdi-close-circle pr-2"></i>Logout</a>

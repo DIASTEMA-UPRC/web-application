@@ -574,7 +574,6 @@ $(document).ready(function() {
 					body: JSON.stringify({message:"send-to-orchestrator", info:compressed_data})
 				})
 				.then(res => {
-					console.log("Data sent to backend", res);
 					window.location.replace("/modelling");
 				});
 	
