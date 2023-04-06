@@ -4,6 +4,7 @@ const router = express.Router();
 const CustomFunction = require("../models/CustomFunction");
 const Pipeline = require("../models/Graph");
 const Dataset = require('../models/Dataset');
+const Model = require('../models/SavedModel');
 
 router.route("/dashboard")
     .get(async (req,res) => {
@@ -38,6 +39,13 @@ router.route("/dashboard")
             console.log(err);
         }
 
+        // Get all models from database
+        try {
+            var models = await Model.find({"metadata.user": username});
+        } catch (err) {
+            console.log(err);
+        }
+
         const organization = req.session.organization;
         const property = req.session.property;
         const image = req.session.image;
@@ -50,7 +58,8 @@ router.route("/dashboard")
             pipelines:pipelines,
             functions:functions,
             datasets:datasets,
-            results:results
+            results:results,
+            models:models
         });
     })
 
