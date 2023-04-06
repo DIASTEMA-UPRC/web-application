@@ -22,6 +22,32 @@
     <!-- Toastr -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
+    <style>
+        .loader {
+            border: 7px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 7px solid var(--primary-color);
+            width: 30px;
+            height: 30px;
+            -webkit-animation: spin 2s linear infinite; /* Safari */
+            animation: spin 2s linear infinite;
+            margin: 0 auto;
+            position: absolute;
+            right: 30px;
+        }
+
+        /* Safari */
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+
 </head>
 
 <body>
@@ -117,7 +143,7 @@
                 <i class='bx bxs-chevrons-left sidebar-toggle'></i>
 
                 <div class="title">
-                    <span class="text">Pipelines</span>
+                    <span class="text">Models</span>
                 </div>
             </div>
 
@@ -144,44 +170,55 @@
         <div class="main-content">
             <div class="inner-padding">
     
-                <!-- Pipelines Created -->
+                <!-- Saved Models -->
                 <div id="row" class="row row-cols-md-4 g-5">
-
-                    <!-- Add Pipeline -->
-                    <!-- <div class="col first-pipeline">
-                        <button class="btn btn-primary" id="addpipeline" type="button">
-                            <i class='bx bx-plus-medical'></i>
-                        </button>
-                    </div> -->
 
                     <% for (var model of models) {%>
 
-                        <!-- Pipeline -->
+                        <!-- Model -->
                         <div class="col" id="<%= model['job_id'] %>">
                             <div class="card" style="height: 31vh;">
 
+                                <!-- Pipeline name -->
                                 <div class="card-head" style="padding-bottom: 20px;">
                                     <img src="img/pipelines.png">
                                     <h5 class="card-title"><%= model.metadata.pipeline %></h5>
+
+                                    <div class="loader" id="spinloader" style="display:none"></div>
                                 </div>
 
                                 <div class="inner-card-padding" style="margin-bottom: 0px;">
                                     <div class="card-body" style="display: flex;justify-content: space-between;align-items: flex-start;flex-direction: column;">
 
+                                        <!-- Job -->
                                         <div class="pipeline-line">
-                                            <i class='bx bxs-user' style="color: var(--primary-color);"></i>
-                                            <span><b>Created by: </b><%= model.metadata.user %></span>
-                                        </div>
-                                        
-                                        <div class="pipeline-line">
-                                            <i class='bx bxs-time-five' style="color: var(--primary-color);"></i>
+                                            <i class='bx bx-align-middle' style="color: var(--primary-color);"></i>
                                             <span><b>Job Type: </b><%= model.metadata.job %></span>
                                         </div>
 
+                                        <!-- Job ID -->
                                         <div class="pipeline-line">
                                             <i class='bx bx-fingerprint' style="color: var(--primary-color);"></i>
                                             <span><b>Job ID: </b><%= model['job_id'] %></span>
                                         </div>
+
+                                        <!-- State -->
+                                        <div class="pipeline-line">
+                                            <% if (model.state === 'Down') {%>
+                                                <i class='bx bxs-bell-off' style="color: var(--primary-color);"></i>
+                                            <% } else if (model.state === 'Running') {%>
+                                                <i class='bx bxs-bell-ring' style="color: var(--primary-color);"></i>
+                                            <% } else if (mode.state === 'Pending') {%>
+                                                <i class='bx bxs-bell' style="color: var(--primary-color);"></i>
+                                            <% } %>
+                                            <span><b>State: </b><%= model.state %></span>
+                                        </div>
+
+                                        <% if (model.state === 'Running') {%>
+                                            <input type="text" class="form-control" value="http://83.212.238.166:77777/predict/<%= model['job_id'] %>" />
+                                        <% } %>
+
+                                        
                                         
                                     </div>
                                 </div>
@@ -242,9 +279,16 @@
         }
 
         // Display toast after save and redirect
-        if (sessionStorage.getItem("dltpip")=='1'){
-            toastr.info("Pipeline was deleted successfully.", "Notification:");
-            sessionStorage.removeItem("dltpip");
+        if (sessionStorage.getItem("mdlrunning")=='1'){
+            toastr.info("Model is running.", "Notification:");
+            sessionStorage.removeItem("mdlrunning");
+
+            $('#spinloader').hide();
+        } else if (sessionStorage.getItem("mdlstopped")=='1'){
+            toastr.info("Model is stopped.", "Notification:")
+            sessionStorage.removeItem("mdlstopped");
+
+            $('#spinloader').hide();
         }
 
         const body = document.querySelector("body");
@@ -281,56 +325,59 @@
         }
 
         function startModel (element) {
-                
-            let id = element.parentNode.parentNode.parentNode.children[1].children[0].children[2].children[1].lastChild.data;
+
+            let id = element.parentNode.parentNode.parentNode.children[1].children[0].children[1].children[1].lastChild.data;
+
+            $('#'+id + ' .card #spinloader').show();
 
             $.ajax({
                 url: '/savedmodels/start',
                 method: 'POST',
                 data: {id:id},
                 success: (response) => {
-                    console.log("Success:");
 
-                    // Create an input element to display the response as a value
-                    let input = `<input type="text" class="form-control" value="${response}" />`;
-
-                    // Append the input element to the div with same id
-                    $('#'+id + ' .card .inner-card-padding .card-body' ).append(input);
+                    sessionStorage.setItem("mdlrunning", "1");
+                                        
+                    window.location.href = "/savedmodels";
                     
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.log("Error:");
                     console.log(errorThrown);
+
+                    toastr.error("Model is not available, please try again later.", "Notification:");
+
+                    $('#'+id + ' .card #spinloader').hide();
                 }
             });
         }
 
         async function killModel (element) {
 
-            var id = element.parentNode.parentNode.parentNode.children[1].children[0].children[2].children[1].lastChild.data;
+            var id = element.parentNode.parentNode.parentNode.children[1].children[0].children[1].children[1].lastChild.data;
 
-            // Remove the input element
-            $('#'+id + ' .card .inner-card-padding .card-body input').remove();
+            $('#'+id + ' .card #spinloader').show();
 
-            // $.ajax({
-            //     url: '/savedmodels/start',
-            //     method: 'POST',
-            //     data: {id:id},
-            //     success: (response) => {
-            //         console.log("Success:");
+            $.ajax({
+                url: '/savedmodels/kill',
+                method: 'POST',
+                data: {id:id},
+                success: (response) => {
 
-            //         // Create an input element to display the response as a value
-            //         let input = `<input type="text" class="form-control" value="${response}" />`;
+                    sessionStorage.setItem("mdlstopped", "1");
 
-            //         // Append the input element to the div with same id
-            //         $('#'+id + ' .card .inner-card-padding .card-body' ).append(input);
+                    window.location.href = "/savedmodels";
                     
-            //     },
-            //     error: function(jqXHR, textStatus, errorThrown) {
-            //         console.log("Error:");
-            //         console.log(errorThrown);
-            //     }
-            // });
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log("Error:");
+                    console.log(errorThrown);
+
+                    toastr.error("Model is not available, please try again later.", "Notification:");
+
+                    $('#'+id + ' .card #spinloader').hide();
+                }
+            });
         }
     </script>
 

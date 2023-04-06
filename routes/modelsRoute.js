@@ -4,12 +4,14 @@ const fetch = require('node-fetch');
 
 const SavedModel = require("../models/SavedModel");
 
+const {RUNTIME_MANAGER_URL,MODELS_API_HOST, MODELS_API_PORT} = require("../config/config");
+
 router.route("/savedmodels")
     .get(async(req,res) => {
 
         const username = req.session.user;
 
-        // Get all pipelines from database
+        // Get all models from database
         try {
             var models = await SavedModel.find({"metadata.user": username});
         } catch (err) {
@@ -26,31 +28,94 @@ router.route("/savedmodels")
 router.route("/savedmodels/start")
     .post(async (req,res) => {
 
-        let data = req.body;
+        let id = req.body.id;
 
-        res.send("http://localhost:5400/savedmodel/" + data.id);
+        try {
+            let request = await fetch(`${RUNTIME_MANAGER_URL}/start/${id}`);
+            let response = await request
 
+            if (response.status === 200) {
+                
+                const interval = setInterval( async () => {
+                                        
+                    // Check mongodb for status
+                    try {
+                        var model = await SavedModel.find({"job_id": id});
+                        var state = model[0].state;
+    
+                        console.log("Model state: " + state);
+                    } catch (err) {
+                        console.log(err);
+                    }
+    
+                    if (state === 'Running') {
+                      console.log(`[INFO] Model ${id} is running`);
+                      clearInterval(interval);
+    
+                      res.send(`http://${MODELS_API_HOST}:${MODELS_API_PORT}/predict/${id}`);
+                    }
+                }, 2000);
+
+            } else {
+                res.status(500).send("Error");
+            }
+
+
+        } catch (error) {
+            console.log("[ERROR] Runtime Manager is not available");
+            console.log(error);
+
+            res.status(500).send('Error: ' + error);
+        }
     })
 
-router.route("/savedmodels/delete")
-    .post((req,res)=>{
+router.route("/savedmodels/kill")
+    .post(async (req,res) => {
     
         let id = req.body.id;
     
-        Pipeline.findOneAndRemove({ analysisid: id })
-        .then((func) => {
-            if (!func) {
-                console.log("[ERROR] Pipeline not found");
-                res.status(400).send(id + ' was not found');
+        try {
+            let request = await fetch(`${RUNTIME_MANAGER_URL}/stop/${id}`);
+            let response = await request
+
+            if (response.status === 200) {
+                
+                const interval = setInterval( async () => {
+                                        
+                    // Check mongodb for status
+                    try {
+                        var model = await SavedModel.find({"job_id": id});
+                        var state = model[0].state;
+    
+                        console.log("Model state: " + state);
+                    } catch (err) {
+                        console.log(err);
+                    }
+    
+                    if (state === 'Down') {
+                      console.log(`[INFO] Model ${id} is down`);
+                      clearInterval(interval);
+    
+                      res.status(200).send("OK");
+                    }
+                }, 2000);
+
             } else {
-                console.log("[INFO] Pipeline deleted from MongoDB");
-                res.sendStatus(200);
+                res.status(500).send("Error");
             }
-        })
-        .catch((err) => {
-            console.error(err);
-            res.status(500).send('Error: ' + err);
-        });
+           
+
+        } catch (error) {
+            console.log("[ERROR] Runtime Manager is not available");
+            console.log(error);
+
+            res.status(500).send('Error: ' + error);
+        }
     })
+
+router.route("/savedmodels/dummy")
+    .get(async (req,res) => {
+        res.status(200).send("OK")
+    });
 
 module.exports = router;

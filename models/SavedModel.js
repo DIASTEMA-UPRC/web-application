@@ -6,4 +6,4 @@ const modelSchema = new mongoose.Schema ({
     metadata: Object
 });
 
-module.exports = mongoose.model("SavedModel", modelSchema, "savedmodels");
+module.exports = mongoose.model("SavedModel", modelSchema, "podstates");
