@@ -1437,6 +1437,16 @@ $('#dataToolkitModal #saveToolkitConfig').click(function() {
 
 	// Get #autoMLCheck checkbox value
 	let autoMLCheck = $('#dataToolkitModal #autoMLCheck').is(':checked');
+
+	if (autoMLCheck) {
+		// Check if max-trials and meta-learning are filled
+		if (params['max-trials'] === undefined || params['meta-learning'] === undefined) {
+			$('#maxTrials').focus()
+			toastr.error("Please fill the 'max-trials' and 'meta-learning fields'.", "Notification:");
+			return;
+		}
+	}
+	
 	params['automl'] = autoMLCheck;
 
 	// Get existing session storage object
