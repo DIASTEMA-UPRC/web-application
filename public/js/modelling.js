@@ -112,14 +112,23 @@ $(document).ready(function() {
 				case "Classification":
 					node.field = ''
 					node.property = "Select Algorithm"
+					node.params = {
+						automl:false
+					}
 					break;
 				case "Regression":
 					node.field = ''
 					node.property = "Select Algorithm"
+					node.params = {
+						automl:false
+					}
 					break;
 				case "Clustering":
 					node.field = ''
 					node.property = "Select Algorithm"
+					node.params = {
+						automl:false
+					}
 					break;
 				case "Cleaning":
 					node.field = ''
@@ -358,6 +367,9 @@ $(document).ready(function() {
 					job.params = diagram[m].params;
 					job.automl = job.params.automl;
 					delete job.params.automl;
+
+					// if job.params is empty, delete it
+					if (Object.keys(job.params).length === 0) delete job.params;
 				}
 				
 			}
@@ -832,6 +844,9 @@ function editNode(element) {
 
 		} else {
 			diagram[pos].property = node.value;
+			console.log(node.value);
+			generateToolkitModal(node);
+			saveDataToolkitParams();
 		}
 	}
 }
@@ -1031,6 +1046,11 @@ function validateFields() {
 					toastr.error("Please fill all the required fields.", "Notification:");
 					outcome = false;
 				};
+
+				if (diagram[m].property === "Select Algorithm" && diagram[m].params.automl === false) {
+					toastr.error("Please select an algorithm or enable AutoML", "Notification:");
+					outcome = false;
+				}
 			}
 	
 			// Function Node Validation
@@ -1062,6 +1082,14 @@ function validateFields() {
 // ********************************
 
 function dataToolkitGear(element) {
+
+	generateToolkitModal(element);
+	
+	$('#dataToolkitModal').modal('show')
+	
+}
+
+function generateToolkitModal(element) {
 
 	// Get node id, node type, and selected algorithm
 	const uid = element.offsetParent.offsetParent.id;
@@ -1279,9 +1307,6 @@ function dataToolkitGear(element) {
 	} else {
 		configureAutoML(algoParams);
 	}
-	
-	$('#dataToolkitModal').modal('show')
-	
 }
 
 function addEmptyField(key, value) {
@@ -1378,28 +1403,30 @@ function updateNodeParams(uid,params) {
 	}
 	var paramTypes = getToolkitParams(selectedAlgo);
 
-	// loop through params and convert to correct type
-	for (const [key, value] of Object.entries(params)) {
-
-		if (key === 'max-trials') {
-			params[key] = parseInt(value);
-			continue;
-		}
-
-		if (paramTypes[key] === 'int') {
-			params[key] = parseInt(value);
-			continue;
-		} else if (paramTypes[key] === 'float') {
-			params[key] = parseFloat(value);
-			continue;
-		}
-
-		if (value === 'true') {
-			params[key] = true;
-			continue;
-		} else if (value === 'false') {
-			params[key] = false;
-			continue;
+	if (paramTypes != undefined) {
+		// loop through params and convert to correct type
+		for (const [key, value] of Object.entries(params)) {
+	
+			if (key === 'max-trials') {
+				params[key] = parseInt(value);
+				continue;
+			}
+	
+			if (paramTypes[key] === 'int') {
+				params[key] = parseInt(value);
+				continue;
+			} else if (paramTypes[key] === 'float') {
+				params[key] = parseFloat(value);
+				continue;
+			}
+	
+			if (value === 'true') {
+				params[key] = true;
+				continue;
+			} else if (value === 'false') {
+				params[key] = false;
+				continue;
+			}
 		}
 	}
 
@@ -1412,8 +1439,7 @@ function updateNodeParams(uid,params) {
 	}
 }
 
-// Save Data Toolkit node params configuration
-$('#dataToolkitModal #saveToolkitConfig').click(function() {
+function saveDataToolkitParams() {
 
 	// Get node id from modal
 	let uid = $('#dataToolkitModal #dataToolkitId').val();
@@ -1477,7 +1503,7 @@ $('#dataToolkitModal #saveToolkitConfig').click(function() {
 
 	// Close modal
 	$('#dataToolkitModal').modal('hide');
-});
+};
 
 // Click anywhere to hide node delete btn
 $('html').click(function() {

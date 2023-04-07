@@ -145,7 +145,7 @@ function generatePipelineHTML(node,dataset) {
                     break;
                 case "Classification":
                     nodeDOM += `<select name="nodeProperty" id="nodeProperty" onchange="changeProperty(this)" style="margin:5px auto 10px auto;">
-                                    <option selected="true" disabled="disabled" value="default">${node.property}</option>
+                                    <option selected="true" value="Select Algorithm">${node.property}</option>
                                     <option value="Logistic regression">Logistic regression</option>
                                     <option value="Decision tree classifier">Decision tree</option>
                                     <option value="Random forest classifier">Random forest</option>
@@ -160,7 +160,7 @@ function generatePipelineHTML(node,dataset) {
                     break;
                 case "Regression":
                     nodeDOM += `<select name="nodeProperty" id="nodeProperty" onchange="changeProperty(this)" style="margin:5px auto 10px auto;">
-                                    <option selected="true" disabled="disabled" value="default">${node.property}</option>
+                                    <option selected="true" value="Select Algorithm">${node.property}</option>
                                     <option value="Linear regression">Linear regression</option>
                                     <option value="Decision tree regression">Decision tree</option>
                                     <option value="Random forest regression">Random forest</option>
@@ -173,7 +173,7 @@ function generatePipelineHTML(node,dataset) {
                     break;
                 case "Clustering":
                     nodeDOM += `<select name="nodeProperty" id="nodeProperty" onchange="changeProperty(this)" style="margin:5px auto 10px auto;">
-                                    <option selected="true" disabled="disabled" value="default">${node.property}</option>
+                                    <option selected="true" value="Select Algorithm">${node.property}</option>
                                     <option value="Kmeans">K-means</option>
                                     <option value="Latent Dirichlet Allocation">Latent Dirichlet Allocation</option>
                                     <option value="Gaussian Mixture Model">Gaussian Mixture Model</option>
