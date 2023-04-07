@@ -231,8 +231,8 @@
                                             <span>Start</span>
                                         </div>
                                         <div class="card-footer-button" onclick="killModel(this)">
-                                            <i class='bx bx-trash' ></i>
-                                            <span>Kill</span>
+                                            <i class='bx bx-window-close'></i>
+                                            <span>Stop</span>
                                         </div>
 
                                     </div>
@@ -324,6 +324,7 @@
             $('#row').addClass('row-cols-md-2');
         }
 
+        // Start model
         function startModel (element) {
 
             let id = element.parentNode.parentNode.parentNode.children[1].children[0].children[1].children[1].lastChild.data;
@@ -337,7 +338,7 @@
                 success: (response) => {
 
                     sessionStorage.setItem("mdlrunning", "1");
-                                        
+
                     window.location.href = "/savedmodels";
                     
                 },
@@ -352,7 +353,8 @@
             });
         }
 
-        async function killModel (element) {
+        // Stop model
+        function killModel (element) {
 
             var id = element.parentNode.parentNode.parentNode.children[1].children[0].children[1].children[1].lastChild.data;
 

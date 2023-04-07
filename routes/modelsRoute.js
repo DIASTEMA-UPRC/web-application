@@ -36,23 +36,24 @@ router.route("/savedmodels/start")
 
             if (response.status === 200) {
                 
-                const interval = setInterval( async () => {
+                let interval = setInterval( async () => {
                                         
                     // Check mongodb for status
                     try {
                         var model = await SavedModel.find({"job_id": id});
                         var state = model[0].state;
     
-                        console.log("Model state: " + state);
+                        console.log(`Model ${id} state: ${state}`);
                     } catch (err) {
                         console.log(err);
                     }
     
                     if (state === 'Running') {
-                      console.log(`[INFO] Model ${id} is running`);
-                      clearInterval(interval);
+                    
+                        console.log(`[INFO] Model ${id} is running`);
+                        clearInterval(interval);
     
-                      res.send(`http://${MODELS_API_HOST}:${MODELS_API_PORT}/predict/${id}`);
+                        res.status(200).send("OK");
                     }
                 }, 2000);
 
