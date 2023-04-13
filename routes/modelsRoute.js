@@ -4,7 +4,7 @@ const fetch = require('node-fetch');
 
 const SavedModel = require("../models/SavedModel");
 
-const runtimeManagerDelay = 10;
+const downLimit = 10;
 
 const {RUNTIME_MANAGER_URL,MODELS_API_HOST, MODELS_API_PORT} = require("../config/config");
 
@@ -64,8 +64,8 @@ router.route("/savedmodels/start")
                         res.status(200).send("OK");
                     }
 
-                    // If model is not running after X seconds, stop the interval
-                    if (seconds > runtimeManagerDelay) {
+                    // If model is still down after 10 seconds, stop the interval
+                    if (state === 'Down' && seconds > downLimit) {
                         console.log(`[INFO] Model ${id} took too long to start, cancelling.`);
                         clearInterval(interval);
 
@@ -123,8 +123,8 @@ router.route("/savedmodels/kill")
                         res.status(200).send("OK");
                     }
 
-                    // If model is not down after 10 seconds, stop the interval
-                    if (seconds > runtimeManagerDelay) {
+                    // If model is still down after 10 seconds, stop the interval
+                    if (state === 'Down' && seconds > downLimit) {
                         console.log(`[INFO] Model ${id} took too long to stop, cancelling.`);
                         clearInterval(interval);
 
