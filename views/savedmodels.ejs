@@ -226,14 +226,31 @@
                                 <div class="card-footer">
                                     <div class="card-footer-padding">
 
-                                        <div class="card-footer-button" onclick="startModel(this)">
-                                            <i class='bx bx-code-alt' ></i>
-                                            <span>Start</span>
-                                        </div>
-                                        <div class="card-footer-button" onclick="killModel(this)">
-                                            <i class='bx bx-window-close'></i>
-                                            <span>Stop</span>
-                                        </div>
+                                        <% if (model.state === 'Running') { %>
+
+                                            <div class="card-footer-button" style="pointer-events: none;">
+                                                <i class='bx bx-code-alt' ></i>
+                                                <span>Start</span>
+                                            </div>
+
+                                            <div class="card-footer-button" onclick="killModel(this)">
+                                                <i class='bx bx-window-close'></i>
+                                                <span>Stop</span>
+                                            </div>
+
+                                        <% } else if (model.state === 'Down') { %>
+
+                                            <div class="card-footer-button" onclick="startModel(this)">
+                                                <i class='bx bx-code-alt' ></i>
+                                                <span>Start</span>
+                                            </div>
+
+                                            <div class="card-footer-button" style="pointer-events: none;">
+                                                <i class='bx bx-window-close'></i>
+                                                <span>Stop</span>
+                                            </div>
+
+                                        <% } %>
 
                                     </div>
                                 </div>
