@@ -250,7 +250,7 @@ $(document).ready(function() {
 	}
 
 	// Generate data
-	async function generateData() {
+	async function generateData(isBeingDeployed) {
 
 		const d = new Date();
 
@@ -366,11 +366,14 @@ $(document).ready(function() {
 				if (diagram[m].params) {
 					job.params = diagram[m].params;
 					job.automl = job.params.automl;
-					delete job.params.automl;
+
+					if (isBeingDeployed) {
+						delete job.params.automl;
+					}
 
 					// if job.params is empty, delete it
 					if (Object.keys(job.params).length === 0) delete job.params;
-				}
+				} 
 				
 			}
 
@@ -423,7 +426,7 @@ $(document).ready(function() {
 	$('#validate_graph').click( async ()=> {
 		if (validateFields()) {
 
-			let data = await generateData();
+			let data = await generateData(false);
 
 			// Send pipeline to server
 			try {
@@ -532,7 +535,7 @@ $(document).ready(function() {
 
 
 	// Deploy graph
-	$('#deploy_graph').click(async ()=>{
+	$('#deploy_graph').click(async () => {
 
 		if ($("#deploy_graph_input").val() === "") {
 			toastr.error("Please give a name to your analysis graph.", "Notification:");
@@ -540,7 +543,7 @@ $(document).ready(function() {
 			
 			if (validateFields()) {
 
-				let data = await generateData();
+				let data = await generateData(true);
 				
 				// == Save graph to platform ==
 
@@ -604,7 +607,7 @@ $(document).ready(function() {
 
 				let name = $("#download_graph_input").val();
 
-				let data = await generateData();
+				let data = await generateData(false);
 				console.log(data);
 				download(JSON.stringify(data, null, 2), name+".json", "text/plain");
 
@@ -1385,7 +1388,7 @@ function configureAutoML(algoParams) {
 	}
 
 	// Check if value is numeric in max-trials input field
-	$('#dataToolkitModal #maxTrials').keyup((e)=>{
+	$('#dataToolkitModal #maxTrials').keyup((e) => {
 		if (isNaN($(e.target).val())) {
 			toastr.error("Please enter a numeric value.", "Notification:");
 			$(e.target).val('');
