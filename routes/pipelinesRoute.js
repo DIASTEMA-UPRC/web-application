@@ -67,7 +67,7 @@ router.route("/pipelines/save")
                 
                 let job = jobs[i];
                 let model = new Model ({
-                    job_id: job.id,
+                    "job-id": job.id,
                     state: "Down",
                     metadata: {
                         user: data.metadata.user,

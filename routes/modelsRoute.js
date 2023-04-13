@@ -4,6 +4,8 @@ const fetch = require('node-fetch');
 
 const SavedModel = require("../models/SavedModel");
 
+const runtimeManagerDelay = 10;
+
 const {RUNTIME_MANAGER_URL,MODELS_API_HOST, MODELS_API_PORT} = require("../config/config");
 
 router.route("/savedmodels")
@@ -34,13 +36,18 @@ router.route("/savedmodels/start")
             let request = await fetch(`${RUNTIME_MANAGER_URL}/start/${id}`);
             let response = await request
 
+            // If Runtime Manager is available, check MongoDB for model status
             if (response.status === 200) {
+
+                let seconds = 0;
                 
                 let interval = setInterval( async () => {
+
+                    seconds += 2;
                                         
                     // Check mongodb for status
                     try {
-                        var model = await SavedModel.find({"job_id": id});
+                        var model = await SavedModel.find({"job-id": id});
                         var state = model[0].state;
     
                         console.log(`Model ${id} state: ${state}`);
@@ -48,6 +55,7 @@ router.route("/savedmodels/start")
                         console.log(err);
                     }
     
+                    // If model is running, stop the interval
                     if (state === 'Running') {
                     
                         console.log(`[INFO] Model ${id} is running`);
@@ -55,10 +63,19 @@ router.route("/savedmodels/start")
     
                         res.status(200).send("OK");
                     }
+
+                    // If model is not running after X seconds, stop the interval
+                    if (seconds > runtimeManagerDelay) {
+                        console.log(`[INFO] Model ${id} took too long to start, cancelling.`);
+                        clearInterval(interval);
+
+                        res.status(500).send(`Model ${id} took too long to start, please try again.`);
+                    }
+
                 }, 2000);
 
             } else {
-                res.status(500).send("Error");
+                res.status(500).send(`Model ${id} is not available, please try again later.`);
             }
 
 
@@ -66,7 +83,7 @@ router.route("/savedmodels/start")
             console.log("[ERROR] Runtime Manager is not available");
             console.log(error);
 
-            res.status(500).send('Error: ' + error);
+            res.status(500).send('Service is temporarily unavailable, please try again later.');
         }
     })
 
@@ -79,30 +96,45 @@ router.route("/savedmodels/kill")
             let request = await fetch(`${RUNTIME_MANAGER_URL}/stop/${id}`);
             let response = await request
 
+            // If Runtime Manager is available, check MongoDB for model status
             if (response.status === 200) {
+
+                let seconds = 0;
                 
                 const interval = setInterval( async () => {
+
+                    seconds += 2;
                                         
                     // Check mongodb for status
                     try {
-                        var model = await SavedModel.find({"job_id": id});
+                        var model = await SavedModel.find({"job-id": id});
                         var state = model[0].state;
     
-                        console.log("Model state: " + state);
+                        console.log(`Model ${id} state: ${state}`);
                     } catch (err) {
                         console.log(err);
                     }
     
+                    // If model is down, stop the interval
                     if (state === 'Down') {
-                      console.log(`[INFO] Model ${id} is down`);
-                      clearInterval(interval);
+                        console.log(`[INFO] Model ${id} is down`);
+                        clearInterval(interval);
     
-                      res.status(200).send("OK");
+                        res.status(200).send("OK");
                     }
+
+                    // If model is not down after 10 seconds, stop the interval
+                    if (seconds > runtimeManagerDelay) {
+                        console.log(`[INFO] Model ${id} took too long to stop, cancelling.`);
+                        clearInterval(interval);
+
+                        res.status(500).send(`Model ${id} took too long to stop, please try again.`);
+                    }
+                    
                 }, 2000);
 
             } else {
-                res.status(500).send("Error");
+                res.status(500).send(`Model ${id} is not available, please try again later.`);
             }
            
 

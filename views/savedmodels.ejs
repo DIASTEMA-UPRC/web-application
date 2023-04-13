@@ -176,7 +176,7 @@
                     <% for (var model of models) {%>
 
                         <!-- Model -->
-                        <div class="col" id="<%= model['job_id'] %>">
+                        <div class="col" id="<%= model['job-id'] %>">
                             <div class="card" style="height: 31vh;">
 
                                 <!-- Pipeline name -->
@@ -199,7 +199,7 @@
                                         <!-- Job ID -->
                                         <div class="pipeline-line">
                                             <i class='bx bx-fingerprint' style="color: var(--primary-color);"></i>
-                                            <span><b>Job ID: </b><%= model['job_id'] %></span>
+                                            <span><b>Job ID: </b><%= model['job-id'] %></span>
                                         </div>
 
                                         <!-- State -->
@@ -215,7 +215,7 @@
                                         </div>
 
                                         <% if (model.state === 'Running') {%>
-                                            <input type="text" class="form-control" value="http://83.212.238.166:77777/predict/<%= model['job_id'] %>" />
+                                            <input type="text" class="form-control" value="http://83.212.238.166:77777/predict/<%= model['job-id'] %>" />
                                         <% } %>
 
                                         
@@ -344,9 +344,10 @@
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.log("Error:");
-                    console.log(errorThrown);
+                    
+                    let message = jqXHR.responseText
 
-                    toastr.error("Model is not available, please try again later.", "Notification:");
+                    toastr.error(message, "Notification:");
 
                     $('#'+id + ' .card #spinloader').hide();
                 }
@@ -373,9 +374,10 @@
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.log("Error:");
-                    console.log(errorThrown);
 
-                    toastr.error("Model is not available, please try again later.", "Notification:");
+                    let message = jqXHR.responseText
+
+                    toastr.error(message, "Notification:");
 
                     $('#'+id + ' .card #spinloader').hide();
                 }

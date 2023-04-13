@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const modelSchema = new mongoose.Schema ({
-    job_id: String,
+    "job-id": String,
     state: String,
     metadata: Object
 });
