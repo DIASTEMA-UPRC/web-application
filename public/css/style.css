@@ -588,7 +588,7 @@ nav.close ~ .dashboard .top{
     }
 }
 
-@media (max-width: 1800px) { 
+@media (max-width: 1800px) {
 
     #completed_pipeline {
         flex-direction: column;
