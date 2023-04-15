@@ -600,7 +600,6 @@ input:checked + .slider:before {
   display: flex;
   align-items: stretch;
   -webkit-box-align: stretch;
-  height: 100%;
 }
 
 @media screen and (max-width: 1500px) {
