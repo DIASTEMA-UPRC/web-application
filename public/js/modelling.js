@@ -422,6 +422,11 @@ $(document).ready(function() {
 		return data;
 	}
 
+	// Clear graph
+	$('#clear_graph').click(()=>{
+		window.location.reload();
+	});
+
 	// Validate graph
 	$('#validate_graph').click( async ()=> {
 		if (validateFields()) {
