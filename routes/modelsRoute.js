@@ -4,7 +4,7 @@ const fetch = require('node-fetch');
 
 const SavedModel = require("../models/SavedModel");
 
-const downLimit = 10;
+const downLimit = 30;
 
 const {RUNTIME_MANAGER_URL,MODELS_API_HOST, MODELS_API_PORT} = require("../config/config");
 
@@ -43,7 +43,7 @@ router.route("/savedmodels/start")
                 
                 let interval = setInterval( async () => {
 
-                    seconds += 2;
+                    seconds += 1;
                                         
                     // Check mongodb for status
                     try {
@@ -66,7 +66,7 @@ router.route("/savedmodels/start")
 
                     // If model is still down after 10 seconds, stop the interval
                     if (state === 'Down' && seconds > downLimit) {
-                        console.log(`[INFO] Model ${id} took too long to start, cancelling.`);
+                        console.log(`[INFO] Model ${id} took over ${downLimit} seconds to start, cancelling.`);
                         clearInterval(interval);
 
                         res.status(500).send(`Model ${id} took too long to start, please try again.`);

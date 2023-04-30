@@ -208,7 +208,7 @@
                                                 <i class='bx bxs-bell-off' style="color: var(--primary-color);"></i>
                                             <% } else if (model.state === 'Running') {%>
                                                 <i class='bx bxs-bell-ring' style="color: var(--primary-color);"></i>
-                                            <% } else if (mode.state === 'Pending') {%>
+                                            <% } else if (model.state === 'Pending') {%>
                                                 <i class='bx bxs-bell' style="color: var(--primary-color);"></i>
                                             <% } %>
                                             <span><b>State: </b><%= model.state %></span>
@@ -241,6 +241,18 @@
                                         <% } else if (model.state === 'Down') { %>
 
                                             <div class="card-footer-button" onclick="startModel(this)">
+                                                <i class='bx bx-code-alt' ></i>
+                                                <span>Start</span>
+                                            </div>
+
+                                            <div class="card-footer-button" style="pointer-events: none;">
+                                                <i class='bx bx-window-close'></i>
+                                                <span>Stop</span>
+                                            </div>
+
+                                        <% } else if (model.state === 'Pending') { %>
+
+                                            <div class="card-footer-button" style="pointer-events: none;">
                                                 <i class='bx bx-code-alt' ></i>
                                                 <span>Start</span>
                                             </div>
@@ -295,7 +307,7 @@
             "hideMethod": "fadeOut"
         }
 
-        // Display toast after save and redirect
+        // Display toast after response from server 
         if (sessionStorage.getItem("mdlrunning")=='1'){
             toastr.info("Model is running.", "Notification:");
             sessionStorage.removeItem("mdlrunning");
@@ -308,10 +320,27 @@
             $('#spinloader').hide();
         }
 
+        // Check if model is pending, if yes show spinner
+        for (let col of $('.col')) {
+
+            let card = $(col);
+            let modelstate = card.find('.pipeline-line').eq(2).children()[1].innerText.split(":")[1].split(" ")[1];
+            let id = card.attr('id');
+
+            if (modelstate === 'Pending') {
+
+                $('#'+id + ' .card #spinloader').show();
+
+                setTimeout(function(){
+                    window.location.reload(1);
+                }, 5000);
+            }
+        }
+       
+
         const body = document.querySelector("body");
         const sidebarToggle = body.querySelector(".sidebar-toggle");
         const sidebar = body.querySelector("nav");
-        const addPipeline = document.getElementById("addpipeline");
 
         let getStatus = localStorage.getItem("status");
         if (getStatus && getStatus==="close") {
